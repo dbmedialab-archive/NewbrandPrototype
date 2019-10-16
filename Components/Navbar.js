@@ -9,8 +9,8 @@ left: 0;
 top: 0;
 background-color: #2d2d2d;
 display: flex;
-flex-direction: row;
-justify-content: center;
+flex-direction:  column;
+justify-content: space-around;
 align-items: center;
 width: 100%;
 box-sizing: border-box;
@@ -23,6 +23,23 @@ color: white;
     width: 60px;
     transition: all 1s ease-in;
 
+}
+    nav{
+
+    ul{
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        margin: 0;
+
+        li{
+            margin: 0rem 1rem;
+        }
+
+        a{
+            font-weight: bold;
+        }
+    }
 }
 `
 
@@ -39,9 +56,12 @@ export default function Navbar (props) {
             </Link>
             <nav>
             <ul>
-                <li>Hei</li>
-                <li>Hei</li>
-                <li>Hei</li>
+                <li>Forside</li>
+                <li>Kategori</li>
+                <li>Kategori</li>
+                <li>Kategori</li>
+                <li>Kategori</li>
+                <li>Kategori</li>
             </ul>
             </nav>
            

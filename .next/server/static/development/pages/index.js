@@ -191,8 +191,8 @@ left: 0;
 top: 0;
 background-color: #2d2d2d;
 display: flex;
-flex-direction: row;
-justify-content: center;
+flex-direction:  column;
+justify-content: space-around;
 align-items: center;
 width: 100%;
 box-sizing: border-box;
@@ -206,32 +206,49 @@ color: white;
     transition: all 1s ease-in;
 
 }
+    nav{
+
+    ul{
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        margin: 0;
+
+        li{
+            margin: 0rem 1rem;
+        }
+
+        a{
+            font-weight: bold;
+        }
+    }
+}
 `;
 function Navbar(props) {
   return __jsx(NavbarWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 32
+      lineNumber: 49
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 33
+      lineNumber: 50
     },
     __self: this
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 34
+      lineNumber: 51
     },
     __self: this
   }, __jsx("div", {
     className: "logo",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 35
+      lineNumber: 52
     },
     __self: this
   }, __jsx("img", {
@@ -240,40 +257,58 @@ function Navbar(props) {
     width: "140",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 36
+      lineNumber: 53
     },
     __self: this
   })))), __jsx("nav", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 40
+      lineNumber: 57
     },
     __self: this
   }, __jsx("ul", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41
+      lineNumber: 58
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 42
+      lineNumber: 59
     },
     __self: this
-  }, "Hei"), __jsx("li", {
+  }, "Forside"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 43
+      lineNumber: 60
     },
     __self: this
-  }, "Hei"), __jsx("li", {
+  }, "Kategori"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 44
+      lineNumber: 61
     },
     __self: this
-  }, "Hei"))));
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 62
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 63
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 64
+    },
+    __self: this
+  }, "Kategori"))));
 }
 
 /***/ }),

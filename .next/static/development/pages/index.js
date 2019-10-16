@@ -96,7 +96,7 @@ var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Com
 var __jsx = react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement;
 
 function _templateObject() {
-  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__["default"])(["\nposition: absolute;\nz-index: 9;\nleft: 0;\ntop: 0;\nbackground-color: #2d2d2d;\ndisplay: flex;\nflex-direction: row;\njustify-content: center;\nalign-items: center;\nwidth: 100%;\nbox-sizing: border-box;\nheight: 150px;\ntransition: all 0.5s ease-in;\npadding: 0rem .8rem 0rem .8rem;\ncolor: white;   \n\n.logo img{\n    width: 60px;\n    transition: all 1s ease-in;\n\n}\n"]);
+  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__["default"])(["\nposition: absolute;\nz-index: 9;\nleft: 0;\ntop: 0;\nbackground-color: #2d2d2d;\ndisplay: flex;\nflex-direction:  column;\njustify-content: space-around;\nalign-items: center;\nwidth: 100%;\nbox-sizing: border-box;\nheight: 150px;\ntransition: all 0.5s ease-in;\npadding: 0rem .8rem 0rem .8rem;\ncolor: white;   \n\n.logo img{\n    width: 60px;\n    transition: all 1s ease-in;\n\n}\n    nav{\n\n    ul{\n        display: flex;\n        flex-direction: row;\n        padding: 0;\n        margin: 0;\n\n        li{\n            margin: 0rem 1rem;\n        }\n\n        a{\n            font-weight: bold;\n        }\n    }\n}\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -113,27 +113,27 @@ function Navbar(props) {
   return __jsx(NavbarWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 32
+      lineNumber: 49
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_3___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 33
+      lineNumber: 50
     },
     __self: this
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 34
+      lineNumber: 51
     },
     __self: this
   }, __jsx("div", {
     className: "logo",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 35
+      lineNumber: 52
     },
     __self: this
   }, __jsx("img", {
@@ -142,40 +142,58 @@ function Navbar(props) {
     width: "140",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 36
+      lineNumber: 53
     },
     __self: this
   })))), __jsx("nav", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 40
+      lineNumber: 57
     },
     __self: this
   }, __jsx("ul", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41
+      lineNumber: 58
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 42
+      lineNumber: 59
     },
     __self: this
-  }, "Hei"), __jsx("li", {
+  }, "Forside"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 43
+      lineNumber: 60
     },
     __self: this
-  }, "Hei"), __jsx("li", {
+  }, "Kategori"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 44
+      lineNumber: 61
     },
     __self: this
-  }, "Hei"))));
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 62
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 63
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 64
+    },
+    __self: this
+  }, "Kategori"))));
 }
 
 /***/ }),
