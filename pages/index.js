@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import AllCars from '../Components/AllCars';
 import Navbar from "../Components/Navbar";
 import styled from '@emotion/styled';
 
@@ -37,7 +36,7 @@ class App extends Component {
     return (
         <FlexWrapper>
           <Navbar />
-          <AllCars />
+
         </FlexWrapper>
     );
   }
