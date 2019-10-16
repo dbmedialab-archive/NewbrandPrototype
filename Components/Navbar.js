@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import Link from 'next/link';
-// import { Global, css } from '@emotion/core'
-import "../style.css"
 
 const NavbarWrapper = styled.div`
-position: fixed;
+position: absolute;
 z-index: 9;
 left: 0;
 top: 0;
@@ -16,7 +14,7 @@ justify-content: center;
 align-items: center;
 width: 100%;
 box-sizing: border-box;
-height: 100px;
+height: 150px;
 transition: all 0.5s ease-in;
 padding: 0rem .8rem 0rem .8rem;
 color: white;   
@@ -39,12 +37,13 @@ export default function Navbar (props) {
                 </div>
                 </a>
             </Link>
-
+            <nav>
             <ul>
                 <li>Hei</li>
                 <li>Hei</li>
                 <li>Hei</li>
             </ul>
+            </nav>
            
         </NavbarWrapper>
         

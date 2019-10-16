@@ -93,9 +93,79 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
-/***/ "./Components/Navbar.js":
+/***/ "./Components/Footer.js":
 /*!******************************!*\
-  !*** ./Components/Navbar.js ***!
+  !*** ./Components/Footer.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/styled */ "@emotion/styled");
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_styled__WEBPACK_IMPORTED_MODULE_1__);
+var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Components/Footer.js";
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+const FooterWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default.a.div`
+    position: absolute;
+    bottom: 0;
+    background: #1d1d1d;
+    height: 20vh;
+    width: 100%;
+    color: #fff;
+ `;
+
+function Footer(props) {
+  return __jsx(FooterWrapper, {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 15
+    },
+    __self: this
+  }, __jsx("ul", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 16
+    },
+    __self: this
+  }, __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 17
+    },
+    __self: this
+  }, "Hei Hei"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 18
+    },
+    __self: this
+  }, "Hei Hei"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 19
+    },
+    __self: this
+  }, "Hei Hei"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 20
+    },
+    __self: this
+  }, "Hei Hei")));
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Footer);
+
+/***/ }),
+
+/***/ "./Components/NavBar.js":
+/*!******************************!*\
+  !*** ./Components/NavBar.js ***!
   \******************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -109,17 +179,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_styled__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
 /* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../style.css */ "./style.css");
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_3__);
-var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Components/Navbar.js";
+var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Components/NavBar.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
- // import { Global, css } from '@emotion/core'
-
 
 const NavbarWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default.a.div`
-position: fixed;
+position: absolute;
 z-index: 9;
 left: 0;
 top: 0;
@@ -130,7 +196,7 @@ justify-content: center;
 align-items: center;
 width: 100%;
 box-sizing: border-box;
-height: 100px;
+height: 150px;
 transition: all 0.5s ease-in;
 padding: 0rem .8rem 0rem .8rem;
 color: white;   
@@ -145,27 +211,27 @@ function Navbar(props) {
   return __jsx(NavbarWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 34
+      lineNumber: 32
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 35
+      lineNumber: 33
     },
     __self: this
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 36
+      lineNumber: 34
     },
     __self: this
   }, __jsx("div", {
     className: "logo",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 37
+      lineNumber: 35
     },
     __self: this
   }, __jsx("img", {
@@ -174,35 +240,126 @@ function Navbar(props) {
     width: "140",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 38
+      lineNumber: 36
     },
     __self: this
-  })))), __jsx("ul", {
+  })))), __jsx("nav", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 43
+      lineNumber: 40
+    },
+    __self: this
+  }, __jsx("ul", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 41
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
+      lineNumber: 42
+    },
+    __self: this
+  }, "Hei"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 43
+    },
+    __self: this
+  }, "Hei"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
       lineNumber: 44
     },
     __self: this
-  }, "Hei"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 45
-    },
-    __self: this
-  }, "Hei"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 46
-    },
-    __self: this
-  }, "Hei")));
+  }, "Hei"))));
 }
+
+/***/ }),
+
+/***/ "./Layout/Layout.js":
+/*!**************************!*\
+  !*** ./Layout/Layout.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/head */ "next/head");
+/* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_head__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Components_NavBar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Components/NavBar */ "./Components/NavBar.js");
+/* harmony import */ var _Components_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Components/Footer */ "./Components/Footer.js");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style.css */ "./style.css");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_5__);
+var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Layout/Layout.js";
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (({
+  children,
+  title = 'Prototype'
+}) => __jsx("div", {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 10
+  },
+  __self: undefined
+}, __jsx(next_head__WEBPACK_IMPORTED_MODULE_2___default.a, {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 11
+  },
+  __self: undefined
+}, __jsx("title", {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 12
+  },
+  __self: undefined
+}, title), __jsx("meta", {
+  charSet: "utf-8",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 13
+  },
+  __self: undefined
+}), __jsx("meta", {
+  name: "viewport",
+  content: "initial-scale=1.0, width=device-width",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 14
+  },
+  __self: undefined
+})), __jsx("header", {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 16
+  },
+  __self: undefined
+}, __jsx(_Components_NavBar__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 17
+  },
+  __self: undefined
+})), children, __jsx(_Components_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 22
+  },
+  __self: undefined
+})));
 
 /***/ }),
 
@@ -882,62 +1039,25 @@ module.exports = __webpack_require__(/*! ./dist/client/link */ "./node_modules/n
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Components_Navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Components/Navbar */ "./Components/Navbar.js");
-/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @emotion/styled */ "@emotion/styled");
-/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_emotion_styled__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _Layout_Layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layout/Layout */ "./Layout/Layout.js");
 var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/pages/index.js";
+
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
-
-
-const FlexWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_2___default.a.div`
-    display: flex;
-    background: #1d1d1d;
-    flex-direction: column;
-    justify-content: center;
-    padding: 3.5rem .5rem 3rem .5rem;
-
-    @media (min-width: 800px) {
-      flex-direction: row;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .react-reveal{
-      width: 100%;
-
-      @media (min-width: 800px) {
-        width: 40vw;
-        margin: 1rem;
-      }
-
-      @media (min-width: 1280px) {
-        width: 25vw;
-        margin: 1rem;
-      }
-  }
-  `;
-
-class App extends react__WEBPACK_IMPORTED_MODULE_0__["Component"] {
-  render() {
-    return __jsx(FlexWrapper, {
-      __source: {
-        fileName: _jsxFileName,
-        lineNumber: 37
-      },
-      __self: this
-    }, __jsx(_Components_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      __source: {
-        fileName: _jsxFileName,
-        lineNumber: 38
-      },
-      __self: this
-    }));
-  }
-
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (App);
+/* harmony default export */ __webpack_exports__["default"] = (() => __jsx(_Layout_Layout__WEBPACK_IMPORTED_MODULE_1__["default"], {
+  title: "Forside",
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 4
+  },
+  __self: undefined
+}, __jsx("div", {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 5
+  },
+  __self: undefined
+}, "About us")));
 
 /***/ }),
 
@@ -1060,6 +1180,17 @@ module.exports = require("next-server/dist/lib/router/router");
 /***/ (function(module, exports) {
 
 module.exports = require("next-server/dist/lib/utils");
+
+/***/ }),
+
+/***/ "next/head":
+/*!****************************!*\
+  !*** external "next/head" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next/head");
 
 /***/ }),
 
