@@ -1,0 +1,84 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "UNION",
+        "name": "Labrador_Child",
+        "possibleTypes": [
+          {
+            "name": "Labrador_ArticlePreview"
+          },
+          {
+            "name": "Labrador_Column"
+          },
+          {
+            "name": "Labrador_Ad"
+          },
+          {
+            "name": "Labrador_AutoArticlePlaceholder"
+          },
+          {
+            "name": "Labrador_PersonalizedArticlePlaceholder"
+          },
+          {
+            "name": "Labrador_FrontRows"
+          },
+          {
+            "name": "Labrador_ContentMarketing"
+          },
+          {
+            "name": "Labrador_Row"
+          },
+          {
+            "name": "Labrador_Markup"
+          },
+          {
+            "name": "Labrador_CustomElement"
+          },
+          {
+            "name": "Labrador_JWVideo"
+          },
+          {
+            "name": "Labrador_WolverineAd"
+          },
+          {
+            "name": "Labrador_PersonalizedCampaign"
+          },
+          {
+            "name": "Labrador_Image"
+          },
+          {
+            "name": "Labrador_Instagram"
+          },
+          {
+            "name": "Labrador_HarvesterSearch"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "Labrador_Content",
+        "possibleTypes": [
+          {
+            "name": "Labrador_HTMLElement"
+          },
+          {
+            "name": "Labrador_Text"
+          }
+        ]
+      },
+      {
+        "kind": "UNION",
+        "name": "Mat_PaginatedResponseResult",
+        "possibleTypes": [
+          {
+            "name": "Mat_RecipePreview"
+          },
+          {
+            "name": "Mat_IngredientPreview"
+          }
+        ]
+      }
+    ]
+  }
+}

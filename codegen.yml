@@ -1,0 +1,7 @@
+# codegen.yml
+schema: http://wolverine-fetcher.prod.medialaben.no/query
+overwrite: true
+generates:
+  ./fragmentTypes.json:
+    plugins:
+      - fragment-matcher
