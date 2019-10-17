@@ -3,26 +3,36 @@ import styled from '@emotion/styled';
 import Link from 'next/link';
 
 const NavbarWrapper = styled.div`
-position: realtive;
-z-index: 9;
-background-color: #2d2d2d;
 display: flex;
 flex-direction: column;
-justify-content: space-around;
+justify-content: space-between;
 align-items: center;
+position: realtive;
+z-index: 9;
+background: greenyellow;
 width: 100%;
 box-sizing: border-box;
 text-align: center;
-height: 150px;
-color: white;   
+height: 180px;
+color: #2d2d2d;   
 
-.logo img{
-    width: 60px;
-    margin: 0 auto;
-    transition: all 1s ease-in;
+.logo {
+    margin-top: 3rem;
+    img{
+        width: 60px;
+        margin: 0 auto;
+    }
 }
     nav{
-
+        background: #fff;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        padding: .7rem 0rem;
+        overflow-x: scroll;
+        @media (min-width: 720px) {
+            justify-content: center;
+        }
     ul{
         display: flex;
         flex-direction: row;
@@ -30,16 +40,18 @@ color: white;
         margin: 0;
 
         li{
+            min-width: 100px;
             margin: 0rem 1rem;
+            font-size: 1.2rem;
         }
 
         
 
         a{
             font-weight: bold;
-            color: #fff;
+            color: #000;
             &:hover{
-                color: #ffff00;
+                color: #000;
             }
         }
     }
@@ -60,11 +72,10 @@ export default function Navbar (props) {
             <nav>
             <ul>
                 <li><Link href="/">Forside</Link></li>
-                <li>Kategori</li>
-                <li>Kategori</li>
-                <li>Kategori</li>
-                <li>Kategori</li>
-                <li>Kategori</li>
+                <li>Oppskrifter</li>
+                <li>Ned i vekt</li>
+                <li>Sunn mat</li>
+                <li>Weekendkos</li>
             </ul>
             </nav>
            

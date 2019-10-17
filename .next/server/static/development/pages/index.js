@@ -417,26 +417,36 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 const NavbarWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default.a.div`
-position: realtive;
-z-index: 9;
-background-color: #2d2d2d;
 display: flex;
 flex-direction: column;
-justify-content: space-around;
+justify-content: space-between;
 align-items: center;
+position: realtive;
+z-index: 9;
+background: greenyellow;
 width: 100%;
 box-sizing: border-box;
 text-align: center;
-height: 150px;
-color: white;   
+height: 180px;
+color: #2d2d2d;   
 
-.logo img{
-    width: 60px;
-    margin: 0 auto;
-    transition: all 1s ease-in;
+.logo {
+    margin-top: 3rem;
+    img{
+        width: 60px;
+        margin: 0 auto;
+    }
 }
     nav{
-
+        background: #fff;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        padding: .7rem 0rem;
+        overflow-x: scroll;
+        @media (min-width: 720px) {
+            justify-content: center;
+        }
     ul{
         display: flex;
         flex-direction: row;
@@ -444,16 +454,18 @@ color: white;
         margin: 0;
 
         li{
+            min-width: 100px;
             margin: 0rem 1rem;
+            font-size: 1.2rem;
         }
 
         
 
         a{
             font-weight: bold;
-            color: #fff;
+            color: #000;
             &:hover{
-                color: #ffff00;
+                color: #000;
             }
         }
     }
@@ -463,27 +475,27 @@ function Navbar(props) {
   return __jsx(NavbarWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 52
+      lineNumber: 64
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 53
+      lineNumber: 65
     },
     __self: this
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 54
+      lineNumber: 66
     },
     __self: this
   }, __jsx("div", {
     className: "logo",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 55
+      lineNumber: 67
     },
     __self: this
   }, __jsx("img", {
@@ -492,65 +504,59 @@ function Navbar(props) {
     width: "140",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 56
+      lineNumber: 68
     },
     __self: this
   })))), __jsx("nav", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 60
+      lineNumber: 72
     },
     __self: this
   }, __jsx("ul", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 61
+      lineNumber: 73
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 62
+      lineNumber: 74
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 62
+      lineNumber: 74
     },
     __self: this
   }, "Forside")), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 63
+      lineNumber: 75
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Oppskrifter"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 64
+      lineNumber: 76
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Ned i vekt"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 65
+      lineNumber: 77
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Sunn mat"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 66
+      lineNumber: 78
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 67
-    },
-    __self: this
-  }, "Kategori"))));
+  }, "Weekendkos"))));
 }
 
 /***/ }),

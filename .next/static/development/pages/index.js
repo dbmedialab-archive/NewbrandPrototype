@@ -274,7 +274,7 @@ var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Com
 var __jsx = react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement;
 
 function _templateObject() {
-  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__["default"])(["\nposition: realtive;\nz-index: 9;\nbackground-color: #2d2d2d;\ndisplay: flex;\nflex-direction: column;\njustify-content: space-around;\nalign-items: center;\nwidth: 100%;\nbox-sizing: border-box;\ntext-align: center;\nheight: 150px;\ncolor: white;   \n\n.logo img{\n    width: 60px;\n    margin: 0 auto;\n    transition: all 1s ease-in;\n}\n    nav{\n\n    ul{\n        display: flex;\n        flex-direction: row;\n        padding: 0;\n        margin: 0;\n\n        li{\n            margin: 0rem 1rem;\n        }\n\n        \n\n        a{\n            font-weight: bold;\n            color: #fff;\n            &:hover{\n                color: #ffff00;\n            }\n        }\n    }\n}\n"]);
+  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__["default"])(["\ndisplay: flex;\nflex-direction: column;\njustify-content: space-between;\nalign-items: center;\nposition: realtive;\nz-index: 9;\nbackground: greenyellow;\nwidth: 100%;\nbox-sizing: border-box;\ntext-align: center;\nheight: 180px;\ncolor: #2d2d2d;   \n\n.logo {\n    margin-top: 3rem;\n    img{\n        width: 60px;\n        margin: 0 auto;\n    }\n}\n    nav{\n        background: #fff;\n        width: 100%;\n        display: flex;\n        justify-content: flex-start;\n        padding: .7rem 0rem;\n        overflow-x: scroll;\n        @media (min-width: 720px) {\n            justify-content: center;\n        }\n    ul{\n        display: flex;\n        flex-direction: row;\n        padding: 0;\n        margin: 0;\n\n        li{\n            min-width: 100px;\n            margin: 0rem 1rem;\n            font-size: 1.2rem;\n        }\n\n        \n\n        a{\n            font-weight: bold;\n            color: #000;\n            &:hover{\n                color: #000;\n            }\n        }\n    }\n}\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -291,27 +291,27 @@ function Navbar(props) {
   return __jsx(NavbarWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 52
+      lineNumber: 64
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_3___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 53
+      lineNumber: 65
     },
     __self: this
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 54
+      lineNumber: 66
     },
     __self: this
   }, __jsx("div", {
     className: "logo",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 55
+      lineNumber: 67
     },
     __self: this
   }, __jsx("img", {
@@ -320,65 +320,59 @@ function Navbar(props) {
     width: "140",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 56
+      lineNumber: 68
     },
     __self: this
   })))), __jsx("nav", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 60
+      lineNumber: 72
     },
     __self: this
   }, __jsx("ul", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 61
+      lineNumber: 73
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 62
+      lineNumber: 74
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_3___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 62
+      lineNumber: 74
     },
     __self: this
   }, "Forside")), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 63
+      lineNumber: 75
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Oppskrifter"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 64
+      lineNumber: 76
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Ned i vekt"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 65
+      lineNumber: 77
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Sunn mat"), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 66
+      lineNumber: 78
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 67
-    },
-    __self: this
-  }, "Kategori"))));
+  }, "Weekendkos"))));
 }
 
 /***/ }),
