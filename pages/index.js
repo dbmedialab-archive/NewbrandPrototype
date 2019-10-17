@@ -1,7 +1,8 @@
 import Layout from '../Layout/Layout'
+import Articles from '../Components/Articles';
 
 export default () => (
   <Layout title='Forside'>
-    <div>About us</div>
+    <Articles />
   </Layout>
 )

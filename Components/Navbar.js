@@ -3,26 +3,23 @@ import styled from '@emotion/styled';
 import Link from 'next/link';
 
 const NavbarWrapper = styled.div`
-position: absolute;
+position: realtive;
 z-index: 9;
-left: 0;
-top: 0;
 background-color: #2d2d2d;
 display: flex;
-flex-direction:  column;
+flex-direction: column;
 justify-content: space-around;
 align-items: center;
 width: 100%;
 box-sizing: border-box;
+text-align: center;
 height: 150px;
-transition: all 0.5s ease-in;
-padding: 0rem .8rem 0rem .8rem;
 color: white;   
 
 .logo img{
     width: 60px;
+    margin: 0 auto;
     transition: all 1s ease-in;
-
 }
     nav{
 
@@ -36,8 +33,14 @@ color: white;
             margin: 0rem 1rem;
         }
 
+        
+
         a{
             font-weight: bold;
+            color: #fff;
+            &:hover{
+                color: #ffff00;
+            }
         }
     }
 }
@@ -56,7 +59,7 @@ export default function Navbar (props) {
             </Link>
             <nav>
             <ul>
-                <li>Forside</li>
+                <li><Link href="/">Forside</Link></li>
                 <li>Kategori</li>
                 <li>Kategori</li>
                 <li>Kategori</li>

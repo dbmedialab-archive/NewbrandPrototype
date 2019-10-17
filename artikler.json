@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "bildeURL": "etron.jpg",
-    "merke": "Audi", 
+    "bildeURL": "burrito.jpg",
+    "title": "Meksikanske retter som imponerer fetter", 
     "modell": "e-tron",
     "type": "55", 
     "rekkevidde":  415,
@@ -15,8 +15,8 @@
   
   {
     "id": 2,
-    "bildeURL": "BMW-i3.jpg",
-    "merke":"BMW",
+    "bildeURL": "vekt.jpg",
+    "title":"Glem vekta! Spis og tren for psyken",
     "modell":"i3",
     "type":"120Ah",
     "rekkevidde": 310,
@@ -29,8 +29,8 @@
   
   {
     "id": 3,
-    "bildeURL": "Citroen-Berlingo-2019.jpg",
-    "merke":"Citroen",
+    "bildeURL": "middag.jpg",
+    "title":"Hva skal jeg ha til middag?",
     "modell":"E-Berlingo",
     "type":"Multispace",
     "rekkevidde": 170,
@@ -43,8 +43,8 @@
   
   {
     "id": 4,
-    "bildeURL": "Citroen-C-Zero-2011.jpg",
-    "merke":"Citroen",
+    "bildeURL": "fitness.jpg",
+    "title":"En bedre arbeidsdag med stykretrening",
     "modell":"C-Zero",
     "type":"Feel",
     "rekkevidde": 150,
@@ -57,8 +57,8 @@
   
   {
     "id": 5,
-    "bildeURL": "Hyundai-Ioniq-20172.jpg",
-    "merke":"Hyundai",
+    "bildeURL": "bowl.jpg",
+    "title":"Vi har testet de sunneste pokebowlene",
     "modell":"Ioniq",
     "type":"EV",
     "rekkevidde": 280,
@@ -71,8 +71,8 @@
   
   {
     "id": 6,
-    "bildeURL": "Hyundai-Kona_Electric.jpg",
-    "merke":"Hyundai",
+    "bildeURL": "candy.jpg",
+    "title":"Det beste lørdagsgodtet",
     "modell":"Kona Electric",
     "type":"Teknikk",
     "rekkevidde": 449,
@@ -85,8 +85,8 @@
   
   {
     "id": 7,
-    "bildeURL": "DS3Crossbacke-Tense.jpg",
-    "merke":"DS",
+    "bildeURL": "child.jpg",
+    "title":"Barnehage, privat eller offentlig?",
     "modell":"3 Crossback E-Tense",
     "type":"136 So Chic",
     "rekkevidde": 300,
@@ -100,8 +100,8 @@
   
   {
     "id": 8,
-    "bildeURL": "Kia-e-Niro-2019.jpg",
-    "merke":"Kia",
+    "bildeURL": "candy2.jpg",
+    "title":"Godteritesten 2020",
     "modell":"E-Niro",
     "type":"First Edition",
     "rekkevidde": 485,
@@ -115,8 +115,8 @@
   
   {
     "id": 9,
-    "bildeURL": "Kia-Soul_EV-2020-2.jpg",
-    "merke":"Kia",
+    "bildeURL": "eggs.jpg",
+    "title":"Proteiner til middag?",
     "modell":"E-Soul",
     "type":"Classic",
     "rekkevidde": 250,
@@ -130,8 +130,8 @@
   
   {
     "id": 10,
-    "bildeURL": "Mitsubishi-i-MiEV2.jpg",
-    "merke":"Mitsubishi",
+    "bildeURL": "happy.jpg",
+    "title":"Evig glad",
     "modell":"i-Miev",
     "type":"16 kWh",
     "rekkevidde": 105,
@@ -144,8 +144,8 @@
   
   {
     "id": 11,
-    "bildeURL": "Nissan-Leaf-2018.jpg",
-    "merke":"Nissan",
+    "bildeURL": "alcohol.jpg",
+    "title":"Endelig helg! –Oslo`s beste barer",
     "modell":"Leaf",
     "type":"40kWh Acenta",
     "rekkevidde": 270,
@@ -159,8 +159,8 @@
   
   {
     "id": 12,
-    "bildeURL": "Nissan-e-NV200-2.jpg",
-    "merke":"Nissan",
+    "bildeURL": "basilbread.jpg",
+    "title":"Slik lager du en enkel og sunn lunsj",
     "modell":"E-NV200",
     "type":"Evalia 40 kWt 5-s",
     "rekkevidde": 200,
@@ -174,8 +174,8 @@
   
   {
     "id": 13,
-    "bildeURL": "Opel-Ampera-e-2017-3.jpg",
-    "merke":"Opel",
+    "bildeURL": "beach.jpg",
+    "title":"10 turer med barna",
     "modell":"Ampera-E",
     "type":"Premium",
     "rekkevidde": 423,
@@ -188,8 +188,8 @@
   
   {
     "id": 14,
-    "bildeURL": "Peugeot-iOn-2011-2.jpg",
-    "merke":"Peugeot",
+    "bildeURL": "dog.jpg",
+    "title":"Oppskriften på en glad hund",
     "modell":"iOn",
     "type":"Active",
     "rekkevidde": 150,
@@ -203,8 +203,8 @@
   
   {
     "id": 15,
-    "bildeURL": "Peugeot-Partner_Tepee.jpg",
-    "merke":"Peugeot",
+    "bildeURL": "footbal.jpg",
+    "title":"De beste lagidrettene",
     "modell":"e-Partner Tepee",
     "rekkevidde": 170,
     "pris": 192000,
@@ -212,123 +212,6 @@
     "sitteplasser": "3",
     "tester": "69199883",
     "leverandorer":"https://www.peugeot.no/modell/peugeot-modeller/partner-tepee-electric.html"
-    
-  },
-  
-  {
-    "id": 16,
-    "bildeURL": "Renault-Kangoo.jpg",
-    "merke":"Renault",
-    "modell":"Kangoo Electric",
-    "type":"5-seter",
-    "rekkevidde": 270,
-    "pris": 268400,
-    "storelse":2,
-    "sitteplasser": "5",
-    "tester": "61290789",
-    "leverandorer":"https://renault.no/elbil/kangoo-maxi-ze-personbil"
-    
-  },
-  
-  {
-    "id": 17,
-    "bildeURL": "Renault-Twizy-2012.jpg",
-    "merke":"Renault",
-    "modell":"Twizy",
-    "type":"Intens",
-    "rekkevidde": 90,
-    "pris": 93000,
-    "storelse":3,
-    "sitteplasser": "2",
-    "tester": "61501189",
-    "leverandorer":"https://renault.no/elbil/twizy"
-    
-  },
-    
-  {
-    "id": 18,
-    "bildeURL": "Renault-Zoe-2017-1600-17.jpg",
-    "merke":"Renault",
-    "modell":"Zoe",
-    "type":"Z.E 40 R90 Life",
-    "rekkevidde": 400,
-    "pris": 245000,
-    "storelse": 3,
-    "sitteplasser": "5",
-    "tester": "63605077",
-    "leverandorer":"https://renault.no/elbil/zoe"
-  },
-  
-  {
-    "id": 19,
-    "bildeURL": "Tesla-Model_3-2018.jpg",
-    "merke":"Tesla",
-    "modell": "3",
-    "type":"Standard Range Plus RWD",
-    "rekkevidde": 415,
-    "pris": 377020,
-    "storelse": 2,
-    "sitteplasser": "5",
-    "tester": "71161178",
-    "leverandorer":"https://www.tesla.com/no_NO/models"
-    
-  },
-
-{
-    "id": 20,
-    "bildeURL": "Tesla-Model_S-2017.jpg",
-    "merke":"Tesla",
-    "modell":"S",
-    "type":"Long Range",
-    "rekkevidde": 610,
-    "pris": 791220,
-    "storelse":1,
-    "sitteplasser": "5",
-    "tester": "71006479",
-    "leverandorer":"https://www.tesla.com/no_NO/models"
-    
-  },
-          
-{
-    "id": 21,
-    "bildeURL": "Tesla-Model_X-2017.jpg",
-    "merke":"Tesla",
-    "modell":"X",
-    "type":"Performance 5-s",
-    "rekkevidde": 485,
-    "pris": 1005220,
-    "storelse":1,
-    "sitteplasser": "5",
-    "tester": "69769249",
-    "leverandorer":"https://www.tesla.com/no_NO/models"
-    
-  },
-         
-  {
-    "id": 22,
-    "bildeURL": "Volkswagen-e-Golf-2017.jpg",
-    "merke":"VW",
-    "modell":"Golf",
-    "rekkevidde": 229,
-    "pris": 326200,
-    "storelse":2,
-    "sitteplasser": "5",
-    "tester": "67454759",
-    "leverandorer":"https://www.volkswagen.no/no/biler/e-golf-elbil.html"
-    
-  },
-  
-  {
-    "id": 23,
-    "bildeURL": "Volkswagen-e-Up-2014.jpg",
-    "merke":"VW",
-    "modell":"UP!",
-    "rekkevidde": 133,
-    "pris": 211300,
-    "storelse":3,
-    "sitteplasser": "4",
-    "tester": "67454759",
-    "leverandorer":"https://www.volkswagen.no/no/biler/e-up-elbil.html"
     
   }
 ]

@@ -1,0 +1,108 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ env "REPONAME" }}
+  namespace: {{ env "REPONAME" }}
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: {{ env "REPONAME" }}
+  replicas: {{ env "REPLICAS" }}
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: {{ env "REPONAME" }}
+      annotations:
+        prometheus.io/scrape: "true"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    spec:
+      # Affinity to make sure that multiple pods does not run on the same node
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          # prefer to run in different datacentres
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ env "REPONAME" }}
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+          # prefer to run on different "physical" nodes
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ env "REPONAME" }}
+              topologyKey: kubernetes.io/hostname
+        # prefer to run on preemptible instances
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+      tolerations:
+        - key: cloud.google.com/gke-preemptible
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+      containers:
+        - name: app
+          image: {{ env "IMAGE" }}
+          # Resource limits for each pod, cpu: 1.0 == 1 CPU core. Over-use causes CPU-usage to get throttled
+          # Memory-usage over-usage causes the pod to get killed, and a new one created.
+          # Try to focus on keeping limits and requests the same, so that the node can reserve the resources
+          # needed when it is starting up the pod.
+          resources:
+            limits:
+              cpu: "0.2"
+              memory: 500Mi
+            requests:
+              cpu: "0.2"
+              memory: 500Mi
+          env:
+            - name: JAEGER_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          envFrom:
+            - configMapRef:
+                name: configuration
+            # # If needed, place secrets in truthy and reference them here.
+            # # Secret should be names "secret-values" in this case.
+            # - secretRef:
+            #     name: secret-values
+          ports:
+            - containerPort: {{ env "PORT" }}
+              name: http-port
+          livenessProbe:
+            httpGet:
+              path: /_healthz
+              port: http-port
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /_healthz
+              port: http-port
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 2

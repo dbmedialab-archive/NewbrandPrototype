@@ -93,6 +93,228 @@ module.exports =
 /************************************************************************/
 /******/ ({
 
+/***/ "./Components/Articles.js":
+/*!********************************!*\
+  !*** ./Components/Articles.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Card */ "./Components/Card.js");
+/* harmony import */ var react_reveal_Fade__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-reveal/Fade */ "react-reveal/Fade");
+/* harmony import */ var react_reveal_Fade__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_reveal_Fade__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _artikler_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../artikler.json */ "./artikler.json");
+var _artikler_json__WEBPACK_IMPORTED_MODULE_3___namespace = /*#__PURE__*/__webpack_require__.t(/*! ../artikler.json */ "./artikler.json", 1);
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @emotion/styled */ "@emotion/styled");
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_emotion_styled__WEBPACK_IMPORTED_MODULE_4__);
+var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Components/Articles.js";
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+
+
+
+const CenterWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_4___default.a.div`
+max-width: 1024px;
+display: flex;
+flex-wrap: wrap;
+align-self: center;
+`;
+
+class Articles extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      articles: _artikler_json__WEBPACK_IMPORTED_MODULE_3__,
+      articlesDefault: [..._artikler_json__WEBPACK_IMPORTED_MODULE_3__]
+    };
+  }
+
+  render() {
+    const artikler = this.state.articles.map(article => __jsx("li", {
+      key: article.id,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 26
+      },
+      __self: this
+    }, __jsx(_Card__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      title: article.title,
+      bildeURL: article.bildeURL,
+      id: article.id,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 28
+      },
+      __self: this
+    })));
+    return __jsx(CenterWrapper, {
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 38
+      },
+      __self: this
+    }, artikler);
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Articles);
+
+/***/ }),
+
+/***/ "./Components/Card.js":
+/*!****************************!*\
+  !*** ./Components/Card.js ***!
+  \****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Card; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @emotion/styled */ "@emotion/styled");
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_emotion_styled__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! next/link */ "./node_modules/next/link.js");
+/* harmony import */ var next_link__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_link__WEBPACK_IMPORTED_MODULE_2__);
+var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Components/Card.js";
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+
+
+const ArticleCard = _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default.a.div`
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+background-size: cover;
+background-position: center center;
+background-image: url(/static/img/${props => props.bildeURL});
+padding: 0;
+margin: 0rem .5rem 1.3rem .5rem;
+height: 25vh;
+width: 30%;
+color: #fff;  
+border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px; 
+
+a{
+  text-decoration: none;
+}
+
+  .imgTitle{
+    position: relative;
+    color: #fff;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);
+    width: auto;
+    bottom: 0;
+    font-weight: bold;
+    padding: 2rem 0 .7rem 0rem;
+    font-size: 1.4rem;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+ 
+  }
+  
+  ul {
+    width: 100%;
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 ;
+    padding: 0;
+ }
+
+  ul li{
+    margin: 1rem;
+  }
+
+  .cardFooter{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+    li{
+      font-size: 1.2rem;
+      font-weight: bold;
+
+      .price{
+        font-weight: 400;
+        background: #3CA069;
+        padding: .2rem .7rem;
+        border-radius: 3px;
+      }
+
+      .light{
+        font-weight: 200;
+      }
+    }
+  }
+`;
+function Card(props) {
+  return __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
+    href: {
+      pathname: '/detail',
+      query: {
+        id: `${props.id}`
+      }
+    },
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 84
+    },
+    __self: this
+  }, __jsx("a", {
+    title: "CarDetail",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 85
+    },
+    __self: this
+  }, __jsx(ArticleCard, {
+    bildeURL: props.bildeURL,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 86
+    },
+    __self: this
+  }, __jsx("div", {
+    className: "imgTitle",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 88
+    },
+    __self: this
+  }, __jsx("span", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 89
+    },
+    __self: this
+  }, props.title, " ")), __jsx("div", {
+    className: "cardFooter",
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 92
+    },
+    __self: this
+  }))));
+}
+
+/***/ }),
+
 /***/ "./Components/Footer.js":
 /*!******************************!*\
   !*** ./Components/Footer.js ***!
@@ -111,52 +333,45 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 const FooterWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default.a.div`
-    position: absolute;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     bottom: 0;
     background: #1d1d1d;
-    height: 20vh;
+    height: 6vh;
     width: 100%;
     color: #fff;
+
+    ul{
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
  `;
 
-function Footer(props) {
+function Footer() {
   return __jsx(FooterWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 15
+      lineNumber: 26
     },
     __self: this
   }, __jsx("ul", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 16
+      lineNumber: 27
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 17
+      lineNumber: 28
     },
     __self: this
-  }, "Hei Hei"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 18
-    },
-    __self: this
-  }, "Hei Hei"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 19
-    },
-    __self: this
-  }, "Hei Hei"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 20
-    },
-    __self: this
-  }, "Hei Hei")));
+  }, "Siden er laget av Aller Media ")));
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (Footer);
@@ -185,26 +400,23 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 const NavbarWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_1___default.a.div`
-position: absolute;
+position: realtive;
 z-index: 9;
-left: 0;
-top: 0;
 background-color: #2d2d2d;
 display: flex;
-flex-direction:  column;
+flex-direction: column;
 justify-content: space-around;
 align-items: center;
 width: 100%;
 box-sizing: border-box;
+text-align: center;
 height: 150px;
-transition: all 0.5s ease-in;
-padding: 0rem .8rem 0rem .8rem;
 color: white;   
 
 .logo img{
     width: 60px;
+    margin: 0 auto;
     transition: all 1s ease-in;
-
 }
     nav{
 
@@ -218,8 +430,14 @@ color: white;
             margin: 0rem 1rem;
         }
 
+        
+
         a{
             font-weight: bold;
+            color: #fff;
+            &:hover{
+                color: #ffff00;
+            }
         }
     }
 }
@@ -228,27 +446,27 @@ function Navbar(props) {
   return __jsx(NavbarWrapper, {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 49
+      lineNumber: 52
     },
     __self: this
   }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
     href: "/",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 50
+      lineNumber: 53
     },
     __self: this
   }, __jsx("a", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 51
+      lineNumber: 54
     },
     __self: this
   }, __jsx("div", {
     className: "logo",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 52
+      lineNumber: 55
     },
     __self: this
   }, __jsx("img", {
@@ -257,46 +475,35 @@ function Navbar(props) {
     width: "140",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 53
+      lineNumber: 56
     },
     __self: this
   })))), __jsx("nav", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 57
+      lineNumber: 60
     },
     __self: this
   }, __jsx("ul", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 58
+      lineNumber: 61
     },
     __self: this
   }, __jsx("li", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 59
+      lineNumber: 62
     },
     __self: this
-  }, "Forside"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 60
-    },
-    __self: this
-  }, "Kategori"), __jsx("li", {
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 61
-    },
-    __self: this
-  }, "Kategori"), __jsx("li", {
+  }, __jsx(next_link__WEBPACK_IMPORTED_MODULE_2___default.a, {
+    href: "/",
     __source: {
       fileName: _jsxFileName,
       lineNumber: 62
     },
     __self: this
-  }, "Kategori"), __jsx("li", {
+  }, "Forside")), __jsx("li", {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 63
@@ -306,6 +513,24 @@ function Navbar(props) {
     __source: {
       fileName: _jsxFileName,
       lineNumber: 64
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 65
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 66
+    },
+    __self: this
+  }, "Kategori"), __jsx("li", {
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 67
     },
     __self: this
   }, "Kategori"))));
@@ -330,8 +555,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_head__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(next_head__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _Components_NavBar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Components/NavBar */ "./Components/NavBar.js");
 /* harmony import */ var _Components_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Components/Footer */ "./Components/Footer.js");
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../style.css */ "./style.css");
-/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @emotion/styled */ "@emotion/styled");
+/* harmony import */ var _emotion_styled__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_emotion_styled__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../style.css */ "./style.css");
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_6__);
 var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Layout/Layout.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
@@ -340,32 +567,35 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 
+
+const ContentWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_5___default.a.div`
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+`;
 /* harmony default export */ __webpack_exports__["default"] = (({
   children,
   title = 'Prototype'
-}) => __jsx("div", {
+}) => __jsx(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, __jsx(next_head__WEBPACK_IMPORTED_MODULE_2___default.a, {
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 10
-  },
-  __self: undefined
-}, __jsx(next_head__WEBPACK_IMPORTED_MODULE_2___default.a, {
-  __source: {
-    fileName: _jsxFileName,
-    lineNumber: 11
+    lineNumber: 20
   },
   __self: undefined
 }, __jsx("title", {
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 12
+    lineNumber: 21
   },
   __self: undefined
 }, title), __jsx("meta", {
   charSet: "utf-8",
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 13
+    lineNumber: 22
   },
   __self: undefined
 }), __jsx("meta", {
@@ -373,28 +603,45 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
   content: "initial-scale=1.0, width=device-width",
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 14
+    lineNumber: 23
   },
   __self: undefined
 })), __jsx("header", {
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 16
+    lineNumber: 26
   },
   __self: undefined
 }, __jsx(_Components_NavBar__WEBPACK_IMPORTED_MODULE_3__["default"], {
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 17
+    lineNumber: 27
   },
   __self: undefined
-})), children, __jsx(_Components_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], {
+})), __jsx(ContentWrapper, {
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 22
+    lineNumber: 30
+  },
+  __self: undefined
+}, children), __jsx(_Components_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 34
   },
   __self: undefined
 })));
+
+/***/ }),
+
+/***/ "./artikler.json":
+/*!***********************!*\
+  !*** ./artikler.json ***!
+  \***********************/
+/*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("[{\"id\":1,\"bildeURL\":\"burrito.jpg\",\"title\":\"Meksikanske retter som imponerer fetter\",\"modell\":\"e-tron\",\"type\":\"55\",\"rekkevidde\":415,\"pris\":652061,\"storelse\":1,\"sitteplasser\":\"5\",\"tester\":\"70709759\",\"leverandorer\":\"https://www.audi.no/no/web/no/bilmodeller/audi-tron/audi-e-tron.html\"},{\"id\":2,\"bildeURL\":\"vekt.jpg\",\"title\":\"Glem vekta! Spis og tren for psyken\",\"modell\":\"i3\",\"type\":\"120Ah\",\"rekkevidde\":310,\"pris\":309000,\"storelse\":3,\"sitteplasser\":\"4\",\"tester\":\"70261709\",\"leverandorer\":\"https://www.bmw.no/no/ssl/configurator.html#/8P21/FBHGI,S0230,S02D6,S02VB,S02VC,S0428,S0494,S04EX,S04T9,S04U6,S04U7,S0548,S0570,S05DA,S0654,S06AC,S06AE,S06AK,S06AP,S0853,S0885,S08R9,S08SM,S08TG,S0993,S09AA/I01/esl/new/\"},{\"id\":3,\"bildeURL\":\"middag.jpg\",\"title\":\"Hva skal jeg ha til middag?\",\"modell\":\"E-Berlingo\",\"type\":\"Multispace\",\"rekkevidde\":170,\"pris\":227500,\"storelse\":2,\"sitteplasser\":\"2\",\"tester\":\"69199883\",\"leverandorer\":\"https://www.citroen.no/modeller/citroen/berlingo-electric-multispace.html\"},{\"id\":4,\"bildeURL\":\"fitness.jpg\",\"title\":\"En bedre arbeidsdag med stykretrening\",\"modell\":\"C-Zero\",\"type\":\"Feel\",\"rekkevidde\":150,\"pris\":144380,\"storelse\":3,\"sitteplasser\":\"4\",\"tester\":\"61639141\",\"leverandorer\":\"https://www.citroen.no/biler/citroen/c-zero.html\"},{\"id\":5,\"bildeURL\":\"bowl.jpg\",\"title\":\"Vi har testet de sunneste pokebowlene\",\"modell\":\"Ioniq\",\"type\":\"EV\",\"rekkevidde\":280,\"pris\":244000,\"storelse\":2,\"sitteplasser\":\"5\",\"tester\":\"60948143\",\"leverandorer\":\"https://www.hyundai.no/modeller/ioniq-electric/\"},{\"id\":6,\"bildeURL\":\"candy.jpg\",\"title\":\"Det beste lørdagsgodtet\",\"modell\":\"Kona Electric\",\"type\":\"Teknikk\",\"rekkevidde\":449,\"pris\":325000,\"storelse\":2,\"sitteplasser\":\"5\",\"tester\":\"70039730\",\"leverandorer\":\"https://www.hyundai.no/modeller/kona-electric/\"},{\"id\":7,\"bildeURL\":\"child.jpg\",\"title\":\"Barnehage, privat eller offentlig?\",\"modell\":\"3 Crossback E-Tense\",\"type\":\"136 So Chic\",\"rekkevidde\":300,\"pris\":319900,\"storelse\":3,\"sitteplasser\":\"5\",\"tester\":\"70865528\",\"leverandorer\":\"https://www.dsautomobiles.no/elbil-hybrid/elbiler.html\"},{\"id\":8,\"bildeURL\":\"candy2.jpg\",\"title\":\"Godteritesten 2020\",\"modell\":\"E-Niro\",\"type\":\"First Edition\",\"rekkevidde\":485,\"pris\":370600,\"storelse\":2,\"sitteplasser\":\"5\",\"tester\":\"70531310\",\"leverandorer\":\"https://www.kia.com/no/modeller/e-niro/opplev-e-Niro/\"},{\"id\":9,\"bildeURL\":\"eggs.jpg\",\"title\":\"Proteiner til middag?\",\"modell\":\"E-Soul\",\"type\":\"Classic\",\"rekkevidde\":250,\"pris\":228100,\"storelse\":2,\"sitteplasser\":\"5\",\"tester\":\"70747144\",\"leverandorer\":\"https://www.kia.com/no/modeller/e-soul/opplev-e-soul/\"},{\"id\":10,\"bildeURL\":\"happy.jpg\",\"title\":\"Evig glad\",\"modell\":\"i-Miev\",\"type\":\"16 kWh\",\"rekkevidde\":105,\"pris\":149900,\"storelse\":3,\"sitteplasser\":\"4\",\"tester\":\"61732696\",\"leverandorer\":\"https://www.mitsubishi-motors.no/biler/imiev\"},{\"id\":11,\"bildeURL\":\"alcohol.jpg\",\"title\":\"Endelig helg! –Oslo`s beste barer\",\"modell\":\"Leaf\",\"type\":\"40kWh Acenta\",\"rekkevidde\":270,\"pris\":278000,\"storelse\":2,\"sitteplasser\":\"5\",\"tester\":\"69570276\",\"leverandorer\":\"https://www.nissan.no/biler/nye-biler/leaf.html\"},{\"id\":12,\"bildeURL\":\"basilbread.jpg\",\"title\":\"Slik lager du en enkel og sunn lunsj\",\"modell\":\"E-NV200\",\"type\":\"Evalia 40 kWt 5-s\",\"rekkevidde\":200,\"pris\":322840,\"storelse\":1,\"sitteplasser\":\"5\",\"tester\":\"61216187\",\"leverandorer\":\"https://www.nissan.no/biler/nye-biler/e-nv200-evalia.html\"},{\"id\":13,\"bildeURL\":\"beach.jpg\",\"title\":\"10 turer med barna\",\"modell\":\"Ampera-E\",\"type\":\"Premium\",\"rekkevidde\":423,\"pris\":359900,\"storelse\":2,\"sitteplasser\":\"5\",\"tester\":\"66931394\",\"leverandorer\":\"https://www.opel.no/personbil/ampera-e/modelloversikt.html\"},{\"id\":14,\"bildeURL\":\"dog.jpg\",\"title\":\"Oppskriften på en glad hund\",\"modell\":\"iOn\",\"type\":\"Active\",\"rekkevidde\":150,\"pris\":163600,\"storelse\":3,\"sitteplasser\":\"4\",\"tester\":\"61639141\",\"leverandorer\":\"https://www.peugeot.no/modell/peugeot-modeller/ion.html\"},{\"id\":15,\"bildeURL\":\"footbal.jpg\",\"title\":\"De beste lagidrettene\",\"modell\":\"e-Partner Tepee\",\"rekkevidde\":170,\"pris\":192000,\"storelse\":2,\"sitteplasser\":\"3\",\"tester\":\"69199883\",\"leverandorer\":\"https://www.peugeot.no/modell/peugeot-modeller/partner-tepee-electric.html\"}]");
 
 /***/ }),
 
@@ -1075,24 +1322,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Layout_Layout__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Layout/Layout */ "./Layout/Layout.js");
+/* harmony import */ var _Components_Articles__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Components/Articles */ "./Components/Articles.js");
 var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/pages/index.js";
 
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
 
 /* harmony default export */ __webpack_exports__["default"] = (() => __jsx(_Layout_Layout__WEBPACK_IMPORTED_MODULE_1__["default"], {
   title: "Forside",
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 4
-  },
-  __self: undefined
-}, __jsx("div", {
-  __source: {
-    fileName: _jsxFileName,
     lineNumber: 5
   },
   __self: undefined
-}, "About us")));
+}, __jsx(_Components_Articles__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 6
+  },
+  __self: undefined
+})));
 
 /***/ }),
 
@@ -1259,6 +1508,17 @@ module.exports = require("prop-types-exact");
 /***/ (function(module, exports) {
 
 module.exports = require("react");
+
+/***/ }),
+
+/***/ "react-reveal/Fade":
+/*!************************************!*\
+  !*** external "react-reveal/Fade" ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("react-reveal/Fade");
 
 /***/ }),
 

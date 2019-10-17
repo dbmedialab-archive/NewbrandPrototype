@@ -1,9 +1,8 @@
 import React from "react";
-import { FaMapMarkerAlt} from 'react-icons/fa';
 import styled from '@emotion/styled';
 import Link from 'next/link';
 
-const CardWrapper = styled.div`
+const ArticleCard = styled.div`
 display: flex;
 flex-direction: column;
 justify-content: flex-end;
@@ -11,9 +10,9 @@ background-size: cover;
 background-position: center center;
 background-image: url(/static/img/${props => props.bildeURL});
 padding: 0;
-margin-bottom: 1.3rem;
-height: 35vh;
-max-width: 1024px;
+margin: 0rem .5rem 1.3rem .5rem;
+height: 25vh;
+width: 30%;
 color: #fff;  
 border-bottom-left-radius: 5px;
 border-bottom-right-radius: 5px; 
@@ -28,7 +27,7 @@ a{
     background: linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);
     width: auto;
     bottom: 0;
-    font-weigth: bold;
+    font-weight: bold;
     padding: 2rem 0 .7rem 0rem;
     font-size: 1.4rem;
     text-align: center;
@@ -79,32 +78,23 @@ a{
   }
 `
 
-export default function CarCard(props) {
-  
-   function numberWithSpaces(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  }
-
+export default function Card(props) {
     return (
-    <Link href={{ pathname: '/elbil', query: { id: `${props.id}` } }}>
+
+    <Link href={{ pathname: '/detail', query: { id: `${props.id}` } }}>
       <a title="CarDetail">
-      <CardWrapper bildeURL={props.bildeURL}>
+      <ArticleCard bildeURL={props.bildeURL}>
        
         <div className="imgTitle">
-          <span>{props.modell} </span>
-          <span>{props.merke} </span>
-          <span>{props.type}</span>
+          <span>{props.title} </span>
         </div>
 
         <div className="cardFooter">
-          <ul>
-            <li><span><FaMapMarkerAlt  /></span> {props.rekkevidde} <span className="light">km</span></li>
-            <li><span className="price">Fra: {numberWithSpaces(`${props.pris}`)},-</span></li>   
-          </ul>
         </div>
-      </CardWrapper>
+      </ArticleCard>
       </a>
       </Link>
+
     );
   
 }

@@ -1,5 +1,4960 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["static/development/pages/_app.js"],{
 
+/***/ "./node_modules/@aller/blink-labrador/lib/main.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/main.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var aller_in_view_1 = __importDefault(__webpack_require__(/*! @soldotno/aller-in-view */ "./node_modules/@soldotno/aller-in-view/dist/@soldotno/aller-in-view.min.js"));
+var blink_1 = __importDefault(__webpack_require__(/*! @aller/blink */ "./node_modules/@aller/blink/lib/main.js"));
+var click_on_outgoing_link_1 = __importDefault(__webpack_require__(/*! ./triggers/click-on-outgoing-link */ "./node_modules/@aller/blink-labrador/lib/triggers/click-on-outgoing-link.js"));
+var load_1 = __importDefault(__webpack_require__(/*! ./triggers/load */ "./node_modules/@aller/blink-labrador/lib/triggers/load.js"));
+var keydown_1 = __importDefault(__webpack_require__(/*! ./triggers/keydown */ "./node_modules/@aller/blink-labrador/lib/triggers/keydown.js"));
+var mousemove_1 = __importDefault(__webpack_require__(/*! ./triggers/mousemove */ "./node_modules/@aller/blink-labrador/lib/triggers/mousemove.js"));
+var scroll_1 = __importDefault(__webpack_require__(/*! ./triggers/scroll */ "./node_modules/@aller/blink-labrador/lib/triggers/scroll.js"));
+var get_full_url_1 = __importDefault(__webpack_require__(/*! ./utils/get-full-url */ "./node_modules/@aller/blink-labrador/lib/utils/get-full-url.js"));
+var get_site_1 = __importDefault(__webpack_require__(/*! ./utils/get-site */ "./node_modules/@aller/blink-labrador/lib/utils/get-site.js"));
+var get_xavier_id_1 = __importDefault(__webpack_require__(/*! ./utils/get-xavier-id */ "./node_modules/@aller/blink-labrador/lib/utils/get-xavier-id.js"));
+var get_ab_cookie_1 = __importDefault(__webpack_require__(/*! ./utils/get-ab-cookie */ "./node_modules/@aller/blink-labrador/lib/utils/get-ab-cookie.js"));
+var get_commercial_segments_1 = __importDefault(__webpack_require__(/*! ./utils/get-commercial-segments */ "./node_modules/@aller/blink-labrador/lib/utils/get-commercial-segments.js"));
+var get_referrer_1 = __importDefault(__webpack_require__(/*! ./utils/get-referrer */ "./node_modules/@aller/blink-labrador/lib/utils/get-referrer.js"));
+var get_page_type_1 = __importDefault(__webpack_require__(/*! ./utils/get-page-type */ "./node_modules/@aller/blink-labrador/lib/utils/get-page-type.js"));
+var get_db_pluss_data_1 = __importDefault(__webpack_require__(/*! ./utils/get-db-pluss-data */ "./node_modules/@aller/blink-labrador/lib/utils/get-db-pluss-data.js"));
+var performance_1 = __importDefault(__webpack_require__(/*! ./utils/performance */ "./node_modules/@aller/blink-labrador/lib/utils/performance.js"));
+var prev_pageview_1 = __webpack_require__(/*! ./utils/prev-pageview */ "./node_modules/@aller/blink-labrador/lib/utils/prev-pageview.js");
+var sender_1 = __importDefault(__webpack_require__(/*! ./sender/sender */ "./node_modules/@aller/blink-labrador/lib/sender/sender.js"));
+var configure_sender_1 = __webpack_require__(/*! ./sender/configure-sender */ "./node_modules/@aller/blink-labrador/lib/sender/configure-sender.js");
+var get_sender_config_1 = __importDefault(__webpack_require__(/*! ./sender/get-sender-config */ "./node_modules/@aller/blink-labrador/lib/sender/get-sender-config.js"));
+var article_preview_1 = __importDefault(__webpack_require__(/*! ./utils/article-preview */ "./node_modules/@aller/blink-labrador/lib/utils/article-preview.js"));
+var uuid_1 = __importDefault(__webpack_require__(/*! ./utils/uuid */ "./node_modules/@aller/blink-labrador/lib/utils/uuid.js"));
+var subscribe_to_jw_1 = __webpack_require__(/*! ./utils/subscribe-to-jw */ "./node_modules/@aller/blink-labrador/lib/utils/subscribe-to-jw.js");
+var throttle_1 = __importDefault(__webpack_require__(/*! ./utils/throttle */ "./node_modules/@aller/blink-labrador/lib/utils/throttle.js"));
+var dom_element_context_1 = __importDefault(__webpack_require__(/*! ./utils/dom-element-context */ "./node_modules/@aller/blink-labrador/lib/utils/dom-element-context.js"));
+var ga_tracker_1 = __webpack_require__(/*! ./utils/ga-tracker */ "./node_modules/@aller/blink-labrador/lib/utils/ga-tracker.js");
+/**
+ * Docs: https://www.iab.com/guidelines/state-of-viewability-transaction-2015/
+ * @param {Object} element
+ */
+function getThreshold(element) {
+    return element.offsetHeight * element.offsetWidth >= 242500 ? 0.3 : 0.5;
+}
+var LabradorTracker = /** @class */ (function () {
+    function LabradorTracker() {
+        var _this = this;
+        this.trackAdLoad = function (input) {
+            _this.blink.adLoad(input);
+        };
+        // Expose a pageInit function so we can reset pages on SPAs
+        this.pageInit = function () {
+            _this.blink.pageInit({
+                url: window.location.href,
+                site: get_site_1.default(window.location.hostname),
+                userId: get_xavier_id_1.default(),
+                abCookie: get_ab_cookie_1.default(),
+                commercialSegments: get_commercial_segments_1.default(),
+                referrer: get_referrer_1.default(),
+                pageType: get_page_type_1.default(),
+            });
+        };
+        this.trackVideos = function () {
+            var videoNodes = document.querySelectorAll('[data-videoid]');
+            var _loop_1 = function (i) {
+                var videoId = videoNodes[i].dataset.videoid;
+                var canBeSticky = videoNodes[i].dataset.sticky === 'true';
+                var playerId = uuid_1.default(videoId);
+                var player = getPlayer(videoId);
+                if (player && player.getDuration() !== undefined) {
+                    subscribe_to_jw_1.subscribeToJW(_this._trackVideoEvent, player, playerId, canBeSticky);
+                    ga_tracker_1.GAsubscribeToJW(player);
+                }
+                else {
+                    window.addEventListener("playerLoaded-" + videoId, function () {
+                        player = getPlayer(videoId);
+                        subscribe_to_jw_1.subscribeToJW(_this._trackVideoEvent, player, playerId, canBeSticky);
+                        ga_tracker_1.GAsubscribeToJW(player);
+                    });
+                }
+                // Listen for events coming in from iframes
+                window.addEventListener('message', function (event) {
+                    // Do not accept events from other domains
+                    if (event.origin !== window.location.origin) {
+                        return;
+                    }
+                    var data = event.data;
+                    if (data && data.type && data.data && data.party === 'blink') {
+                        _this._trackVideoEvent(data);
+                    }
+                }, false);
+            };
+            for (var i = 0; i < videoNodes.length; i++) {
+                _loop_1(i);
+            }
+        };
+        this.trackCustom = function (input) {
+            _this.blink.custom(input);
+        };
+        this._trackVideoEvent = this._trackVideoEvent.bind(this);
+        configure_sender_1.configureSender(get_sender_config_1.default());
+        this.activeTimeTimerId = 0;
+        this.pageView = uuid_1.default('pageView');
+        this.blink = blink_1.default({
+            send: function (events) { return sender_1.default.sendWhenBefitting(events); },
+            sendDirect: function (events) { return sender_1.default.sendNowIfAllowed(events); },
+            useDevTools: true,
+        });
+        this.inView = aller_in_view_1.default();
+        this.inView.interval(200);
+        this.inView.addEventOptions({
+            passive: true,
+        });
+        // Handle unload, pagehide and visibilitychange
+        var stopAndSendAllEvents = throttle_1.default(function () {
+            _this.blink.pageActivityStop({ url: window.location.href });
+            _this.blink.sendAllEvents();
+        }, 500);
+        window.addEventListener('beforeunload', stopAndSendAllEvents);
+        window.addEventListener('pagehide', stopAndSendAllEvents);
+        window.addEventListener('visibilitychange', stopAndSendAllEvents);
+        // Initialize the page, and attach the previous pageView
+        this.blink.pageInit({
+            url: window.location.href,
+            pageView: this.pageView,
+            previousPageView: prev_pageview_1.getPageView(get_referrer_1.default()) || '',
+            site: get_site_1.default(window.location.hostname),
+            userId: get_xavier_id_1.default(),
+            abCookie: get_ab_cookie_1.default(),
+            commercialSegments: get_commercial_segments_1.default(),
+            referrer: get_referrer_1.default(),
+            pageType: get_page_type_1.default(),
+        });
+        /**
+         * Checks if blink-sw.js is imported in service-worker.js. The result is assigned to a global variable.
+         * This is required for the Safari pagehide workaround.
+         * The service worker must include importScripts('/blink-sw.js').
+         */
+        if ('serviceWorker' in navigator && window.fetch) {
+            fetch('/service-worker.js')
+                .then(function (data) { return data.text(); })
+                .then(function (data) {
+                window.blinkSwExists = /importScripts\('\/blink-sw\.js'\)/.test(data);
+            });
+        }
+    }
+    LabradorTracker.prototype.trackPageload = function () {
+        this.blink.pageLoad({
+            url: window.location.href,
+            clientHeight: document.documentElement.clientHeight,
+            clientWidth: document.documentElement.clientWidth,
+            scrollHeight: document.documentElement.scrollHeight,
+            plussData: get_db_pluss_data_1.default(),
+        });
+    };
+    LabradorTracker.prototype.trackPerformance = function () {
+        var _this = this;
+        load_1.default(function () {
+            var intervalId;
+            var performance = new performance_1.default();
+            if (!performance.performanceAPISupported) {
+                _this.blink.performance({ performanceTimings: performance.initialPerformanceTimingsData });
+                return;
+            }
+            intervalId = window.setInterval(function () {
+                var performanceTimings = performance.getTimings();
+                var allDataCollected = performance.hasAllDataCollected(performanceTimings);
+                if (allDataCollected) {
+                    clearInterval(intervalId);
+                    _this.blink.performance({ performanceTimings: performanceTimings });
+                }
+            }, 400);
+        });
+    };
+    /**
+     * Track a specify element, logs to GAP, uses the standard ads rules to see if it is inscreen.
+     * The reason we just can track on the selector is because each might have a different threshold
+     * @param {domNode} element the element to track
+     */
+    LabradorTracker.prototype.trackAdInscreen = function (selector) {
+        var _this = this;
+        document.querySelectorAll(selector).forEach(function (element) {
+            if (element.id !== undefined && element.id !== '') {
+                _this.inView("#" + element.id, {
+                    threshold: getThreshold(element),
+                })
+                    .on('enter', function () {
+                    _this.blink.adScreenEnter({ id: element.id });
+                })
+                    .on('exit', function () {
+                    _this.blink.adScreenExit({ id: element.id });
+                });
+            }
+        });
+    };
+    /**
+     * Track elements based on a selector, logs to GAP,
+     * from first pixel the element is in the viewport
+     * @param {string} selector a valid selector that captures all elements you want to track - https://www.w3.org/TR/css3-selectors/
+     */
+    LabradorTracker.prototype.trackAdInscreen0 = function (selector) {
+        var _this = this;
+        this.inView(selector)
+            .on('enter', function (domElement) {
+            _this.blink.adScreenEnter0({ id: domElement.getAttribute('id') || '' });
+        })
+            .on('exit', function (domElement) {
+            _this.blink.adScreenExit0({ id: domElement.getAttribute('id') || '' });
+        });
+    };
+    LabradorTracker.prototype.trackAdDFP = function () {
+        var _this = this;
+        window.googletag = window.googletag || {};
+        window.googletag.cmd = window.googletag.cmd || [];
+        window.googletag.cmd.push(function () {
+            window.googletag
+                .pubads()
+                .addEventListener('impressionViewable', function (event) {
+                var elementId = event.slot.getSlotElementId();
+                _this.blink.dfpImpressionViewable({
+                    id: elementId,
+                    scrollTop: document.documentElement.scrollTop,
+                });
+            });
+            window.googletag
+                .pubads()
+                .addEventListener('slotRenderEnded', function (event) {
+                var elementId = event.slot.getSlotElementId();
+                _this.blink.dfpSlotRenderEnded({
+                    adUnitPath: event.slot.getAdUnitPath(),
+                    advertiserId: event.advertiserId,
+                    campaignId: event.campaignId,
+                    creativeId: event.creativeId,
+                    id: elementId,
+                    lineItemId: event.lineItemId,
+                    size: event.size,
+                    sourceAgnosticCreativeId: event.sourceAgnosticCreativeId,
+                    sourceAgnosticLineItemId: event.sourceAgnosticLineItemId,
+                    bidder: event.slot.getTargeting('hb_bidder').join(','),
+                    prebidWinningBid: event.slot.getTargeting('hb_pb').join(','),
+                    scrollTop: document.documentElement.scrollTop,
+                });
+            });
+            window.googletag
+                .pubads()
+                .addEventListener('slotOnload', function (event) {
+                var elementId = event.slot.getSlotElementId();
+                var name = event.slot.getTargeting('pos')[0];
+                _this.blink.dfpSlotOnload({
+                    id: elementId,
+                    name: name,
+                    scrollTop: document.documentElement.scrollTop,
+                });
+            });
+        });
+    };
+    LabradorTracker.prototype.trackLinkClicks = function () {
+        var _this = this;
+        click_on_outgoing_link_1.default(function (_a) {
+            var id = _a.id, url = _a.url, element = _a.element;
+            var domContext = dom_element_context_1.default(element);
+            var fullUrl = get_full_url_1.default(url || '', window.location);
+            _this.blink.click({ id: id, url: fullUrl, context: domContext });
+        });
+    };
+    LabradorTracker.prototype._trackVideoEvent = function (ev) {
+        switch (ev.type) {
+            case 'playerHidden':
+                this.blink.playerHidden(ev.data);
+                return;
+            case 'playerShown':
+                this.blink.playerShown(ev.data);
+                return;
+            case 'playerSticky':
+                this.blink.playerSticky(ev.data);
+                return;
+            case 'videoAd':
+                this.blink.videoAd(ev.data);
+                return;
+            case 'videoLoad':
+                this.blink.videoLoad(ev.data);
+                return;
+            case 'videoPlay':
+                this.blink.videoPlay(ev.data);
+                return;
+            case 'videoStop':
+                this.blink.videoStop(ev.data);
+                return;
+            default:
+                return;
+        }
+    };
+    LabradorTracker.prototype._resetActiveTimer = function (url) {
+        var _this = this;
+        clearTimeout(this.activeTimeTimerId);
+        this.activeTimeTimerId = window.setTimeout(function () { return _this.blink.pageActivityStop({ url: url }); }, 10000);
+    };
+    LabradorTracker.prototype.trackActiveTime = function () {
+        var _this = this;
+        var url = window.location.href;
+        this._resetActiveTimer(url);
+        var throttledStart = throttle_1.default(function () {
+            _this._resetActiveTimer(url);
+            _this.blink.pageActivityStart({
+                url: url,
+                pageScrollOffsetY: window.pageYOffset,
+            });
+            // Store the current pageView so we can pick it up on following pages
+            prev_pageview_1.setPageView(window.location.href, _this.pageView);
+        }, 2000);
+        keydown_1.default(throttledStart);
+        scroll_1.default(throttledStart);
+        mousemove_1.default(throttledStart);
+    };
+    LabradorTracker.prototype.trackArticleImpressions = function (selector) {
+        var _this = this;
+        this.inView(selector).handlers.enter = [];
+        this.inView(selector).handlers.exit = [];
+        this.inView(selector, { threshold: 0.5 }).on('enter', function (domElement) {
+            var preview = new article_preview_1.default(domElement, window.location);
+            _this.blink.articlePreviewScreenEnter({
+                context: dom_element_context_1.default(domElement),
+                url: preview.url,
+                title: preview.title || '',
+                personalizationSystemUsed: preview.personalizationSystemUsed || '',
+                personalizationParametersRequested: preview.personalizationParametersRequested || '',
+            });
+        });
+    };
+    LabradorTracker.prototype.trackBoxes = function (selector) {
+        var _this = this;
+        this.inView(selector, { threshold: 0.5 }).on('enter', function (domElement) {
+            var id = domElement.getAttribute('id');
+            if (id) {
+                _this.blink.boxScreenEnter({
+                    id: id,
+                });
+            }
+        });
+    };
+    return LabradorTracker;
+}());
+exports.default = LabradorTracker;
+function getPlayer(id) {
+    var jwplayer = window['jwplayer'];
+    return jwplayer && jwplayer(id);
+}
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/sender/configure-sender.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/sender/configure-sender.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var sender_1 = __importDefault(__webpack_require__(/*! ./sender */ "./node_modules/@aller/blink-labrador/lib/sender/sender.js"));
+// import { hasEveryConsent, hasAnsweredOil } from '../gdpr/consent';
+var get_sender_config_1 = __webpack_require__(/*! ./get-sender-config */ "./node_modules/@aller/blink-labrador/lib/sender/get-sender-config.js");
+var ga_tracker_1 = __webpack_require__(/*! ../utils/ga-tracker */ "./node_modules/@aller/blink-labrador/lib/utils/ga-tracker.js");
+function configureSender(_a) {
+    var sendInterval = _a.sendInterval, batchLimit = _a.batchLimit, batchInterval = _a.batchInterval, endpoints = _a.endpoints;
+    function sendWithBeacon(events, sendUrl) {
+        var data = JSON.stringify(events);
+        // ia_document should be undefined unless this is
+        // a FB Instant Article. If it is, we do not want
+        // to use sendBeacon.
+        if ('sendBeacon' in navigator &&
+            typeof window !== 'undefined' &&
+            typeof window['ia_document'] === 'undefined') {
+            window.navigator.sendBeacon(sendUrl, data);
+        }
+        else {
+            var req = new XMLHttpRequest();
+            req.open('POST', sendUrl, true);
+            req.setRequestHeader('Content-Type', 'application/json');
+            req.send(data);
+        }
+    }
+    function iterateEndpoints(events) {
+        endpoints.forEach(function (endpoint) {
+            if (endpoint.type === get_sender_config_1.EndpointType.URL) {
+                sendWithBeacon(events, endpoint.value);
+            }
+            else if (endpoint.type === get_sender_config_1.EndpointType.GOOGLE_ANALYTICS) {
+                ga_tracker_1.GATracker.log(events);
+            }
+        });
+    }
+    /*const checkConsent = () =>
+      hasEveryConsent((window as any).AS_OIL) &&
+      hasAnsweredOil((window as any).AS_OIL);*/
+    // Assume consent, as OIL is turned off
+    var checkConsent = function () { return true; };
+    sender_1.default.configureSend(iterateEndpoints, checkConsent);
+    // Configure batching
+    if (batchInterval) {
+        setInterval(function () {
+            if (sender_1.default.pendingEvents.length > batchLimit) {
+                sender_1.default.sendNowIfAllowed();
+            }
+        }, batchInterval);
+    }
+    // Configure normal send interval
+    setInterval(function () { return sender_1.default.sendNowIfAllowed(); }, sendInterval);
+}
+exports.configureSender = configureSender;
+//# sourceMappingURL=configure-sender.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/sender/get-sender-config.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/sender/get-sender-config.js ***!
+  \****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var includes_1 = __webpack_require__(/*! ../utils/includes */ "./node_modules/@aller/blink-labrador/lib/utils/includes.js");
+var EndpointType;
+(function (EndpointType) {
+    EndpointType["URL"] = "url";
+    EndpointType["GOOGLE_ANALYTICS"] = "ga";
+})(EndpointType = exports.EndpointType || (exports.EndpointType = {}));
+function getSenderConfiguration(userAgent) {
+    if (userAgent === void 0) { userAgent = navigator.userAgent; }
+    if (includes_1.stringIncludes(userAgent, '_app_')) {
+        return {
+            sendInterval: 2000,
+            batchLimit: 0,
+            batchInterval: 0,
+            endpoints: [
+                {
+                    type: EndpointType.URL,
+                    value: '/app/aas/a',
+                },
+                { type: EndpointType.GOOGLE_ANALYTICS },
+            ],
+        };
+    }
+    return {
+        sendInterval: 5000,
+        batchLimit: 2,
+        batchInterval: 2000,
+        endpoints: [
+            {
+                type: EndpointType.URL,
+                value: '/app/aas/a',
+            },
+            { type: EndpointType.GOOGLE_ANALYTICS },
+        ],
+    };
+}
+exports.default = getSenderConfiguration;
+//# sourceMappingURL=get-sender-config.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/sender/sender.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/sender/sender.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var store_1 = __importDefault(__webpack_require__(/*! ./store */ "./node_modules/@aller/blink-labrador/lib/sender/store.js"));
+var Sender = /** @class */ (function () {
+    function Sender(_a) {
+        var pendingEvents = _a.pendingEvents, sentEvents = _a.sentEvents, send = _a.send, checkConsent = _a.checkConsent;
+        this.send = send;
+        this.pendingStore = new store_1.default(function (ev) { return ev.id + "-" + ev.type + "-" + ev.pageView; });
+        this.pendingStore.add(pendingEvents);
+        this.sentStore = new store_1.default(function (ev) { return ev.id + "-" + ev.type + "-" + ev.pageView; });
+        this.sentStore.add(sentEvents);
+        this.checkConsent = checkConsent;
+    }
+    Sender.prototype.configureSend = function (send, checkConsent) {
+        this.send = send;
+        this.checkConsent = checkConsent;
+    };
+    Object.defineProperty(Sender.prototype, "pendingEvents", {
+        get: function () {
+            return this.pendingStore.events;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Sender.prototype, "sentEvents", {
+        get: function () {
+            return this.sentStore.events;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Sender.prototype.sendNow = function (events) {
+        if (events === void 0) { events = []; }
+        // Send all events we got in, and add them to pendingStore
+        if (events.length > 0) {
+            this.sendWhenBefitting(events);
+        }
+        // Checck if we have something to send
+        if (this.pendingEvents.length === 0) {
+            return [];
+        }
+        // Send all events in the pendingStore (now including events),
+        // and transfer them to sentStore
+        var pending = this.pendingEvents.slice(0);
+        this.sentStore.add(this.pendingEvents);
+        this.pendingStore.flush();
+        this.send(pending);
+        return pending;
+    };
+    Sender.prototype.sendNowIfAllowed = function (events) {
+        if (events === void 0) { events = []; }
+        // Don't send if we have don't consent to send from the user
+        if (!this.checkConsent()) {
+            return [];
+        }
+        return this.sendNow(events);
+    };
+    Sender.prototype.sendWhenBefitting = function (events) {
+        if (events === void 0) { events = []; }
+        this.pendingStore.add(events);
+    };
+    return Sender;
+}());
+exports.TestableSender = Sender;
+exports.default = new Sender({
+    pendingEvents: [],
+    sentEvents: [],
+    send: function () { return null; },
+    checkConsent: function () { return false; },
+});
+//# sourceMappingURL=sender.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/sender/store.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/sender/store.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Store = /** @class */ (function () {
+    function Store(getId) {
+        this.getId = getId;
+        this.data = {};
+    }
+    Store.prototype.add = function (data) {
+        var _this = this;
+        if (data === void 0) { data = []; }
+        data.forEach(function (entry) { return _this.update(entry); });
+    };
+    Store.prototype.update = function (entry) {
+        var id = this.getId(entry);
+        if (!id) {
+            return;
+        }
+        this.data[id] = entry;
+    };
+    Store.prototype.flush = function () {
+        this.data = {};
+    };
+    Object.defineProperty(Store.prototype, "events", {
+        get: function () {
+            var _this = this;
+            return Object.keys(this.data).map(function (id) { return _this.data[id]; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Store;
+}());
+exports.default = Store;
+//# sourceMappingURL=store.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/triggers/beforeunload.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/triggers/beforeunload.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var add_listener_1 = __webpack_require__(/*! ../utils/add-listener */ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js");
+/**
+ * @param {function} callback
+ */
+function addEventListenerOnUnload(callback) {
+    add_listener_1.addListenerAggregated('beforeunload', callback);
+}
+exports.default = addEventListenerOnUnload;
+//# sourceMappingURL=beforeunload.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/triggers/click-on-outgoing-link.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/triggers/click-on-outgoing-link.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var add_listener_1 = __webpack_require__(/*! ../utils/add-listener */ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js");
+var includes_1 = __webpack_require__(/*! ../utils/includes */ "./node_modules/@aller/blink-labrador/lib/utils/includes.js");
+var debounce_1 = __importDefault(__webpack_require__(/*! ../utils/debounce */ "./node_modules/@aller/blink-labrador/lib/utils/debounce.js"));
+var CLICKABLE_TAG = 'data-click-id';
+/**
+ * @param node - DOM node
+ * @returns If the DOM node is clickable or not
+ */
+function isClickable(node) {
+    if (!node) {
+        return false;
+    }
+    // Return true if it is an a-tag or has our custom clickable attribute
+    return (node.tagName === 'A' ||
+        !!(node.getAttribute && node.getAttribute(CLICKABLE_TAG)));
+}
+/**
+ * @param node - DOM node
+ * @param i - Number of iterations
+ * @returns Clickable element if it exists
+ */
+function getClickableElement(node, i) {
+    if (i === void 0) { i = 0; }
+    if (!node || i >= 5) {
+        return null;
+    }
+    return isClickable(node) ? node : getClickableElement(node.parentNode, ++i);
+}
+/**
+ * Figure out if the click was on a link or element with data-click-id tag and send report if so.
+ * @param {Object} e - Click event.
+ */
+function getClickableData(e) {
+    var clickableElement = getClickableElement(e.target);
+    if (clickableElement) {
+        var href = clickableElement.getAttribute('href');
+        var id = clickableElement.getAttribute(CLICKABLE_TAG);
+        return {
+            element: clickableElement,
+            url: includes_1.stringIncludes(href, '/') && href,
+            id: id,
+        };
+    }
+    return { id: null, url: null, element: null };
+}
+/**
+ * EventLisener that triggers on outbounding links.
+ * @param {function} callback
+ */
+function addEventListenerOnOutgoingLink(callback) {
+    var last = '';
+    var resetUrl = debounce_1.default(function () {
+        last = '';
+    }, 2000);
+    function sendEventIfLink(clickEvent) {
+        // Track links that not neccessarily are links, but things we want to track
+        var _a = getClickableData(clickEvent), element = _a.element, id = _a.id, url = _a.url;
+        var strippedUrl = includes_1.stringIncludes(url, '#') ? url.split('#')[0] : url;
+        var idOrUrl = id || strippedUrl;
+        if (idOrUrl && idOrUrl !== last) {
+            if (id) {
+                last = id;
+            }
+            else if (strippedUrl) {
+                last = strippedUrl;
+            }
+            callback({ clickEvent: clickEvent, element: element, id: id, url: url });
+            resetUrl();
+        }
+    }
+    add_listener_1.addListenerAggregated('contextmenu', sendEventIfLink);
+    add_listener_1.addListenerAggregated('click', sendEventIfLink);
+    add_listener_1.addListenerAggregated('mousedown', sendEventIfLink);
+}
+exports.default = addEventListenerOnOutgoingLink;
+//# sourceMappingURL=click-on-outgoing-link.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/triggers/keydown.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/triggers/keydown.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var add_listener_1 = __webpack_require__(/*! ../utils/add-listener */ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js");
+/**
+ * Adds a function to the eventLisener connected to keydown
+ * @param {function} callback
+ */
+function addEventListenerOnKeydown(callback) {
+    add_listener_1.addListenerAggregated('keydown', callback);
+}
+exports.default = addEventListenerOnKeydown;
+//# sourceMappingURL=keydown.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/triggers/load.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/triggers/load.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var add_listener_1 = __webpack_require__(/*! ../utils/add-listener */ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js");
+/**
+ *
+ * @param {function} callback
+ */
+function addEventListenerOnLoad(callback) {
+    add_listener_1.addListenerAggregated('load', callback);
+}
+exports.default = addEventListenerOnLoad;
+//# sourceMappingURL=load.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/triggers/mousemove.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/triggers/mousemove.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var add_listener_1 = __webpack_require__(/*! ../utils/add-listener */ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js");
+/**
+ * EventLisener that triggers on outbounding links.
+ * @param {function} callback
+ */
+function addEventListenerOnMouseMove(callback) {
+    add_listener_1.addListenerAggregated('mousemove', callback);
+}
+exports.default = addEventListenerOnMouseMove;
+//# sourceMappingURL=mousemove.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/triggers/scroll.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/triggers/scroll.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var add_listener_1 = __webpack_require__(/*! ../utils/add-listener */ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js");
+/**
+ * @param {function} callback
+ */
+function addEventListenerOnScroll(callback) {
+    add_listener_1.addListenerAggregated('scroll', callback);
+}
+exports.default = addEventListenerOnScroll;
+//# sourceMappingURL=scroll.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/add-listener.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/add-listener.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var throttle_1 = __importDefault(__webpack_require__(/*! ./throttle */ "./node_modules/@aller/blink-labrador/lib/utils/throttle.js"));
+var includes_1 = __webpack_require__(/*! ./includes */ "./node_modules/@aller/blink-labrador/lib/utils/includes.js");
+/**
+ * The callback for when an event occurs.
+ * @callback listener
+ */
+/**
+ * {object} one key for every eventType. the value is a array of cb to be run for that event
+ */
+var callbacksPrEventType = {};
+/**
+ * {list} the events that we have checked that should be attached to the window object
+ */
+var windowEvents = ['beforeunload', 'load', 'unload', 'pagehide'];
+/**
+ * Adds an event listener. Try to use addListenerAggreagted
+ * when you do not need to remove the EventListener for
+ * need to have a special throttling in place
+ * @param {string} evt - Event to listen to.
+ * @param {EventListener} cb - Callback
+ * @param {number} thr - Event throttling in ms.
+ * @return {addListener~throttledCallback} - The throttled callback function.
+ * Needed for removing the listener.
+ */
+function addListener(evt, cb, thr) {
+    if (thr === void 0) { thr = 100; }
+    var throttledCallback = throttle_1.default(cb, thr);
+    if (includes_1.arrayIncludes(windowEvents, evt)) {
+        // Do not throttle window events (rarely needed)
+        window.addEventListener(evt, cb, { passive: true });
+    }
+    else if (document.addEventListener) {
+        document.addEventListener(evt, throttledCallback, { passive: true });
+    }
+    // Need the exact function if we want to remove the listener.
+    return throttledCallback;
+}
+exports.default = addListener;
+/**
+ * If you know that you do not need to remove the EventListener, this is the Listener to use.
+ * Could be refactored and return and id of some sort and then we could create an
+ * removeListenerAggregated that removes it from the list,
+ * but we do not have a use case for that yet.
+ * @param {string} evt
+ * @param {EventListener} cb
+ */
+function addListenerAggregated(evt, cb) {
+    if (evt in callbacksPrEventType) {
+        callbacksPrEventType[evt].push(cb);
+    }
+    else {
+        callbacksPrEventType[evt] = [];
+        callbacksPrEventType[evt].push(cb);
+        var runCallbacks = function (event) {
+            callbacksPrEventType[evt].forEach(function (eventL) {
+                eventL(event);
+            });
+        };
+        addListener(evt, runCallbacks);
+    }
+}
+exports.addListenerAggregated = addListenerAggregated;
+//# sourceMappingURL=add-listener.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/article-preview.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/article-preview.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var get_full_url_1 = __importDefault(__webpack_require__(/*! ./get-full-url */ "./node_modules/@aller/blink-labrador/lib/utils/get-full-url.js"));
+/**
+ * Wraps the DOMElement of a plug on the frontpage and extracts metadata.
+ */
+var ArticlePreview = /** @class */ (function () {
+    function ArticlePreview(domElement, location) {
+        this.domElement = domElement;
+        this.location = location || {
+            origin: 'http://location.unknown',
+            protocol: 'http:',
+        };
+    }
+    Object.defineProperty(ArticlePreview.prototype, "personalizationParametersRequested", {
+        get: function () {
+            return this.domElement.getAttribute('data-cxence_widget');
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ArticlePreview.prototype, "personalizationSystemUsed", {
+        get: function () {
+            return this.domElement.getAttribute('data-cxense_tag');
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ArticlePreview.prototype, "fullTitle", {
+        get: function () {
+            var head = this.domElement.querySelector('h1,.headline');
+            if (head) {
+                var titleParts = Array.prototype.slice
+                    .call(head.childNodes)
+                    .filter(function (el) { return el.tagName !== 'STYLE'; })
+                    .map(function (el) {
+                    var style = window.getComputedStyle(el.nodeType === 3 ? el.parentNode : el, null);
+                    return {
+                        text: el.textContent.trim(),
+                        fontSize: style.getPropertyValue('font-size'),
+                    };
+                })
+                    .filter(function (el) { return !!el.text; });
+                return {
+                    fullTitle: titleParts.map(function (part) { return part.text; }).join(' '),
+                    titleParts: titleParts,
+                };
+            }
+            return {
+                fullTitle: '',
+                titleParts: [],
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ArticlePreview.prototype, "title", {
+        get: function () {
+            // Handle lommelegen question special case
+            var h4 = this.domElement.querySelector('h4');
+            if (h4 && h4.textContent) {
+                return h4.textContent.trim();
+            }
+            // Handle dinside test special case
+            var itemPropHead = this.domElement.querySelector('h3[itemprop="headline"]');
+            if (itemPropHead && itemPropHead.textContent) {
+                return itemPropHead.textContent.trim();
+            }
+            var head = this.domElement.querySelector('h1,.headline');
+            if (head) {
+                return Array.prototype.slice
+                    .call(head.childNodes)
+                    .filter(function (c) { return c.tagName !== 'STYLE'; })
+                    .map(function (c) { return c.textContent.trim(); })
+                    .filter(function (c) { return !!c; })
+                    .join(' ');
+            }
+            var aSpan = this.domElement.querySelector('a span');
+            if (aSpan && aSpan.textContent) {
+                return aSpan.textContent.trim();
+            }
+            return null;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ArticlePreview.prototype, "url", {
+        get: function () {
+            var a = this.domElement.querySelector('a');
+            var href = a ? a.getAttribute('href') : '';
+            return get_full_url_1.default(href || '', this.location);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ArticlePreview.prototype, "nodeId", {
+        get: function () {
+            return this.domElement.getAttribute('data-id');
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return ArticlePreview;
+}());
+exports.default = ArticlePreview;
+//# sourceMappingURL=article-preview.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/cookie-utils.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/cookie-utils.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/* eslint-disable no-param-reassign */
+Object.defineProperty(exports, "__esModule", { value: true });
+function getCookie(doc, name) {
+    var v = doc.cookie.match("(^|;) ?" + name + "=([^;]*)(;|$)");
+    return v ? v[2] : null;
+}
+exports.getCookie = getCookie;
+function setCookie(doc, name, value, now) {
+    expireCookie(doc, name);
+    var date = new Date(now);
+    date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000);
+    var expires = date.toUTCString();
+    var domain = window.location.hostname;
+    // This sure is some funny trickery to get the right domain
+    domain = domain
+        .split('.')
+        .reverse()
+        .splice(0, 2)
+        .reverse()
+        .join('.');
+    doc.cookie = name + "=" + value + "; Path=/; Expires=" + expires + "; Secure; Domain=" + domain;
+}
+exports.setCookie = setCookie;
+function expireCookie(doc, name) {
+    doc.cookie = name + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Secure;";
+}
+exports.expireCookie = expireCookie;
+//# sourceMappingURL=cookie-utils.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/debounce.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/debounce.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/*
+"Debouncing enforces that a function not be called again until a certain amount of time has passed without it being called. As in "execute this function only if 100 milliseconds have passed without it being called."
+"Perhaps a function is called 1,000 times in a quick burst, dispersed over 3 seconds, then stops being called. If you have debounced it at 100 milliseconds, the function will only fire once, at 3.1 seconds, once the burst is over. Each time the function is called during the burst it resets the debouncing timer."
+*/
+function debounce(fn, delay) {
+    var timer;
+    return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(function () {
+            fn.apply(null, args);
+        }, delay);
+    };
+}
+exports.default = debounce;
+//# sourceMappingURL=debounce.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/dom-element-context.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/dom-element-context.js ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cache = (function () {
+    var warehouse = {};
+    var count = 1;
+    return {
+        set: function (dom, data) {
+            if (!dom.__dataid) {
+                dom.__dataid = 'context' + count++;
+            }
+            warehouse[dom.__dataid] = data;
+        },
+        get: function (dom) {
+            return warehouse[dom.__dataid];
+        },
+    };
+})();
+function getInfo(domElement) {
+    if (!domElement) {
+        return {};
+    }
+    var cached = Cache.get(domElement);
+    if (cached) {
+        return cached;
+    }
+    // Get sibling number, starting on index 1
+    var index = 1;
+    var el = domElement;
+    while ((el = el.previousElementSibling)) {
+        index++;
+    }
+    var result = {
+        tag: domElement.tagName.toLowerCase(),
+        id: domElement.getAttribute('id') || '',
+        class: Array.prototype.slice
+            .call(domElement.classList)
+            .sort()
+            .join(','),
+        dataId: domElement.getAttribute('data-id') || '',
+        i: '' + index,
+        n: domElement.parentElement
+            ? domElement.parentElement.children.length + ''
+            : '1',
+    };
+    Cache.set(domElement, result);
+    return result;
+}
+function queryString(obj) {
+    return Object.keys(obj)
+        .map(function (key) { return (obj[key] ? key + "=" + obj[key] : null); })
+        .filter(function (el) { return !!el; })
+        .join('&');
+}
+function domContext(domElement) {
+    var tags = [];
+    var currElement = domElement;
+    // We go maximum 10 levels deep, so things don't spin out of control.
+    for (var i = 0; i < 10; i++) {
+        tags.push(getInfo(currElement));
+        if (!currElement.parentElement ||
+            currElement.parentElement.tagName === 'BODY') {
+            break;
+        }
+        currElement = currElement.parentElement;
+    }
+    return tags.map(queryString);
+}
+exports.default = domContext;
+//# sourceMappingURL=dom-element-context.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/ga-tracker.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/ga-tracker.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var GAEvents;
+(function (GAEvents) {
+    GAEvents["PLAY"] = "play";
+    GAEvents["PAUSE"] = "pause";
+    GAEvents["CONTINUE"] = "continue";
+    GAEvents["STOP"] = "stop";
+    GAEvents["AUTOPLAY"] = "autoplay";
+    GAEvents["PREROLL_STARTED"] = "prerollStarted";
+    GAEvents["REPLAY"] = "replay";
+    GAEvents["MORE_THAN_15SEC"] = ">15sec";
+})(GAEvents || (GAEvents = {})); // 15sec, replay, live vs clip
+exports.GAEvents = GAEvents;
+var interactedVideos = [];
+var getInteractedVideo = function (id) {
+    return (interactedVideos.find(function (p) { return p.id === id; }) || {
+        id: 'not-found',
+        watched: false,
+        type: 'live',
+    });
+};
+function saveInteractedVideo(id, duration) {
+    interactedVideos.push({
+        id: id,
+        watched: false,
+        type: duration === null ? 'live' : 'clip',
+    });
+}
+var GATracker = /** @class */ (function () {
+    function GATracker() {
+    }
+    GATracker.log = function (events) {
+        events.forEach(function (e) { return GATracker.logSingle(e); });
+    };
+    GATracker.logSingle = function (event) {
+        switch (event.type) {
+            case 'videoWatch':
+                if (event.videoPlayReason === 'interaction' &&
+                    (event.videoPlayPosition || 0) > 0) {
+                    GATracker.send(GAEvents.CONTINUE, 0, event);
+                }
+                switch (event.videoStopReason) {
+                    case 'pause':
+                        GATracker.send(GAEvents.PAUSE, 0, event);
+                        break;
+                    case 'complete':
+                    case 'exit':
+                        GATracker.send(GAEvents.STOP, 1, event);
+                        break;
+                }
+                break;
+            case 'videoAd':
+                GATracker.send(GAEvents.PREROLL_STARTED, 1, event);
+                break;
+            default:
+                // do nothing
+                break;
+        }
+    };
+    GATracker.logDirect = function (event, player) {
+        var id = player.getPlaylistItem().mediaid;
+        var position = player.getPosition();
+        var duration = player.getDuration();
+        var video = getInteractedVideo(id);
+        var eventToSend = { id: id };
+        switch (event.type) {
+            // saving video when initializing it
+            // later we need this data for
+            // sending this info for GA (clip or live)
+            // and determine if video is played or
+            // replayed
+            case 'playlistItem':
+                if (!video) {
+                    saveInteractedVideo(id, duration);
+                }
+                else {
+                    video.watched = true;
+                }
+                break;
+            case 'play':
+                if (position !== 0)
+                    return;
+                switch (event.playReason) {
+                    case 'interaction':
+                    case 'related-interaction':
+                        if (video.watched) {
+                            GATracker.send(GAEvents.REPLAY, 1, eventToSend);
+                        }
+                        else {
+                            GATracker.send(GAEvents.PLAY, 1, eventToSend);
+                        }
+                        break;
+                    case 'autostart':
+                    case 'related-auto':
+                        GATracker.send(GAEvents.AUTOPLAY, 1, eventToSend);
+                        break;
+                }
+                break;
+        }
+    };
+    GATracker.send = function (eventAction, eventValue, event) {
+        var id = event.id;
+        var playlistItem = getInteractedVideo(id);
+        if (window['dataLayer']) {
+            window['dataLayer'].push({
+                eventCategory: "video - " + playlistItem.type,
+                eventAction: eventAction,
+                eventLabel: id,
+                eventValue: eventValue,
+                event: 'videoInteraction',
+            });
+        }
+        else {
+            console.error("Google Analytics 'dataLayer' is undefined.");
+        }
+    };
+    return GATracker;
+}());
+exports.GATracker = GATracker;
+function GAsubscribeToJW(player) {
+    if (!player) {
+        return;
+    }
+    player.on('playlistItem', function (e) {
+        GATracker.logDirect(e, player);
+    });
+    player.on('play', function (e) {
+        GATracker.logDirect(e, player);
+    });
+}
+exports.GAsubscribeToJW = GAsubscribeToJW;
+//# sourceMappingURL=ga-tracker.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-ab-cookie.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-ab-cookie.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var cookie_utils_1 = __webpack_require__(/*! ./cookie-utils */ "./node_modules/@aller/blink-labrador/lib/utils/cookie-utils.js");
+var abCookie;
+function flushCache() {
+    abCookie = null;
+}
+exports.flushCache = flushCache;
+function getABCookie(doc) {
+    if (abCookie || abCookie === 0) {
+        return abCookie;
+    }
+    if (!doc && (typeof window === 'undefined' || !window.document)) {
+        return 101;
+    }
+    var abCookieString = cookie_utils_1.getCookie(doc || document, 'abTestCookie');
+    if (abCookieString) {
+        if (abCookieString.length <= 3) {
+            var abCookieParsed = parseInt(abCookieString, 10);
+            if (!isNaN(abCookieParsed) &&
+                abCookieParsed >= 0 &&
+                abCookieParsed < 102) {
+                abCookie = abCookieParsed;
+                return abCookie;
+            }
+        }
+    }
+    return 101;
+}
+exports.default = getABCookie;
+//# sourceMappingURL=get-ab-cookie.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-commercial-segments.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-commercial-segments.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var cookie_utils_1 = __webpack_require__(/*! ./cookie-utils */ "./node_modules/@aller/blink-labrador/lib/utils/cookie-utils.js");
+var segments = '';
+function flushCache() {
+    segments = '';
+}
+exports.flushCache = flushCache;
+function getCommercialSegments(doc) {
+    if (segments) {
+        return segments;
+    }
+    if (!doc && (typeof window === 'undefined' || !window.document)) {
+        return '';
+    }
+    segments = cookie_utils_1.getCookie(doc || document, 'allerM_seg');
+    if (segments) {
+        return segments;
+    }
+    return '';
+}
+exports.default = getCommercialSegments;
+//# sourceMappingURL=get-commercial-segments.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-db-pluss-data.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-db-pluss-data.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var cookie_utils_1 = __webpack_require__(/*! ./cookie-utils */ "./node_modules/@aller/blink-labrador/lib/utils/cookie-utils.js");
+var plussData = { hasAccess: false, customerNumber: '' };
+function getPlussData(doc, nocache, cachedPlussData) {
+    if (doc === void 0) { doc = document; }
+    if (nocache === void 0) { nocache = false; }
+    if (cachedPlussData === void 0) { cachedPlussData = plussData; }
+    // Fetch id from cache if we have it
+    if (cachedPlussData && !nocache) {
+        return cachedPlussData;
+    }
+    // Fetch id from cookie if we have it
+    var plussDataRaw = cookie_utils_1.getCookie(doc, 'xavier_pluss');
+    if (plussDataRaw) {
+        var decodedPlussData = decodeURIComponent(plussDataRaw);
+        var parsedDecodedPlussData = JSON.parse(decodedPlussData);
+        if (parsedDecodedPlussData.access &&
+            parsedDecodedPlussData.customer_number) {
+            plussData = {
+                hasAccess: parsedDecodedPlussData.access,
+                customerNumber: parsedDecodedPlussData.customer_number.toString(),
+            };
+            return plussData;
+        }
+    }
+    plussData = { hasAccess: false, customerNumber: '' };
+    return plussData;
+}
+exports.default = getPlussData;
+//# sourceMappingURL=get-db-pluss-data.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-full-url.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-full-url.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function startsWith(fullString, searchString) {
+    return fullString && fullString.indexOf(searchString) === 0;
+}
+function getFullUrl(href, location) {
+    if (startsWith(href, 'http')) {
+        return href;
+    }
+    if (startsWith(href, '//')) {
+        return location.protocol + href;
+    }
+    if (startsWith(href, '/')) {
+        return location.origin + href;
+    }
+    return "" + location.origin + location.pathname;
+}
+exports.default = getFullUrl;
+//# sourceMappingURL=get-full-url.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-page-type.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-page-type.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getPageType() {
+    if (typeof window !== 'undefined' &&
+        typeof window['ia_document'] !== 'undefined') {
+        return 'fb instant article';
+    }
+    else if (typeof window !== 'undefined' &&
+        window['wolverine'] === true) {
+        return 'wolverine';
+    }
+    return '';
+}
+exports.default = getPageType;
+//# sourceMappingURL=get-page-type.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-referrer.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-referrer.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getReferrer() {
+    if (typeof window === 'undefined' || !window.document) {
+        return '';
+    }
+    return document.referrer;
+}
+exports.default = getReferrer;
+//# sourceMappingURL=get-referrer.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-site.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-site.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function onSite(sitePattern, hostname) {
+    return sitePattern.test(hostname);
+}
+function getSite(hostname) {
+    if (!hostname && typeof window === 'undefined') {
+        return 'unknown (no hostname)';
+    }
+    var sites = [
+        { name: 'www.dinside.no', pattern: /.*dinside\.no$/ },
+        { name: 'www.dagbladet.no', pattern: /.*dagbladet\.no$/ },
+        { name: 'www.seher.no', pattern: /.*seher\.no$/ },
+        { name: 'localhost', pattern: /.*localhost$/ },
+        { name: 'www.topp.no', pattern: /.*topp\.no$/ },
+        { name: 'localhost', pattern: /.*ngrok\.io$/ },
+        { name: 'www.lommelegen.no', pattern: /.*lommelegen\.no$/ },
+        { name: 'www.sol.no', pattern: /.*sol\.no$/ },
+        { name: 'www.kk.no', pattern: /.*kk\.no$/ },
+        { name: 'www.vi.no', pattern: /.*vi\.no$/ },
+        { name: 'www.elbil24.no', pattern: /.*elbil24\.no$/ },
+        { name: 'www.se.no', pattern: /.*se\.no$/ },
+        { name: 'www.kode24.no', pattern: /.*kode24\.no$/ },
+        { name: 'www.medialaben.no', pattern: /.*medialaben\.no$/ },
+        { name: 'www.batmagasinet.no', pattern: /.*batmagasinet\.no$/ },
+    ];
+    var foundSite = '';
+    sites.forEach(function (site) {
+        if (onSite(site.pattern, hostname || window.location.hostname)) {
+            foundSite = site.name;
+        }
+    });
+    return foundSite || "unknown: (" + hostname + ")";
+}
+exports.default = getSite;
+//# sourceMappingURL=get-site.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/get-xavier-id.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/get-xavier-id.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var uuid_1 = __importDefault(__webpack_require__(/*! ./uuid */ "./node_modules/@aller/blink-labrador/lib/utils/uuid.js"));
+var cookie_utils_1 = __webpack_require__(/*! ./cookie-utils */ "./node_modules/@aller/blink-labrador/lib/utils/cookie-utils.js");
+var xavierId = '';
+function getXavierId(docu, nocache, now, getUUID, cachedId) {
+    if (nocache === void 0) { nocache = false; }
+    if (now === void 0) { now = new Date(); }
+    if (getUUID === void 0) { getUUID = uuid_1.default; }
+    if (cachedId === void 0) { cachedId = xavierId; }
+    if (!docu && typeof document === 'undefined') {
+        return 'xavier_no_doc';
+    }
+    var doc = docu || document;
+    // Return opt-out ID (xavier_no) for users who do not want to be tracked
+    if (cookie_utils_1.getCookie(doc || document, 'xavier_no')) {
+        return 'xavier_no';
+    }
+    // Fetch id from cache if we have it
+    if (cachedId && !nocache) {
+        return cachedId;
+    }
+    // Fetch id from cookie if we have it
+    xavierId = cookie_utils_1.getCookie(doc, 'xavier');
+    if (xavierId) {
+        cookie_utils_1.setCookie(doc, 'xavier', xavierId, now);
+        return xavierId;
+    }
+    // Generate a new id and store it
+    xavierId = getUUID('xavierId');
+    cookie_utils_1.setCookie(doc, 'xavier', xavierId, now);
+    return xavierId;
+}
+exports.default = getXavierId;
+//# sourceMappingURL=get-xavier-id.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/includes.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/includes.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function arrayIncludes(arr, element) {
+    return arr.indexOf(element) > -1;
+}
+exports.arrayIncludes = arrayIncludes;
+function stringIncludes(str, subStr) {
+    if (!str || !subStr) {
+        return false;
+    }
+    return str.indexOf(subStr) !== -1;
+}
+exports.stringIncludes = stringIncludes;
+//# sourceMappingURL=includes.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/performance.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/performance.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var typings_1 = __webpack_require__(/*! ./typings */ "./node_modules/@aller/blink-labrador/lib/utils/typings.js");
+var Performance = /** @class */ (function () {
+    function Performance(win) {
+        var _this = this;
+        this.hasAllDataCollected = function (performanceTimings) {
+            return !!performanceTimings.loadEventEnd;
+        };
+        this.getTimings = function () {
+            var performanceData = _this.initialPerformanceTimingsData;
+            var navigationTiming = _this.getNavigationTiming();
+            var deprecatedPerfomanceTiming = _this.getDeprecatedPerformanceTiming();
+            if (navigationTiming) {
+                performanceData = _this.fillInData(navigationTiming);
+            }
+            else if (deprecatedPerfomanceTiming) {
+                var start = _this.win.performance.timeOrigin || deprecatedPerfomanceTiming.navigationStart || 0;
+                performanceData = _this.fillInData(deprecatedPerfomanceTiming, start);
+            }
+            return performanceData;
+        };
+        this.fillInData = function (timingObject, start) {
+            var keys = typings_1.typedKeys(_this.initialPerformanceTimingsData);
+            var performanceData = _this.initialPerformanceTimingsData;
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                performanceData[key] = _this.getRelativeToStart(timingObject[key], start) || _this.initialPerformanceTimingsData[key];
+            }
+            return performanceData;
+        };
+        // Returns performance nav object from newest spec (Navigation timing level 2)
+        this.getNavigationTiming = function () {
+            if (_this.win.performance.getEntriesByType) {
+                var navigation = _this.win.performance.getEntriesByType("navigation");
+                if (navigation && navigation[0]) {
+                    return navigation[0];
+                }
+            }
+            return null;
+        };
+        // Returns deprecated performance timing object from old spec (Navigation timing level 1)
+        // Used as a fallback
+        this.getDeprecatedPerformanceTiming = function () {
+            return _this.win.performance.timing;
+        };
+        this.getRelativeToStart = function (timestamp, start) {
+            if (typeof start === 'undefined') {
+                return Math.floor(timestamp);
+            }
+            if (timestamp !== 0 && start !== 0) {
+                return Math.floor(timestamp - start);
+            }
+            return 0;
+        };
+        this.initialPerformanceTimingsData = {
+            domContentLoadedEventEnd: 0,
+            domContentLoadedEventStart: 0,
+            domInteractive: 0,
+            loadEventEnd: 0,
+            loadEventStart: 0,
+            responseEnd: 0,
+            responseStart: 0,
+        };
+        this.win = win ? win : window; // this done for the testing purpose
+    }
+    Object.defineProperty(Performance.prototype, "performanceAPISupported", {
+        get: function () {
+            return !!this.win.performance;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return Performance;
+}());
+exports.default = Performance;
+//# sourceMappingURL=performance.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/prev-pageview.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/prev-pageview.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var PREFIX = 'PAGEVIEW-';
+function setPageView(url, pageView) {
+    try {
+        window.sessionStorage.setItem(PREFIX + url, pageView);
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+}
+exports.setPageView = setPageView;
+function getPageView(referrerUrl) {
+    try {
+        return window.sessionStorage.getItem(PREFIX + referrerUrl);
+    }
+    catch (e) {
+        return '';
+    }
+}
+exports.getPageView = getPageView;
+//# sourceMappingURL=prev-pageview.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/subscribe-to-jw.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/subscribe-to-jw.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var beforeunload_1 = __importDefault(__webpack_require__(/*! ../triggers/beforeunload */ "./node_modules/@aller/blink-labrador/lib/triggers/beforeunload.js"));
+function subscribeToJW(send, player, playerId, canBeSticky, time) {
+    if (canBeSticky === void 0) { canBeSticky = false; }
+    if (time === void 0) { time = new Date(); }
+    if (!player) {
+        return;
+    }
+    player.on('playlistItem', function (e) {
+        send({
+            party: 'blink',
+            type: 'videoLoad',
+            data: {
+                playerId: playerId,
+                videoId: player.getPlaylistItem().mediaid,
+                duration: player.getDuration(),
+                muted: player.getMute(),
+                width: player.getWidth(),
+                height: player.getHeight(),
+                position: player.getPosition(),
+                viewable: player.getViewable(),
+                adblock: player.getAdBlock(),
+                canBeSticky: canBeSticky,
+            },
+        });
+    });
+    player.on('play', function (event) {
+        send({
+            party: 'blink',
+            type: 'videoPlay',
+            data: {
+                playerId: playerId,
+                videoId: player.getPlaylistItem().mediaid,
+                position: player.getPosition(),
+                reason: event.playReason,
+                volume: player.getVolume(),
+                muted: player.getMute(),
+            },
+        });
+    });
+    var trackVideoStop = function (reason) {
+        send({
+            party: 'blink',
+            type: 'videoStop',
+            data: {
+                playerId: playerId,
+                videoId: player.getPlaylistItem().mediaid,
+                position: player.getPosition(),
+                reason: reason,
+                volume: player.getVolume(),
+                muted: player.getMute(),
+            },
+        });
+    };
+    player.on('pause', function () {
+        trackVideoStop('pause');
+    });
+    player.on('complete', function () {
+        trackVideoStop('complete');
+    });
+    // TODO: Pass proper stopReason
+    player.on('nextClick', function () {
+        trackVideoStop('exit');
+    });
+    beforeunload_1.default(function () {
+        trackVideoStop('exit');
+    });
+    player.on('viewable', function (e) {
+        var position = player.getPosition();
+        var madeVisible = e.viewable === 1;
+        if (position === 0 && !madeVisible) {
+            // we don't need to send initial hidden event
+            return;
+        }
+        var input = {
+            playerId: playerId,
+            position: position,
+            time: time,
+            reason: 'viewable',
+            muted: player.getMute(),
+            volume: player.getVolume(),
+        };
+        send({
+            party: 'blink',
+            type: madeVisible ? 'playerShown' : 'playerHidden',
+            data: input,
+        });
+    });
+    player.on('adImpression', function (adImpression) {
+        var get = function (p, o) {
+            return p.reduce(function (xs, x) { return (xs && xs[x] ? xs[x] : null); }, o);
+        };
+        var ad = get(['ima', 'ad', 'g'], adImpression);
+        var adPodInfo = ad.adPodInfo ? ad.adPodInfo : {};
+        send({
+            party: 'blink',
+            type: 'videoAd',
+            data: {
+                playerId: playerId,
+                videoId: player.getPlaylistItem().mediaid,
+                adPosition: adImpression.adposition || 'pre',
+                system: adImpression.adsystem,
+                title: adImpression.adtitle,
+                client: adImpression.client,
+                viewable: adImpression.viewable,
+                adId: ad.adId,
+                isBumper: adPodInfo.isBumper,
+                creativeId: ad.creativeId,
+                duration: ad.duration,
+            },
+        });
+    });
+    player.on('allerStickyInteraction', function (e) {
+        send({
+            party: 'blink',
+            type: 'playerSticky',
+            data: {
+                playerId: playerId,
+                videoId: player.getPlaylistItem().mediaid,
+                sticky: e.sticky,
+                closed: e.closed,
+            },
+        });
+    });
+}
+exports.subscribeToJW = subscribeToJW;
+//# sourceMappingURL=subscribe-to-jw.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/throttle.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/throttle.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/*
+"Throttling enforces a maximum number of times a function can be called over time. As in "execute this function at most once every 100 milliseconds."
+ */
+function throttle(fn, delay, that) {
+    var canCall = true;
+    return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        if (canCall) {
+            fn.apply(that || null, args);
+            canCall = false;
+            setTimeout(function () {
+                canCall = true;
+            }, delay);
+        }
+    };
+}
+exports.default = throttle;
+//# sourceMappingURL=throttle.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/typings.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/typings.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// Helper function that returnes typed keys
+// that can be used to reach object props (i.e. obj[key])
+exports.typedKeys = function (o) {
+    return Object.keys(o);
+};
+//# sourceMappingURL=typings.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink-labrador/lib/utils/uuid.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@aller/blink-labrador/lib/utils/uuid.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/* eslint-disable */
+Object.defineProperty(exports, "__esModule", { value: true });
+var uuidDict = {};
+/**
+ * Gives a unique but consistent id for each pageview.
+ * Saves the uuid, so if several system is using this, they get the same value!
+ */
+function generateUUID(key) {
+    if (key === void 0) { key = 'default'; }
+    if (key in uuidDict) {
+        return uuidDict[key];
+    }
+    // Public Domain/MIT
+    var d = new Date().getTime();
+    if (typeof performance !== 'undefined' &&
+        typeof performance.now === 'function') {
+        d += performance.now(); // use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+    uuidDict[key] = uuid;
+    return uuid;
+}
+exports.default = generateUUID;
+//# sourceMappingURL=uuid.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/actions.js":
+/*!**************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/actions.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PAGE_INIT = 'PAGE_INIT';
+exports.PAGE_LOAD = 'PAGE_LOAD';
+exports.CLICK = 'CLICK';
+exports.VIDEO_LOAD = 'VIDEO_LOAD';
+exports.VIDEO_PLAY = 'VIDEO_PLAY';
+exports.VIDEO_STOP = 'VIDEO_STOP';
+exports.VIDEO_AD = 'VIDEO_AD';
+exports.CUSTOM = 'CUSTOM';
+exports.AD_SCREEN_ENTER = 'AD_SCREEN_ENTER';
+exports.AD_SCREEN_EXIT = 'AD_SCREEN_EXIT';
+exports.AD_SCREEN_ENTER_0 = 'AD_SCREEN_ENTER_0';
+exports.AD_SCREEN_EXIT_0 = 'AD_SCREEN_EXIT_0';
+exports.ARTICLE_PREVIEW_SCREEN_ENTER = 'ARTICLE_PREVIEW_SCREEN_ENTER';
+exports.BOX_SCREEN_ENTER = 'BOX_SCREEN_ENTER';
+exports.ARTICLE_ACTIVITY_START = 'ARTICLE_ACTIVITY_START';
+exports.ARTICLE_ACTIVITY_STOP = 'ARTICLE_ACTIVITY_STOP';
+exports.DFP_IMPRESSION_VIEWABLE = 'DFP_IMPRESSION_VIEWABLE';
+exports.DFP_SLOT_ON_LOAD = 'DFP_SLOT_ON_LOAD';
+exports.DFP_SLOT_RENDER_ENDED = 'DFP_SLOT_RENDER_ENDED';
+exports.AD_LOAD_START = 'AD_LOAD_START';
+exports.SEND_ALL_EVENTS = 'SEND_ALL_EVENTS';
+exports.SCREEN_HIDE = 'SCREEN_HIDE';
+exports.SCREEN_SHOW = 'SCREEN_SHOW';
+exports.PLAYER_HIDDEN = 'PLAYER_HIDDEN';
+exports.PLAYER_SHOWN = 'PLAYER_SHOWN';
+exports.PLAYER_STICKY = 'PLAYER_STICKY';
+exports.PERFORMANCE = 'PERFORMANCE';
+//# sourceMappingURL=actions.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/config/config.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/config/config.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VERSION = 'blink-8.2';
+/**
+ * The minimum waiting time between each sending of active time events
+ */
+exports.ACTIVE_TIME_WAIT = 5;
+//# sourceMappingURL=config.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/consts.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/consts.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+// number in ms  -the longest time the ad was inscreen  (according to google rules)
+exports.INSCREEN_TIME = 'inscreenTime';
+// number in ms - the accumulated time the ad is inscreen (from 0% of div)
+exports.INSCREEN_TIME_0 = 'inscreenTime0';
+// SCROLL
+exports.SCROLL_POS_AD_LOAD = 'scrollPosAdLoad';
+exports.SCROLL_POS_INSCREEN_DFP = 'scrollPosInscreenDFP';
+exports.SCROLL_POS_SLOT_RENDER_ENDED = 'scrollPosSlotRenderEnded';
+exports.SCROLL_POS_SLOT_ONLOAD = 'scrollPosSlotOnload';
+exports.SCROLL_OFFSET_TOP = 'scrollOffsetTop';
+exports.SCROLL_OFFSET_HEIGHT = 'scrollOffsetHeight';
+// DFP
+// [0|1] - if it is in screen according to DFP events
+exports.DFP_INSCREEN = 'DFPinscreen';
+exports.DFP_NAME = 'name';
+exports.DFP_ADVERTISER_ID = 'advertiserId';
+exports.DFP_CAMPAIGN_ID = 'campaignId';
+exports.DFP_CREATIVE_ID = 'creativeId';
+exports.DFP_ADUNIT_PATH = 'adUnitPath';
+exports.DFP_RENDERED = 'DFPrendered';
+exports.DFP_LOADED = 'DFPloaded';
+exports.DFP_LINE_ITEM_ID = 'lineItemId';
+exports.DFP_SIZE = 'size';
+exports.DFP_SOURCE_AGNOSTIC_CREATIVE_ID = 'sourceAgnosticCreativeId';
+exports.DFP_SOURCE_AGNOSTIC_LINE_ITEM_ID = 'sourceAgnosticLineItemId';
+exports.DFP_BIDDER = 'DFPbidder';
+exports.DFP_PREBID_WINNING_BID = 'DFPprebidWinningBid';
+//# sourceMappingURL=consts.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-active-time-event.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-active-time-event.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+var event_time_1 = __webpack_require__(/*! ../utils/event-time */ "./node_modules/@aller/blink/lib/utils/event-time.js");
+/**
+ * Prepares a active time data selecting the right
+ * fields to send to the server
+ */
+function prepareActiveTimeForSending(_a) {
+    var page = _a.page, id = _a.id, time = _a.time;
+    var activeTime = page.state.activeTime[id];
+    return __assign({}, general_data_1.default(page.state), { type: 'activeTime', id: id, article: { harvesterId: activeTime.id, url: activeTime.url }, activeTime: event_time_1.calculateEventTime({
+            times: activeTime.activity,
+            screenEvents: page.state.screen.events,
+            now: time,
+        }), pageScrollLatestOffsetY: page.state.general.pageScrollLatestOffsetY || 0, pageScrollMaxOffsetY: page.state.general.pageScrollMaxOffsetY || 0 });
+}
+exports.default = prepareActiveTimeForSending;
+function getAllActiveTimeEventsPrepared(page, time) {
+    if (!page || !page.state) {
+        return [];
+    }
+    return Object.keys(page.state.activeTime).map(function (articleId) {
+        return prepareActiveTimeForSending({ page: page, id: articleId, time: time });
+    });
+}
+exports.getAllActiveTimeEventsPrepared = getAllActiveTimeEventsPrepared;
+//# sourceMappingURL=prepare-active-time-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-ad-event.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-ad-event.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var consts_1 = __webpack_require__(/*! ./consts */ "./node_modules/@aller/blink/lib/events/consts.js");
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+var event_time_1 = __webpack_require__(/*! ../utils/event-time */ "./node_modules/@aller/blink/lib/utils/event-time.js");
+function prepareAdEvent(input) {
+    var page = input.page, id = input.id;
+    var inscreenTime = event_time_1.calculateEventTime({
+        times: page.state.inscreen[id],
+        screenEvents: page.state.screen.events,
+        now: input.time,
+    });
+    var inscreenTime0 = event_time_1.calculateEventTime({
+        times: page.state.inscreen0[id],
+        screenEvents: page.state.screen.events,
+        now: input.time,
+    });
+    var ad = page.state.ads[id] || {};
+    return __assign({}, general_data_1.default(page.state), { id: id || 'N/A', adId: id || 'N/A', type: 'ads', inscreenTime: inscreenTime || 0, inscreenTime0: inscreenTime0 || 0, scroll: {
+            pos: {
+                adLoad: ad[consts_1.SCROLL_POS_AD_LOAD] || 0,
+                inscreenDFP: ad[consts_1.SCROLL_POS_INSCREEN_DFP] || 0,
+                slotRenderEnded: ad[consts_1.SCROLL_POS_SLOT_RENDER_ENDED] || 0,
+                slotOnload: ad[consts_1.SCROLL_POS_SLOT_ONLOAD] || 0,
+            },
+            offsetTop: ad[consts_1.SCROLL_OFFSET_TOP] || 0,
+            offsetHeight: ad[consts_1.SCROLL_OFFSET_HEIGHT] || 0,
+        }, dfp: {
+            inscreen: ad[consts_1.DFP_INSCREEN] || 0,
+            name: ad[consts_1.DFP_NAME] || 'N/A',
+            advertiserId: ad[consts_1.DFP_ADVERTISER_ID] || 0,
+            campaignId: ad[consts_1.DFP_CAMPAIGN_ID] || 0,
+            creativeId: ad[consts_1.DFP_CREATIVE_ID] || 0,
+            adUnitPath: ad[consts_1.DFP_ADUNIT_PATH] || 'N/A',
+            rendered: ad[consts_1.DFP_RENDERED] || 0,
+            loaded: ad[consts_1.DFP_LOADED] || 0,
+            lineItemId: ad[consts_1.DFP_LINE_ITEM_ID] || 0,
+            size: ad[consts_1.DFP_SIZE] || [0],
+            sourceAgnosticCreativeId: ad[consts_1.DFP_SOURCE_AGNOSTIC_CREATIVE_ID] || 0,
+            sourceAgnosticLineItemId: ad[consts_1.DFP_SOURCE_AGNOSTIC_LINE_ITEM_ID] || 0,
+            bidder: ad[consts_1.DFP_BIDDER] || null,
+            prebidWinningBid: ad[consts_1.DFP_PREBID_WINNING_BID] || '',
+        } });
+}
+exports.default = prepareAdEvent;
+function getAllAdEventsPrepared(page, time) {
+    if (!page || !page.state) {
+        return [];
+    }
+    return Object.keys(page.state.ads).map(function (adId) {
+        return prepareAdEvent({ id: adId, page: page, time: time });
+    });
+}
+exports.getAllAdEventsPrepared = getAllAdEventsPrepared;
+//# sourceMappingURL=prepare-ad-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-box-event.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-box-event.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+/**
+ * Prepares a raw impression by aggregating its fields so that
+ * it can be sent to the server in the format aas expects.
+ */
+function prepareBoxEvent(_a) {
+    var page = _a.page, id = _a.id, title = _a.title, height = _a.height, width = _a.width;
+    return __assign({}, general_data_1.default(page.state), { id: id, boxId: id, type: 'box', title: title || undefined, height: height || 0, width: width || 0 });
+}
+exports.default = prepareBoxEvent;
+//# sourceMappingURL=prepare-box-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-click-event.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-click-event.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+var get_id_from_url_1 = __importDefault(__webpack_require__(/*! ../utils/get-id-from-url */ "./node_modules/@aller/blink/lib/utils/get-id-from-url.js"));
+/**
+ * Prepares click data selecting the right
+ * fields to send to the server
+ */
+function prepareClicksForSending(_a) {
+    var page = _a.page, url = _a.url, clickId = _a.clickId, externalId = _a.externalId, context = _a.context;
+    var preview = externalId && page.state.articlePreview[externalId]
+        ? page.state.articlePreview[externalId]
+        : {
+            id: 'error',
+            url: undefined,
+            title: undefined,
+            height: 0,
+            width: 0,
+            personalizationSystemUsed: undefined,
+            personalizationParametersRequested: undefined,
+        };
+    var pageExternalId = get_id_from_url_1.default(page.state.general.url, page.state.general.site);
+    return __assign({}, general_data_1.default(page.state), { type: 'click', id: clickId || externalId || '', harvesterId: clickId ? pageExternalId : undefined, clickId: clickId || '', context: context || [], article: url && !clickId
+            ? {
+                url: url,
+                harvesterId: externalId,
+            }
+            : undefined, title: preview.title || undefined, height: preview.height || 0, width: preview.width || 0, personalizationParametersRequested: preview.personalizationParametersRequested || undefined, personalizationSystemUsed: preview.personalizationSystemUsed || undefined, position: preview.position || undefined });
+}
+exports.default = prepareClicksForSending;
+//# sourceMappingURL=prepare-click-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-custom-event.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-custom-event.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+/**
+ * Prepares custom data selecting the right
+ * fields to send to the server
+ */
+function prepareCustomEventsForSending(_a) {
+    var page = _a.page, customDomain = _a.customDomain, customType = _a.customType, customContent = _a.customContent, customValue = _a.customValue, _b = _a.time, time = _b === void 0 ? new Date() : _b;
+    var id = customDomain + customType;
+    return __assign({}, general_data_1.default(page.state), { type: 'custom', id: id,
+        customDomain: customDomain,
+        customType: customType,
+        customContent: customContent,
+        customValue: customValue,
+        time: time });
+}
+exports.default = prepareCustomEventsForSending;
+//# sourceMappingURL=prepare-custom-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-impression-event.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-impression-event.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+/**
+ * Prepares a raw impression by aggregating its fields so that
+ * it can be sent to the server in the format aas expects.
+ */
+function prepareArticleImpressionEvent(_a) {
+    var page = _a.page, id = _a.id, context = _a.context, url = _a.url, title = _a.title, personalizationSystemUsed = _a.personalizationSystemUsed, personalizationParametersRequested = _a.personalizationParametersRequested, height = _a.height, width = _a.width;
+    return __assign({}, general_data_1.default(page.state), { id: id, context: context || undefined, type: 'impression', article: { url: url, harvesterId: id }, title: title || undefined, height: height || 0, width: width || 0, personalizationParametersRequested: personalizationParametersRequested || undefined, personalizationSystemUsed: personalizationSystemUsed || undefined });
+}
+exports.default = prepareArticleImpressionEvent;
+//# sourceMappingURL=prepare-impression-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-pageload-event.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-pageload-event.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+var get_id_from_url_1 = __importDefault(__webpack_require__(/*! ../utils/get-id-from-url */ "./node_modules/@aller/blink/lib/utils/get-id-from-url.js"));
+function preparePageloadEvent(_a) {
+    var page = _a.page, url = _a.url;
+    var id = get_id_from_url_1.default(url, page.state.general.site);
+    return __assign({}, general_data_1.default(page.state), { abCookie: page.state.general.abCookie, commercialSegments: page.state.general.commercialSegments, article: { harvesterId: id, url: url }, clientHeight: page.state.general.clientHeight, clientWidth: page.state.general.clientWidth, id: id || '', pageType: page.state.general.pageType, plussData: page.state.general.plussData, previousPageView: page.state.general.previousPageView, type: 'pageLoad', scroll: {
+            scrollHeight: page.state.general.scrollHeight,
+        } });
+}
+exports.default = preparePageloadEvent;
+//# sourceMappingURL=prepare-pageload-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-performance-event.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-performance-event.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+var get_id_from_url_1 = __importDefault(__webpack_require__(/*! ../utils/get-id-from-url */ "./node_modules/@aller/blink/lib/utils/get-id-from-url.js"));
+function preparePerformanceEvent(_a) {
+    var page = _a.page, performanceTimings = _a.performanceTimings;
+    var _b = page.state.general, url = _b.url, site = _b.site;
+    var id = get_id_from_url_1.default(url, site);
+    return __assign({}, general_data_1.default(page.state), { id: id || '', performanceTimings: performanceTimings, type: 'performance' });
+}
+exports.default = preparePerformanceEvent;
+//# sourceMappingURL=prepare-performance-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-video-ad-event.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-video-ad-event.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+function prepareVideoAdForSending(input) {
+    return __assign({}, general_data_1.default(input.page.state), { type: 'videoAd', id: input.videoId, videoId: input.videoId, time: input.time || new Date(), videoAdPosition: input.adPosition, system: input.system, title: input.title, client: input.client, viewable: input.viewable, adId: input.adId, isBumper: input.isBumper, creativeId: input.creativeId, duration: input.duration });
+}
+exports.default = prepareVideoAdForSending;
+//# sourceMappingURL=prepare-video-ad-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-video-load-event.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-video-load-event.js ***!
+  \**************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+/**
+ * Prepares video load data selecting the right
+ * fields to send to the server
+ * Video load event fired when video viewbox is loaded
+ * on the page
+ */
+function prepareVideoLoadForSending(input) {
+    var videoId = input.videoId, duration = input.duration, position = input.position, title = input.title, width = input.width, height = input.height, viewable = input.viewable, muted = input.muted, quality = input.quality, withAdBlock = input.withAdBlock, canBeSticky = input.canBeSticky;
+    return __assign({}, general_data_1.default(input.page.state), { type: 'videoLoad', id: videoId, videoId: videoId,
+        title: title,
+        width: width,
+        height: height, videoDuration: duration, videoPlayPosition: position, videoViewable: viewable, videoPlayMuted: muted, videoQuality: quality, withAdBlock: withAdBlock,
+        canBeSticky: canBeSticky, time: input.time || new Date() });
+}
+exports.default = prepareVideoLoadForSending;
+//# sourceMappingURL=prepare-video-load-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/events/prepare-video-watch-event.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/events/prepare-video-watch-event.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var general_data_1 = __importDefault(__webpack_require__(/*! ../utils/general-data */ "./node_modules/@aller/blink/lib/utils/general-data.js"));
+var video_event_time_1 = __webpack_require__(/*! ../utils/video-event-time */ "./node_modules/@aller/blink/lib/utils/video-event-time.js");
+var player_sticky_1 = __webpack_require__(/*! ../utils/player-sticky */ "./node_modules/@aller/blink/lib/utils/player-sticky.js");
+function prepareSingleVideoWatchEvent(videoId, generalData, watchEvent) {
+    var startEvent = watchEvent.startEvent, stopEvent = watchEvent.stopEvent, watchTime = watchEvent.watchTime;
+    return __assign({}, generalData, { type: 'videoWatch', id: videoId, videoId: videoId, videoPlayVolume: startEvent.volume, videoStopVolume: stopEvent.volume, videoPlayPosition: startEvent.position, videoStopPosition: stopEvent.position, videoPlayReason: startEvent.reason, videoStopReason: stopEvent.reason, videoPlayMuted: startEvent.muted, videoStopMuted: stopEvent.muted, activeTime: watchTime, videoSticky: stopEvent.sticky });
+}
+exports.prepareSingleVideoWatchEvent = prepareSingleVideoWatchEvent;
+function prepareVideoWatchEvents(input) {
+    var startEvents = video_event_time_1.calculateVideoEventTime(input.page.state.video.events, input.videoId, input.page.state.player, input.playerId, input.time || new Date());
+    var general = general_data_1.default(input.page.state);
+    var watchEvents = startEvents.length > 0 ? startEvents : [];
+    var modifiedWithStickyInfo = player_sticky_1.modifyEventArrayWithStickyInfo(input.playerId, input.page.state.player, watchEvents);
+    return modifiedWithStickyInfo.map(function (watchEvent) {
+        return prepareSingleVideoWatchEvent(input.videoId, general, watchEvent);
+    });
+}
+exports.default = prepareVideoWatchEvents;
+function getAllVideoWatchEventsPrepared(page, time) {
+    // Get all unique (videoId, playerId)-pairs from page
+    var allIdPairs = page.state.video.events.map(function (_a) {
+        var videoId = _a.videoId, playerId = _a.playerId;
+        return ({
+            videoId: videoId,
+            playerId: playerId,
+        });
+    });
+    var uniqueIdPairsObj = allIdPairs.reduce(function (register, idPair) {
+        register[idPair.videoId + idPair.playerId] = idPair;
+        return register;
+    }, {});
+    var uniqueIdPairs = Object.keys(uniqueIdPairsObj).map(function (key) { return uniqueIdPairsObj[key]; });
+    // Prepare all events for each (videoId, playerId)-pair, and merge them into a single list
+    return uniqueIdPairs.reduce(function (all, _a) {
+        var videoId = _a.videoId, playerId = _a.playerId;
+        var events = prepareVideoWatchEvents({ page: page, time: time, videoId: videoId, playerId: playerId });
+        return all.concat(events);
+    }, []);
+}
+exports.getAllVideoWatchEventsPrepared = getAllVideoWatchEventsPrepared;
+//# sourceMappingURL=prepare-video-watch-event.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/main.js":
+/*!***********************************************!*\
+  !*** ./node_modules/@aller/blink/lib/main.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var store_1 = __importDefault(__webpack_require__(/*! ./store */ "./node_modules/@aller/blink/lib/store.js"));
+var actions_1 = __webpack_require__(/*! ./actions */ "./node_modules/@aller/blink/lib/actions.js");
+var get_id_from_url_1 = __importDefault(__webpack_require__(/*! ./utils/get-id-from-url */ "./node_modules/@aller/blink/lib/utils/get-id-from-url.js"));
+var get_activity_1 = __importDefault(__webpack_require__(/*! ./selectors/get-activity */ "./node_modules/@aller/blink/lib/selectors/get-activity.js"));
+var get_page_state_1 = __importDefault(__webpack_require__(/*! ./selectors/get-page-state */ "./node_modules/@aller/blink/lib/selectors/get-page-state.js"));
+function createBlink(_a) {
+    var send = _a.send, sendDirect = _a.sendDirect, useDevTools = _a.useDevTools;
+    var store = store_1.default(send, sendDirect, useDevTools);
+    return {
+        pageInit: function (input) {
+            store.dispatch({ type: actions_1.PAGE_INIT, payload: input });
+        },
+        pageLoad: function (input) {
+            store.dispatch({ type: actions_1.PAGE_LOAD, payload: input });
+        },
+        click: function (input) {
+            var site = get_page_state_1.default(store.getState(), input.pageId).state.general.site;
+            store.dispatch({
+                type: actions_1.CLICK,
+                payload: {
+                    id: get_id_from_url_1.default(input.url || '', site),
+                    clickId: input.id,
+                    url: input.url,
+                    context: input.context,
+                    pageId: input.pageId,
+                },
+            });
+        },
+        videoLoad: function (input) {
+            store.dispatch({ type: actions_1.VIDEO_LOAD, payload: __assign({}, input) });
+        },
+        videoPlay: function (input) {
+            store.dispatch({ type: actions_1.VIDEO_PLAY, payload: __assign({}, input) });
+        },
+        videoStop: function (input) {
+            store.dispatch({ type: actions_1.VIDEO_STOP, payload: __assign({}, input) });
+        },
+        playerShown: function (input) {
+            store.dispatch({ type: actions_1.PLAYER_SHOWN, payload: __assign({}, input) });
+        },
+        playerHidden: function (input) {
+            store.dispatch({ type: actions_1.PLAYER_HIDDEN, payload: __assign({}, input) });
+        },
+        videoAd: function (input) {
+            store.dispatch({ type: actions_1.VIDEO_AD, payload: __assign({}, input) });
+        },
+        playerSticky: function (input) {
+            store.dispatch({ type: actions_1.PLAYER_STICKY, payload: __assign({}, input) });
+        },
+        performance: function (input) {
+            store.dispatch({ type: actions_1.PERFORMANCE, payload: __assign({}, input) });
+        },
+        custom: function (input) {
+            store.dispatch({ type: actions_1.CUSTOM, payload: __assign({}, input) });
+        },
+        adScreenEnter: function (_a) {
+            var id = _a.id, time = _a.time, pageId = _a.pageId;
+            store.dispatch({
+                type: actions_1.AD_SCREEN_ENTER,
+                payload: { id: id, time: time, pageId: pageId },
+            });
+        },
+        adScreenExit: function (_a) {
+            var id = _a.id, time = _a.time, pageId = _a.pageId;
+            store.dispatch({
+                type: actions_1.AD_SCREEN_EXIT,
+                payload: { id: id, time: time, pageId: pageId },
+            });
+        },
+        adScreenEnter0: function (_a) {
+            var id = _a.id, time = _a.time, pageId = _a.pageId;
+            store.dispatch({
+                type: actions_1.AD_SCREEN_ENTER_0,
+                payload: { id: id, time: time, pageId: pageId },
+            });
+        },
+        adScreenExit0: function (_a) {
+            var id = _a.id, time = _a.time, pageId = _a.pageId;
+            store.dispatch({
+                type: actions_1.AD_SCREEN_EXIT_0,
+                payload: { id: id, time: time, pageId: pageId },
+            });
+        },
+        articlePreviewScreenEnter: function (input) {
+            var site = get_page_state_1.default(store.getState(), input.pageId).state.general.site;
+            var id = get_id_from_url_1.default(input.url, site);
+            store.dispatch({
+                type: actions_1.ARTICLE_PREVIEW_SCREEN_ENTER,
+                payload: __assign({}, input, { id: id }),
+            });
+        },
+        boxScreenEnter: function (input) {
+            store.dispatch({
+                type: actions_1.BOX_SCREEN_ENTER,
+                payload: __assign({}, input),
+            });
+        },
+        pageActivityStart: function (_a) {
+            var url = _a.url, pageScrollOffsetY = _a.pageScrollOffsetY, pageId = _a.pageId, time = _a.time;
+            var site = get_page_state_1.default(store.getState(), pageId).state.general.site;
+            var id = get_id_from_url_1.default(url, site);
+            store.dispatch({
+                type: actions_1.ARTICLE_ACTIVITY_START,
+                payload: { id: id, time: time, url: url, pageScrollOffsetY: pageScrollOffsetY, pageId: pageId },
+            });
+        },
+        pageActivityStop: function (_a) {
+            var url = _a.url, pageId = _a.pageId, time = _a.time;
+            var site = get_page_state_1.default(store.getState(), pageId).state.general.site;
+            var id = get_id_from_url_1.default(url, site);
+            store.dispatch({
+                type: actions_1.ARTICLE_ACTIVITY_STOP,
+                payload: { id: id, time: time, url: url, pageId: pageId },
+            });
+        },
+        dfpSlotRenderEnded: function (input) {
+            store.dispatch({ type: actions_1.DFP_SLOT_RENDER_ENDED, payload: input });
+        },
+        dfpImpressionViewable: function (input) {
+            store.dispatch({
+                type: actions_1.DFP_IMPRESSION_VIEWABLE,
+                payload: input,
+            });
+        },
+        dfpSlotOnload: function (input) {
+            store.dispatch({ type: actions_1.DFP_SLOT_ON_LOAD, payload: input });
+        },
+        adLoad: function (input) {
+            store.dispatch({ type: actions_1.AD_LOAD_START, payload: input });
+        },
+        sendAllEvents: function (time) {
+            store.dispatch({ type: actions_1.SEND_ALL_EVENTS, payload: { time: time } });
+        },
+        screenHide: function (time) {
+            store.dispatch({ type: actions_1.SCREEN_HIDE, payload: { time: time } });
+        },
+        screenShow: function (time) {
+            store.dispatch({ type: actions_1.SCREEN_SHOW, payload: { time: time } });
+        },
+        getStore: function () {
+            return store;
+        },
+        getPage: function (_a) {
+            var url = _a.url, pageId = _a.pageId, time = _a.time;
+            var page = get_page_state_1.default(this.getStore().getState(), pageId);
+            var id = get_id_from_url_1.default(url, page.state.general.site) || '';
+            var activity = get_activity_1.default(page.state, id, time || new Date());
+            return __assign({}, page.state.general, { activeTime: activity.activeTime, isActive: activity.isActive });
+        },
+        getArticlePreview: function (_a) {
+            var url = _a.url, pageId = _a.pageId;
+            var page = get_page_state_1.default(this.getStore().getState(), pageId);
+            var site = page.state.general.site;
+            var id = get_id_from_url_1.default(url, site) || '';
+            var ap = page.state.articlePreview[id] || {};
+            return __assign({}, ap);
+        },
+    };
+}
+exports.default = createBlink;
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/active-time.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/active-time.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function activity(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case actions_1.ARTICLE_ACTIVITY_START:
+            return state.concat([
+                {
+                    type: 'start',
+                    time: action.payload.time || new Date(),
+                },
+            ]);
+        case actions_1.ARTICLE_ACTIVITY_STOP:
+            // don't add anything if last thing we added was a stop event
+            if (state.length > 0 && state[state.length - 1].type === 'stop') {
+                return state;
+            }
+            return state.concat([
+                {
+                    type: 'stop',
+                    time: action.payload.time || new Date(),
+                },
+            ]);
+        default:
+            break;
+    }
+    return state;
+}
+function activeTime(state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT:
+            return {}; // Flush the store on pageInit
+        case actions_1.ARTICLE_ACTIVITY_START:
+        case actions_1.ARTICLE_ACTIVITY_STOP: {
+            var actState = state[action.payload.id]
+                ? state[action.payload.id].activity
+                : [];
+            return __assign({}, state, (_a = {}, _a[action.payload.id] = {
+                activity: activity(actState, action),
+                url: action.payload.url,
+                id: action.payload.id,
+            }, _a));
+        }
+        default:
+            break;
+    }
+    return state;
+}
+exports.default = activeTime;
+//# sourceMappingURL=active-time.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/ads.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/ads.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var consts_1 = __webpack_require__(/*! ../events/consts */ "./node_modules/@aller/blink/lib/events/consts.js");
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function singleAd(state, action) {
+    var _a, _b, _c, _d;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.AD_SCREEN_ENTER:
+        case actions_1.AD_SCREEN_ENTER_0:
+            return state;
+        case actions_1.DFP_SLOT_RENDER_ENDED: {
+            var _e = action.payload, adUnitPath = _e.adUnitPath, advertiserId = _e.advertiserId, bidder = _e.bidder, campaignId = _e.campaignId, creativeId = _e.creativeId, lineItemId = _e.lineItemId, prebidWinningBid = _e.prebidWinningBid, size = _e.size, sourceAgnosticCreativeId = _e.sourceAgnosticCreativeId, sourceAgnosticLineItemId = _e.sourceAgnosticLineItemId, scrollTop = _e.scrollTop;
+            return __assign({}, state, (_a = {}, _a[consts_1.DFP_ADUNIT_PATH] = adUnitPath, _a[consts_1.DFP_ADVERTISER_ID] = advertiserId, _a[consts_1.DFP_BIDDER] = bidder, _a[consts_1.DFP_CAMPAIGN_ID] = campaignId, _a[consts_1.DFP_CREATIVE_ID] = creativeId, _a[consts_1.DFP_LINE_ITEM_ID] = lineItemId, _a[consts_1.DFP_PREBID_WINNING_BID] = prebidWinningBid, _a[consts_1.DFP_SIZE] = size, _a[consts_1.DFP_SOURCE_AGNOSTIC_CREATIVE_ID] = sourceAgnosticCreativeId, _a[consts_1.DFP_SOURCE_AGNOSTIC_LINE_ITEM_ID] = sourceAgnosticLineItemId, _a[consts_1.SCROLL_POS_SLOT_RENDER_ENDED] = scrollTop, _a[consts_1.DFP_RENDERED] = 1, _a));
+        }
+        case actions_1.DFP_SLOT_ON_LOAD: {
+            return __assign({}, state, (_b = {}, _b[consts_1.SCROLL_POS_SLOT_ONLOAD] = action.payload.scrollTop, _b[consts_1.DFP_LOADED] = 1, _b[consts_1.DFP_NAME] = action.payload.name, _b));
+        }
+        case actions_1.DFP_IMPRESSION_VIEWABLE: {
+            return __assign({}, state, (_c = {}, _c[consts_1.SCROLL_POS_INSCREEN_DFP] = action.payload.scrollTop, _c[consts_1.DFP_INSCREEN] = 1, _c));
+        }
+        case actions_1.AD_LOAD_START: {
+            return __assign({}, state, (_d = {}, _d[consts_1.SCROLL_POS_AD_LOAD] = action.payload.scrollTop, _d[consts_1.SCROLL_OFFSET_TOP] = action.payload.offsetTop, _d[consts_1.SCROLL_OFFSET_HEIGHT] = action.payload.offsetHeight, _d));
+        }
+        default:
+            break;
+    }
+    return state;
+}
+exports.singleAd = singleAd;
+function ads(state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT:
+            return {}; // Flush the store on pageLoad
+        case actions_1.DFP_SLOT_RENDER_ENDED:
+        case actions_1.DFP_SLOT_ON_LOAD:
+        case actions_1.DFP_IMPRESSION_VIEWABLE:
+        case actions_1.AD_LOAD_START:
+        case actions_1.AD_SCREEN_ENTER:
+        case actions_1.AD_SCREEN_ENTER_0:
+            return __assign({}, state, (_a = {}, _a[action.payload.id] = singleAd(state[action.payload.id], action), _a));
+        default:
+            break;
+    }
+    return state;
+}
+exports.default = ads;
+//# sourceMappingURL=ads.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/article-preview.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/article-preview.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function singleArticlePreview(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case actions_1.ARTICLE_PREVIEW_SCREEN_ENTER: {
+            return __assign({}, state, { id: action.payload.id, context: action.payload.context, url: action.payload.url, title: action.payload.title, height: action.payload.height, width: action.payload.width, personalizationParametersRequested: action.payload.personalizationParametersRequested, personalizationSystemUsed: action.payload.personalizationSystemUsed, position: action.payload.position });
+        }
+        case actions_1.CLICK: {
+            return __assign({}, state, { id: action.payload.id, url: action.payload.url, clicked: true });
+        }
+        default:
+            break;
+    }
+    return state;
+}
+exports.singleArticlePreview = singleArticlePreview;
+function articlePreview(state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT:
+            return {}; // Flush the store on pageLoad
+        case actions_1.ARTICLE_PREVIEW_SCREEN_ENTER:
+        case actions_1.CLICK:
+            if (!action.payload.id) {
+                return state;
+            }
+            return __assign({}, state, (_a = {}, _a[action.payload.id] = singleArticlePreview(state[action.payload.id], action), _a));
+        default:
+            break;
+    }
+    return state;
+}
+exports.default = articlePreview;
+//# sourceMappingURL=article-preview.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/general.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/general.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __webpack_require__(/*! ../config/config */ "./node_modules/@aller/blink/lib/config/config.js");
+var uuid_1 = __importDefault(__webpack_require__(/*! ../utils/uuid */ "./node_modules/@aller/blink/lib/utils/uuid.js"));
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function general(state, action) {
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT: {
+            return __assign({}, state, { abCookie: action.payload.abCookie, commercialSegments: action.payload.commercialSegments || '', pageType: action.payload.pageType || '', pageView: action.payload.pageView || uuid_1.default(), previousPageView: action.payload.previousPageView || state.pageView || undefined, referrer: action.payload.referrer || undefined, site: action.payload.site, url: action.payload.url, userId: action.payload.userId, version: config_1.VERSION });
+        }
+        case actions_1.PAGE_LOAD: {
+            return __assign({}, state, { clientHeight: action.payload.clientHeight, clientWidth: action.payload.clientWidth, scrollHeight: action.payload.scrollHeight, plussData: action.payload.plussData });
+        }
+        case actions_1.ARTICLE_ACTIVITY_START: {
+            return __assign({}, state, { pageScrollMaxOffsetY: Math.max(action.payload.pageScrollOffsetY || 0, state.pageScrollMaxOffsetY || 0), pageScrollLatestOffsetY: action.payload.pageScrollOffsetY || 0 });
+        }
+        default:
+            break;
+    }
+    return state;
+}
+exports.default = general;
+//# sourceMappingURL=general.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/inscreen.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/inscreen.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function inscreen(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case actions_1.AD_SCREEN_ENTER:
+        case actions_1.ARTICLE_PREVIEW_SCREEN_ENTER:
+        case actions_1.BOX_SCREEN_ENTER:
+            return state.concat([
+                {
+                    type: 'start',
+                    time: action.payload.time || new Date(),
+                },
+            ]);
+        case actions_1.AD_SCREEN_EXIT:
+            return state.concat([
+                {
+                    type: 'stop',
+                    time: action.payload.time || new Date(),
+                },
+            ]);
+        default:
+            break;
+    }
+    return state;
+}
+function inscreen0(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case actions_1.AD_SCREEN_ENTER_0:
+            return state.concat([
+                {
+                    type: 'start',
+                    time: action.payload.time || new Date(),
+                },
+            ]);
+        case actions_1.AD_SCREEN_EXIT_0:
+            return state.concat([
+                {
+                    type: 'stop',
+                    time: action.payload.time || new Date(),
+                },
+            ]);
+        default:
+            break;
+    }
+    return state;
+}
+exports.inscreen0 = inscreen0;
+function inscreenReducer(state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT:
+            return {};
+        case actions_1.AD_SCREEN_ENTER:
+        case actions_1.AD_SCREEN_EXIT:
+        case actions_1.ARTICLE_PREVIEW_SCREEN_ENTER:
+        case actions_1.BOX_SCREEN_ENTER: {
+            return __assign({}, state, (_a = {}, _a[action.payload.id] = inscreen(state[action.payload.id], action), _a));
+        }
+        default:
+            break;
+    }
+    return state;
+}
+exports.inscreenReducer = inscreenReducer;
+function inscreenReducer0(state, action) {
+    var _a;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT:
+            return {};
+        case actions_1.AD_SCREEN_ENTER_0:
+        case actions_1.AD_SCREEN_EXIT_0: {
+            return __assign({}, state, (_a = {}, _a[action.payload.id] = inscreen0(state[action.payload.id], action), _a));
+        }
+        default:
+            break;
+    }
+    return state;
+}
+exports.inscreenReducer0 = inscreenReducer0;
+//# sourceMappingURL=inscreen.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/page.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/page.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var redux_1 = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+var inscreen_1 = __webpack_require__(/*! ./inscreen */ "./node_modules/@aller/blink/lib/reducers/inscreen.js");
+var article_preview_1 = __importDefault(__webpack_require__(/*! ./article-preview */ "./node_modules/@aller/blink/lib/reducers/article-preview.js"));
+var ads_1 = __importDefault(__webpack_require__(/*! ./ads */ "./node_modules/@aller/blink/lib/reducers/ads.js"));
+var active_time_1 = __importDefault(__webpack_require__(/*! ./active-time */ "./node_modules/@aller/blink/lib/reducers/active-time.js"));
+var general_1 = __importDefault(__webpack_require__(/*! ./general */ "./node_modules/@aller/blink/lib/reducers/general.js"));
+var screen_1 = __importDefault(__webpack_require__(/*! ./screen */ "./node_modules/@aller/blink/lib/reducers/screen.js"));
+var video_1 = __importDefault(__webpack_require__(/*! ./video */ "./node_modules/@aller/blink/lib/reducers/video.js"));
+var player_1 = __importDefault(__webpack_require__(/*! ./player */ "./node_modules/@aller/blink/lib/reducers/player.js"));
+var pageReducer = redux_1.combineReducers({
+    inscreen: inscreen_1.inscreenReducer,
+    inscreen0: inscreen_1.inscreenReducer0,
+    articlePreview: article_preview_1.default,
+    ads: ads_1.default,
+    activeTime: active_time_1.default,
+    general: general_1.default,
+    screen: screen_1.default,
+    video: video_1.default,
+    player: player_1.default,
+});
+function pages(state, action) {
+    var _a;
+    var pageId = action.payload
+        ? action.payload.pageId || 'default'
+        : 'default';
+    return __assign({}, state, (_a = {}, _a[pageId] = pageReducer(state ? state[pageId] : {}, action), _a));
+}
+exports.default = pages;
+//# sourceMappingURL=page.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/player.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/player.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function player(state, action) {
+    var _a, _b, _c;
+    if (state === void 0) { state = {}; }
+    switch (action.type) {
+        case actions_1.PLAYER_SHOWN:
+            return __assign({}, state, (_a = {}, _a[action.payload.playerId] = (state[action.payload.playerId] || []).concat([
+                {
+                    type: 'shown',
+                    reason: action.payload.reason,
+                    time: action.payload.time || new Date(),
+                    muted: action.payload.muted,
+                    position: action.payload.position,
+                    volume: action.payload.volume,
+                },
+            ]), _a));
+        case actions_1.PLAYER_HIDDEN:
+            return __assign({}, state, (_b = {}, _b[action.payload.playerId] = (state[action.payload.playerId] || []).concat([
+                {
+                    type: 'hidden',
+                    reason: action.payload.reason,
+                    time: action.payload.time || new Date(),
+                    muted: action.payload.muted,
+                    position: action.payload.position,
+                    volume: action.payload.volume,
+                },
+            ]), _b));
+        case actions_1.PLAYER_STICKY:
+            return __assign({}, state, (_c = {}, _c[action.payload.playerId] = (state[action.payload.playerId] || []).concat([
+                {
+                    type: 'sticky',
+                    time: action.payload.time || new Date(),
+                    sticky: action.payload.sticky,
+                    closed: action.payload.closed,
+                },
+            ]), _c));
+        default:
+            break;
+    }
+    return state;
+}
+exports.default = player;
+//# sourceMappingURL=player.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/screen.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/screen.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function events(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case actions_1.SCREEN_SHOW:
+            return state.concat({
+                time: action.payload.time || new Date(),
+                type: 'show',
+            });
+        case actions_1.SCREEN_HIDE:
+            return state.concat({
+                time: action.payload.time || new Date(),
+                type: 'hide',
+            });
+        default:
+            break;
+    }
+    return state;
+}
+function screen(state, action) {
+    if (state === void 0) { state = { events: [] }; }
+    var ev = state ? state.events || [] : [];
+    return __assign({}, state, { events: events(ev, action) });
+}
+exports.default = screen;
+//# sourceMappingURL=screen.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/reducers/video.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/reducers/video.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var actions_1 = __webpack_require__(/*! ../actions */ "./node_modules/@aller/blink/lib/actions.js");
+function videoEvents(state, action) {
+    if (state === void 0) { state = []; }
+    switch (action.type) {
+        case actions_1.PAGE_INIT:
+            return [];
+        case actions_1.VIDEO_PLAY:
+            return state.concat({
+                reason: action.payload.reason,
+                muted: action.payload.muted,
+                position: action.payload.position,
+                volume: action.payload.volume,
+                time: action.payload.time || new Date(),
+                videoId: action.payload.videoId,
+                playerId: action.payload.playerId,
+                type: 'start',
+            });
+        case actions_1.VIDEO_STOP:
+            return state.concat({
+                reason: action.payload.reason,
+                muted: action.payload.muted,
+                position: action.payload.position,
+                volume: action.payload.volume,
+                time: action.payload.time || new Date(),
+                videoId: action.payload.videoId,
+                playerId: action.payload.playerId,
+                type: 'stop',
+            });
+        default:
+            break;
+    }
+    return state;
+}
+function video(state, action) {
+    if (state === void 0) { state = { events: [] }; }
+    var ev = state ? state.events || [] : [];
+    return __assign({}, state, { events: videoEvents(ev, action) });
+}
+exports.default = video;
+//# sourceMappingURL=video.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/selectors/get-activity.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/selectors/get-activity.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var event_time_1 = __webpack_require__(/*! ../utils/event-time */ "./node_modules/@aller/blink/lib/utils/event-time.js");
+function getActivity(store, id, now) {
+    if (!store.activeTime[id]) {
+        return { activeTime: 0, isActive: false };
+    }
+    var activity = store.activeTime[id].activity;
+    return {
+        activeTime: event_time_1.calculateEventTime({
+            times: activity,
+            screenEvents: store.screen.events,
+            now: now,
+        }),
+        isActive: activity[activity.length - 1].type === 'start',
+    };
+}
+exports.default = getActivity;
+//# sourceMappingURL=get-activity.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/selectors/get-page-state.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/selectors/get-page-state.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getPageState(state, pageId) {
+    if (pageId === void 0) { pageId = 'default'; }
+    var page = state[pageId];
+    return { state: page, id: pageId };
+}
+exports.default = getPageState;
+//# sourceMappingURL=get-page-state.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/senderMiddleware.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/senderMiddleware.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var prepare_ad_event_1 = __importStar(__webpack_require__(/*! ./events/prepare-ad-event */ "./node_modules/@aller/blink/lib/events/prepare-ad-event.js"));
+var prepare_active_time_event_1 = __importStar(__webpack_require__(/*! ./events/prepare-active-time-event */ "./node_modules/@aller/blink/lib/events/prepare-active-time-event.js"));
+var prepare_pageload_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-pageload-event */ "./node_modules/@aller/blink/lib/events/prepare-pageload-event.js"));
+var prepare_click_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-click-event */ "./node_modules/@aller/blink/lib/events/prepare-click-event.js"));
+var prepare_custom_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-custom-event */ "./node_modules/@aller/blink/lib/events/prepare-custom-event.js"));
+var prepare_box_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-box-event */ "./node_modules/@aller/blink/lib/events/prepare-box-event.js"));
+var prepare_impression_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-impression-event */ "./node_modules/@aller/blink/lib/events/prepare-impression-event.js"));
+var actions_1 = __webpack_require__(/*! ./actions */ "./node_modules/@aller/blink/lib/actions.js");
+var prepare_video_load_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-video-load-event */ "./node_modules/@aller/blink/lib/events/prepare-video-load-event.js"));
+var prepare_video_watch_event_1 = __importStar(__webpack_require__(/*! ./events/prepare-video-watch-event */ "./node_modules/@aller/blink/lib/events/prepare-video-watch-event.js"));
+var prepare_video_ad_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-video-ad-event */ "./node_modules/@aller/blink/lib/events/prepare-video-ad-event.js"));
+var prepare_performance_event_1 = __importDefault(__webpack_require__(/*! ./events/prepare-performance-event */ "./node_modules/@aller/blink/lib/events/prepare-performance-event.js"));
+var get_page_state_1 = __importDefault(__webpack_require__(/*! ./selectors/get-page-state */ "./node_modules/@aller/blink/lib/selectors/get-page-state.js"));
+var player_1 = __webpack_require__(/*! ./utils/player */ "./node_modules/@aller/blink/lib/utils/player.js");
+function senderMiddleware(send, sendDirect) {
+    return function (_a) {
+        var getState = _a.getState;
+        return function (next) { return function (action) {
+            // Send all events if we get a pageInit event
+            // Make sure we do it before the PAGE_INIT flushes the state
+            if (action.type === actions_1.PAGE_INIT) {
+                var payload = action.payload;
+                var beforePage = get_page_state_1.default(getState(), payload.pageId).state;
+                var eventsToSend = prepare_ad_event_1.getAllAdEventsPrepared(beforePage, payload.time).concat(prepare_active_time_event_1.getAllActiveTimeEventsPrepared(beforePage, payload.time));
+                if (eventsToSend.length > 0) {
+                    send(eventsToSend);
+                }
+            }
+            // Execute the action, which might mutate the state
+            var returnValue = next(action);
+            var state = getState();
+            var page = get_page_state_1.default(state, action.payload.pageId);
+            switch (action.type) {
+                case actions_1.DFP_IMPRESSION_VIEWABLE:
+                case actions_1.DFP_SLOT_RENDER_ENDED:
+                case actions_1.DFP_SLOT_ON_LOAD:
+                    send([
+                        prepare_ad_event_1.default({
+                            page: page,
+                            id: action.payload.id,
+                        }),
+                    ]);
+                    break;
+                case actions_1.CLICK:
+                    sendDirect([
+                        prepare_click_event_1.default({
+                            page: page,
+                            url: action.payload.url,
+                            clickId: action.payload.clickId,
+                            externalId: action.payload.id,
+                            context: action.payload.context,
+                        }),
+                    ]);
+                    break;
+                case actions_1.VIDEO_LOAD:
+                    send([
+                        prepare_video_load_event_1.default(__assign({ page: page }, action.payload)),
+                    ]);
+                    break;
+                case actions_1.VIDEO_STOP:
+                    send(prepare_video_watch_event_1.default(__assign({ page: page }, action.payload)));
+                    break;
+                case actions_1.PLAYER_HIDDEN:
+                    var videoIds = player_1.getUniqueVideoIdsForPlayer(page.state.video.events, action.payload.playerId);
+                    // "Brodcast" player hidden event to all videos with the playerId
+                    videoIds.forEach(function (videoId) {
+                        send(prepare_video_watch_event_1.default(__assign({ page: page, videoId: videoId }, action.payload)));
+                    });
+                    break;
+                case actions_1.VIDEO_AD:
+                    send([
+                        prepare_video_ad_event_1.default(__assign({ page: page }, action.payload)),
+                    ]);
+                    break;
+                case actions_1.CUSTOM:
+                    send([
+                        prepare_custom_event_1.default({
+                            page: page,
+                            customDomain: action.payload.customDomain,
+                            customType: action.payload.customType,
+                            customContent: action.payload.customContent,
+                            customValue: action.payload.customValue,
+                            time: action.payload.time,
+                        }),
+                    ]);
+                    break;
+                case actions_1.PAGE_LOAD:
+                    send([
+                        prepare_pageload_event_1.default({
+                            page: page,
+                            url: action.payload.url,
+                        }),
+                    ]);
+                    break;
+                case actions_1.PERFORMANCE:
+                    send([
+                        prepare_performance_event_1.default({
+                            page: page,
+                            performanceTimings: action.payload.performanceTimings,
+                        })
+                    ]);
+                    break;
+                case actions_1.ARTICLE_PREVIEW_SCREEN_ENTER:
+                    send([
+                        prepare_impression_event_1.default({
+                            page: page,
+                            id: action.payload.id,
+                            context: action.payload.context,
+                            url: action.payload.url,
+                            title: action.payload.title,
+                            personalizationSystemUsed: action.payload.personalizationSystemUsed,
+                            personalizationParametersRequested: action.payload.personalizationParametersRequested,
+                            height: action.payload.height,
+                            width: action.payload.width,
+                        }),
+                    ]);
+                    break;
+                case actions_1.BOX_SCREEN_ENTER:
+                    send([
+                        prepare_box_event_1.default({
+                            page: page,
+                            id: action.payload.id,
+                            title: action.payload.title,
+                            height: action.payload.height,
+                            width: action.payload.width,
+                        }),
+                    ]);
+                    break;
+                case actions_1.AD_SCREEN_EXIT:
+                case actions_1.AD_SCREEN_EXIT_0:
+                    send([
+                        prepare_ad_event_1.default({
+                            page: page,
+                            id: action.payload.id,
+                        }),
+                    ]);
+                    break;
+                case actions_1.ARTICLE_ACTIVITY_STOP:
+                    send([
+                        prepare_active_time_event_1.default({
+                            page: page,
+                            id: action.payload.id,
+                        }),
+                    ]);
+                    break;
+                case actions_1.SEND_ALL_EVENTS:
+                    {
+                        var payload = action.payload;
+                        var eventsToSend = prepare_ad_event_1.getAllAdEventsPrepared(page, payload.time).concat(prepare_active_time_event_1.getAllActiveTimeEventsPrepared(page, payload.time), prepare_video_watch_event_1.getAllVideoWatchEventsPrepared(page, payload.time));
+                        if (eventsToSend.length > 0) {
+                            sendDirect(eventsToSend);
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return returnValue;
+        }; };
+    };
+}
+exports.default = senderMiddleware;
+//# sourceMappingURL=senderMiddleware.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/store.js":
+/*!************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/store.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var redux_1 = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js");
+var logOnlyInProduction_1 = __webpack_require__(/*! redux-devtools-extension/logOnlyInProduction */ "./node_modules/redux-devtools-extension/logOnlyInProduction.js");
+var senderMiddleware_1 = __importDefault(__webpack_require__(/*! ./senderMiddleware */ "./node_modules/@aller/blink/lib/senderMiddleware.js"));
+var page_1 = __importDefault(__webpack_require__(/*! ./reducers/page */ "./node_modules/@aller/blink/lib/reducers/page.js"));
+exports.default = (function (send, sendDirect, useDevTools) {
+    if (useDevTools === void 0) { useDevTools = false; }
+    return redux_1.createStore(page_1.default, useDevTools
+        ? logOnlyInProduction_1.composeWithDevTools(redux_1.applyMiddleware(senderMiddleware_1.default(send, sendDirect)))
+        : redux_1.applyMiddleware(senderMiddleware_1.default(send, sendDirect)));
+});
+//# sourceMappingURL=store.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/event-time.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/event-time.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Checks if there is a stop time present.
+ */
+function hasFinalStopTime(times) {
+    var lastTime = times[times.length - 1];
+    return !times.length || (lastTime && lastTime.type === 'stop');
+}
+exports.hasFinalStopTime = hasFinalStopTime;
+/**
+ * Skips duplicate start and end times. Could occur if
+ * the machine has a hick-up when updating the inscreen time.
+ *
+ *  [ { start 1 }, { start 2 }, { end 1 } ]
+ * Would be converted to:
+ *  [ { start 1 }, { end 1 } ]
+ */
+function mergeDuplicateTimesTogether(times) {
+    return times.filter(function (_a, index) {
+        var type = _a.type;
+        var prevTime = times[index - 1];
+        var prevTimeIsADuplicate = prevTime && type === prevTime.type;
+        return !prevTimeIsADuplicate;
+    });
+}
+function integrateScreenEvents(times, screenEvents) {
+    var allTimes = times
+        .concat(screenEvents)
+        .sort(function (a, b) { return a.time.getTime() - b.time.getTime(); });
+    return allTimes.filter(function (current, index) {
+        var prev = allTimes[index - 1];
+        var prevType = prev ? prev.type : 'none';
+        // Remove stop after hide
+        if (prevType === 'hide' && current.type === 'stop') {
+            return false;
+        }
+        // Remove show after start
+        if (prevType === 'start' && current.type === 'show') {
+            return false;
+        }
+        // Only accept start event as event after stop
+        if (prevType === 'stop' &&
+            (current.type === 'hide' || current.type === 'show')) {
+            return false;
+        }
+        return true;
+    });
+}
+function convertScreenToTimeEvents(times) {
+    return times.map(function (timeEv) {
+        if (timeEv.type === 'show') {
+            var event = {
+                time: timeEv.time,
+                type: 'start',
+            };
+            return event;
+        }
+        if (timeEv.type === 'hide') {
+            var event = {
+                time: timeEv.time,
+                type: 'stop',
+            };
+            return event;
+        }
+        return timeEv;
+    });
+}
+/**
+ * Removs a stop time if there is one at the beginning.
+ * This can happen in some in-view libraries when the page
+ * loads elements outside of the screen
+ *
+ *  [ {stop 1 }, { start 2 }, { stop 3 } ]
+ * Would be converted to:
+ *  [ { start 2 }, { stop 3 } ]
+ */
+function removeStopTimeAtBeginningIfPresent(times) {
+    if (times.length > 0 && times[0].type === 'stop') {
+        return times.slice(1);
+    }
+    return times;
+}
+/**
+ * Appends a stop time if there is no end to the tracking.
+ * This can happen if a user closes her browser while an
+ * impression is inscreen.
+ *
+ *  [ { start 1 } ]
+ * Would be converted to:
+ *  [ { start 1 }, { end 1 } ]
+ */
+function appendStopTimeIfNotPresent(times, now, maxIdleTime) {
+    if (now === void 0) { now = new Date(); }
+    if (!(now instanceof Date)) {
+        throw Error('Now must be of the Date type. Are you mapping?');
+    }
+    if (hasFinalStopTime(times)) {
+        return times;
+    }
+    var lastTimeEvent = times[times.length - 1];
+    var maxTime = lastTimeEvent
+        ? new Date(lastTimeEvent.time.getTime() + maxIdleTime)
+        : now;
+    // Add a stop event with whichever is smaller: the maxTime or current time
+    return times.concat([{ type: 'stop', time: maxTime < now ? maxTime : now }]);
+}
+/**
+ * Sets any values that are unrealistically high to zero.
+ */
+function discardUnrealisticallyHighInscreen(inscreenTime) {
+    var twoHours = 2 * 60 * 60 * 1000;
+    return inscreenTime < twoHours ? inscreenTime : 0;
+}
+exports.discardUnrealisticallyHighInscreen = discardUnrealisticallyHighInscreen;
+/**
+ * Adds together all the intervals that were recorded
+ * while an impression was inscreen.
+ */
+function sumStartAndStopTimes(times) {
+    return times.reduce(function (total, _a) {
+        var type = _a.type, time = _a.time;
+        if (type === 'start') {
+            return total - time.getTime();
+        }
+        return total + time.getTime();
+    }, 0);
+}
+/**
+ * Calculates the total inscreen time in milliseconds from
+ * a list of start and end times.
+ */
+function calculateEventTime(input) {
+    if (!input.times || input.times.length === 0) {
+        return 0;
+    }
+    var times = integrateScreenEvents(input.times, input.screenEvents || []);
+    times = convertScreenToTimeEvents(times);
+    times = appendStopTimeIfNotPresent(times, input.now || new Date(), input.maxIdleTime || 10000);
+    times = mergeDuplicateTimesTogether(times);
+    var cleanedInterval = removeStopTimeAtBeginningIfPresent(times);
+    var summedInterval = sumStartAndStopTimes(cleanedInterval);
+    var positiveInterval = Math.max(0, summedInterval);
+    var realisticInterval = discardUnrealisticallyHighInscreen(positiveInterval);
+    return realisticInterval;
+}
+exports.calculateEventTime = calculateEventTime;
+//# sourceMappingURL=event-time.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/general-data.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/general-data.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = __webpack_require__(/*! ../config/config */ "./node_modules/@aller/blink/lib/config/config.js");
+function generalData(state) {
+    return {
+        pageView: state.general.pageView,
+        referrer: state.general.referrer,
+        site: state.general.site,
+        userId: state.general.userId,
+        version: config_1.VERSION,
+    };
+}
+exports.default = generalData;
+//# sourceMappingURL=general-data.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/get-id-from-url.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/get-id-from-url.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var external_id_1 = __importDefault(__webpack_require__(/*! @aller/external-id */ "./node_modules/@aller/external-id/lib/index.js"));
+function getIdFromUrl(url, fallbackId) {
+    try {
+        return external_id_1.default(url);
+    }
+    catch (e) {
+        return fallbackId;
+    }
+}
+exports.default = getIdFromUrl;
+//# sourceMappingURL=get-id-from-url.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/player-sticky.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/player-sticky.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var sort_1 = __webpack_require__(/*! ./sort */ "./node_modules/@aller/blink/lib/utils/sort.js");
+/**
+ * @function processSticky
+ * @returns array of videowatch events with filled data
+ * about player stickiness (if it's minimized or not)
+ */
+function modifyEventArrayWithStickyInfo(playerId, players, videoWatches) {
+    var playerEvents = players[playerId] || [];
+    var stickyEvents = playerEvents
+        .filter(function (e) { return e.type === 'sticky'; })
+        .sort(sort_1.byTime);
+    return videoWatches.map(function (v) {
+        return modifyEventWithStickyInfo(v, stickyEvents, videoWatches);
+    });
+}
+exports.modifyEventArrayWithStickyInfo = modifyEventArrayWithStickyInfo;
+function modifyEventWithStickyInfo(currentVideoWatch, stickyEvents, videoWatches) {
+    var stopEvent = Object.assign({}, currentVideoWatch.stopEvent);
+    var previousSticky = stickyEvents.filter(function (s) { return s.time.getTime() <= stopEvent.time.getTime(); });
+    var lastStickyEvent = previousSticky[previousSticky.length - 1];
+    if (lastStickyEvent) {
+        stopEvent.sticky = lastStickyEvent.sticky;
+        if (lastStickyEvent.closed) {
+            var alreadyBeenStopped = playerAlreadyHasBeenStopped(videoWatches, lastStickyEvent, currentVideoWatch);
+            if (!alreadyBeenStopped) {
+                stopEvent.reason = 'stickyClosed';
+            }
+        }
+    }
+    else {
+        stopEvent.sticky = false;
+    }
+    return __assign({}, currentVideoWatch, { stopEvent: stopEvent });
+}
+/**
+ * @function playerAlreadyHasBeenStopped
+ * @returns if player already has been stopped previously,
+ * after firing 'sticky closed' event,
+ * trying to find video stop event earlier than current event
+ * but later then last sticky event, because
+ * we want to send 'stickyClosed' reason only for first stop event
+ */
+function playerAlreadyHasBeenStopped(videoWatches, lastStickyEvent, v) {
+    var currentStopTime = v.stopEvent.time.getTime();
+    var lastStickyEventTime = lastStickyEvent.time.getTime();
+    return videoWatches.some(function (f) {
+        return (f.stopEvent.time.getTime() > lastStickyEventTime &&
+            f.stopEvent.time.getTime() < currentStopTime);
+    });
+}
+//# sourceMappingURL=player-sticky.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/player.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/player.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getUniqueVideoIdsForPlayer(events, playerId) {
+    var filteredEvents = events.filter(function (ev) { return ev.playerId === playerId; });
+    var uniqueIds = Object.keys(filteredEvents.reduce(function (acc, curr) {
+        acc[curr.videoId] = true;
+        return acc;
+    }, {}));
+    return uniqueIds;
+}
+exports.getUniqueVideoIdsForPlayer = getUniqueVideoIdsForPlayer;
+//# sourceMappingURL=player.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/sort.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/sort.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function byTime(a, b) {
+    return a.time.getTime() - b.time.getTime();
+}
+exports.byTime = byTime;
+//# sourceMappingURL=sort.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/uuid.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/uuid.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/* tslint:disable */
+Object.defineProperty(exports, "__esModule", { value: true });
+var uuidDict = {};
+/**
+ * Gives a unique but consistent id for each key.
+ * Saves the uuid, so if several system is using this, they get the same value!
+ */
+function generateUUID(key) {
+    if (key === void 0) { key = ''; }
+    if (key && key in uuidDict) {
+        return uuidDict[key];
+    }
+    // Public Domain/MIT
+    var d = new Date().getTime();
+    if (typeof performance !== 'undefined' &&
+        typeof performance.now === 'function') {
+        d += performance.now(); // use high-precision timer if available
+    }
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+    uuidDict[key] = uuid;
+    return uuid;
+}
+exports.default = generateUUID;
+//# sourceMappingURL=uuid.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/blink/lib/utils/video-event-time.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/blink/lib/utils/video-event-time.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var PLAYER_TIMER_STATES;
+(function (PLAYER_TIMER_STATES) {
+    PLAYER_TIMER_STATES["RUNNING"] = "RUNNING";
+    PLAYER_TIMER_STATES["STOPPED"] = "STOPPED";
+})(PLAYER_TIMER_STATES = exports.PLAYER_TIMER_STATES || (exports.PLAYER_TIMER_STATES = {}));
+var PLAYER_VISIBILITY_STATES;
+(function (PLAYER_VISIBILITY_STATES) {
+    PLAYER_VISIBILITY_STATES["VISIBLE"] = "VISIBLE";
+    PLAYER_VISIBILITY_STATES["HIDDEN"] = "HIDDEN";
+})(PLAYER_VISIBILITY_STATES = exports.PLAYER_VISIBILITY_STATES || (exports.PLAYER_VISIBILITY_STATES = {}));
+function calculateVideoEventTime(times, videoId, players, playerId, time) {
+    if (!times || times.length === 0) {
+        return [];
+    }
+    var forSpecificVideo = times.filter(function (t) { return t.videoId === videoId && t.playerId === playerId; });
+    var playerEvents = players[playerId] || [];
+    var events = playerEvents.concat(forSpecificVideo);
+    var filtered = filterValidEvents(events);
+    var result = filtered.reduce(function (all, curr, i, source) {
+        // When a stop occurs, create a new event, and calculate time from start
+        if (curr.type === 'stop' || curr.type === 'hidden') {
+            var timestamp = i > 0 ? curr.time.getTime() - source[i - 1].time.getTime() : 0;
+            all.push({
+                watchTime: timestamp,
+                startEvent: source[i - 1],
+                stopEvent: curr,
+            });
+        }
+        return all;
+    }, []);
+    return result;
+}
+exports.calculateVideoEventTime = calculateVideoEventTime;
+function filterValidEvents(times) {
+    var currentState = PLAYER_TIMER_STATES.STOPPED;
+    var currentVisibility = PLAYER_VISIBILITY_STATES.HIDDEN;
+    var sorted = times.sort(function (a, b) { return a.time.getTime() - b.time.getTime(); });
+    return sorted.filter(function (t) {
+        if (currentState === PLAYER_TIMER_STATES.RUNNING) {
+            if (currentVisibility === PLAYER_VISIBILITY_STATES.VISIBLE) {
+                if (t.type === 'hidden') {
+                    currentVisibility = PLAYER_VISIBILITY_STATES.HIDDEN;
+                    return true;
+                }
+                if (t.type === 'stop') {
+                    currentState = PLAYER_TIMER_STATES.STOPPED;
+                    return true;
+                }
+            }
+            else {
+                if (t.type === 'shown') {
+                    currentVisibility = PLAYER_VISIBILITY_STATES.VISIBLE;
+                    return true;
+                }
+            }
+        }
+        if (currentState === PLAYER_TIMER_STATES.STOPPED) {
+            if (currentVisibility === PLAYER_VISIBILITY_STATES.VISIBLE) {
+                if (t.type === 'start') {
+                    currentState = PLAYER_TIMER_STATES.RUNNING;
+                    return true;
+                }
+            }
+            else {
+                if (t.type === 'shown') {
+                    currentVisibility = PLAYER_VISIBILITY_STATES.VISIBLE;
+                    return false;
+                }
+                if (t.type === 'start') {
+                    currentState = PLAYER_TIMER_STATES.RUNNING;
+                    return false;
+                }
+            }
+        }
+    });
+}
+//# sourceMappingURL=video-event-time.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/get-fallback-id.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/get-fallback-id.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = getFallbackId;
+
+var _md = _interopRequireDefault(__webpack_require__(/*! md5 */ "./node_modules/md5/md5.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/**
+ * Creates an ID we couldn't find one in the URL.
+ *
+ * Example:
+ * http://www.vpn.no/kampreferat/2015/06/vif-rosenborg-1-2/ => vpn.no/d100ef4112c7dea498d8ed8cbe2f0053
+ *
+ */
+function getFallbackId(host, url) {
+  return "".concat(host, "/").concat((0, _md["default"])(url));
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/get-hash-id.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/get-hash-id.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = getHashId;
+
+var _regexp = __webpack_require__(/*! ./regexp */ "./node_modules/@aller/external-id/lib/helpers/regexp.js");
+
+var _includes = _interopRequireDefault(__webpack_require__(/*! ./includes */ "./node_modules/@aller/external-id/lib/helpers/includes.js"));
+
+var _startsWith = _interopRequireDefault(__webpack_require__(/*! ./starts-with */ "./node_modules/@aller/external-id/lib/helpers/starts-with.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/**
+ * Parses the query params to find the external article ID.
+ */
+function getHashId(host, hash) {
+  // Only let through supported hash IDs
+  if (!(0, _includes["default"])(hash, '/') && !(0, _startsWith["default"])(hash, '#event=')) {
+    return false;
+  } // Look for candidates
+
+
+  var candidates = hash.split(_regexp.HASH_SPLIT).filter(findCandidates);
+  var id; // Only one candidate, clean it.
+
+  if (candidates.length === 1) {
+    id = cleanId(candidates[0]);
+  } // Multiple candidates, decide on one and clean it.
+
+
+  if (candidates.length > 1) {
+    var pickedId = pickId(candidates);
+    id = cleanId(pickedId);
+  } // Id found in hash, create ID from it.
+
+
+  if (id) {
+    return "".concat(host, "/").concat(id);
+  } // No ID found in hash
+
+
+  return false;
+}
+/**
+ * Check if every candidate looks like something that could be an ID.
+ */
+
+
+function findCandidates(part) {
+  // Contains at least 5 numbers and possibly a dot.
+  if (_regexp.IS_NUMERIC_ID.test(part)) {
+    return true;
+  }
+
+  if (_regexp.IS_SHORT_HASH_ID.test(part)) {
+    return true;
+  }
+
+  return false;
+}
+/**
+ * Tries to clean up the IDs.
+ */
+
+
+function cleanId(id) {
+  // Match the correct part of an ID candidate to clean it.
+  var numericId = _regexp.IS_NUMERIC_ID.exec(id); // Plain numeric IDs are OK
+
+
+  if (numericId && numericId.length !== 0) {
+    return numericId[0];
+  } // The ID is already fine.
+
+
+  return id;
+}
+/**
+ * Picks the best ID from an array of ID candidates.
+ */
+
+
+function pickId(candidates) {
+  // Be stupid and only pick the first ID.
+  return candidates.shift();
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/get-host.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/get-host.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = getHost;
+
+var _includes = _interopRequireDefault(__webpack_require__(/*! ./includes */ "./node_modules/@aller/external-id/lib/helpers/includes.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+// List of SLDs we support
+var SECOND_LEVEL_DOMAINS = ['.co.uk', // Well, not a SLDs but..
+'.blogspot.com', '.wordpress.com'];
+/**
+ * Cleans the hostname so we only have domain and TLD, except for blogspot URLs.
+ *
+ * Example:
+ * www.nrk.no => nrk.no
+ * torildsmat.blogspot.com => torildsmat.blogspot.com
+ */
+
+function getHost() {
+  var hostname = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  var splitHost = hostname.split('.');
+
+  if (splitHost.length === 1) {
+    return '';
+  }
+
+  if (splitHost.length === 3) {
+    if (isSLDHost(hostname)) {
+      return hostname;
+    }
+
+    return "".concat(splitHost[1], ".").concat(splitHost[2]);
+  }
+
+  return hostname.replace('www.', '');
+}
+
+function isSLDHost(host) {
+  return SECOND_LEVEL_DOMAINS.some(function (sld) {
+    return (0, _includes["default"])(host, sld);
+  });
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/get-path-id.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/get-path-id.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = getPathId;
+
+var _regexp = __webpack_require__(/*! ./regexp */ "./node_modules/@aller/external-id/lib/helpers/regexp.js");
+
+var _includes = _interopRequireDefault(__webpack_require__(/*! ./includes */ "./node_modules/@aller/external-id/lib/helpers/includes.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+/**
+ * Parses the URL path to find the external article ID.
+ */
+function getPathId(host, path) {
+  // Clean the URL, split on space and look for potential candidates.
+  var candidates = path.replace(_regexp.TRIM_EXTENSION, '').replace(_regexp.CLEAN_CHARS, ' ').split(' ').filter(function (pathPart) {
+    return findCandidates(pathPart, path);
+  }).reverse();
+  var id; // Only one candidate, clean it.
+
+  if (candidates.length === 1) {
+    id = cleanId(candidates[0]);
+  } // Multiple candidates, decide on one and clean it.
+
+
+  if (candidates.length > 1) {
+    var pickedId = pickId(candidates, path);
+    id = cleanId(pickedId);
+  } // Id found in path, create ID from it.
+
+
+  if (id) {
+    return "".concat(host, "/").concat(id);
+  } // No ID found in path.
+
+
+  return false;
+}
+/**
+ * Check if every candidate looks like something that could be an ID.
+ */
+
+
+function findCandidates(pathPart, path) {
+  // Round numbers are most likely not IDs. It can happen, but it's better to
+  // generate a fallback ID in these cases rather than creating a incorrect ID.
+  if (_regexp.IS_ROUND_NUMBER.test(pathPart)) {
+    return false;
+  } // Looks like a year (2000, ... , 2099), consider not a candidate.
+
+
+  if (_regexp.IS_YEAR.test(pathPart)) {
+    return false;
+  } // Looks like a hash
+
+
+  if (_regexp.IS_HASH_ID.test(pathPart)) {
+    return true;
+  } // Contains at least 5 numbers and possibly a dot and is in a position where it's likely to be an ID.
+
+
+  if (_regexp.IS_NUMERIC_ID.test(pathPart) && isInIdPosition(pathPart, path)) {
+    return true;
+  } // Is combination ID from sites that use ../i/<combination_id>/..-format
+
+
+  if (isCombinationId(pathPart, path, '/i/', 6)) {
+    return true;
+  } // Is combination ID from sites that use ../a/<combination_id>/..-format
+
+
+  if (isCombinationId(pathPart, path, '/a/', 6)) {
+    return true;
+  } // Is combination ID from sites that use ../video/<combination_id>/..-format
+
+
+  if (isCombinationId(pathPart, path, '/video/', 11)) {
+    return true;
+  }
+
+  if ((0, _includes["default"])(path, '/video/') && _regexp.IS_VIDEO_ID.test(pathPart)) {
+    return true;
+  } // Not a candidate.
+
+
+  return false;
+}
+/**
+ * Tries to clean up the IDs.
+ */
+
+
+function cleanId(id) {
+  // NRK-style ID: 1.14061418
+  if ((0, _includes["default"])(id, '1.') && id.charAt(1) === '.') {
+    return id;
+  } // Svalbardposten-style ID: 19.9886
+
+
+  if ((0, _includes["default"])(id, '19.') && id.charAt(2) === '.') {
+    var splitId = id.split('.');
+    return splitId[1];
+  } // If the ID has a dot, pick the correct part of it.
+  // It could also be a number (100.000), so make sure that the ID part has at
+  // least length of five, otherwise don't consider it as an ID anymore.
+
+
+  if ((0, _includes["default"])(id, '.')) {
+    return id.split('.').reduce(function (currentId, candidate) {
+      if (candidate.length >= 5) {
+        return candidate;
+      }
+
+      return false;
+    });
+  } // Match the correct part of an ID candidate to clean it.
+
+
+  var hashId = _regexp.IS_HASH_ID.exec(id);
+
+  var numericId = _regexp.IS_NUMERIC_ID.exec(id);
+
+  var numericIdWithTrailingChar = _regexp.IS_NUMERIC_TRAILING_CHAR_ID.exec(id);
+
+  var numericIdWithLeadingChar = _regexp.IS_NUMERIC_LEADING_CHAR_ID.exec(id); // If hash ID, keep the entire thing.
+
+
+  if (hashId && hashId.length !== 0) {
+    return hashId[0];
+  } // IDs with a single trailing char (12345b) are OK
+
+
+  if (numericIdWithTrailingChar && numericIdWithTrailingChar.length !== 0) {
+    return numericIdWithTrailingChar[0];
+  } // IDs with a single leading char (b12345) are OK
+
+
+  if (numericIdWithLeadingChar && numericIdWithLeadingChar.length !== 0 && id.length === numericIdWithLeadingChar[0].length) {
+    return numericIdWithLeadingChar[0];
+  } // Numeric IDs are OK
+
+
+  if (numericId && numericId.length !== 0) {
+    return numericId[0];
+  } // The ID is already fine.
+
+
+  return id;
+}
+/**
+ * Picks the best ID from an array of ID candidates.
+ */
+
+
+function pickId(candidates, path) {
+  // Pick the first ID as the best candidate so far.
+  var id = candidates.shift();
+  candidates.forEach(function (candidate) {
+    var numericId = _regexp.IS_NUMERIC_ID.exec(candidate); // Prefer numeric IDs
+
+
+    if (numericId && numericId.length !== 0) {
+      var _numericId = _slicedToArray(numericId, 1),
+          potentialId = _numericId[0]; // But only if they are longer than the previously selected ID and does not look like a date
+
+
+      if (id.length < potentialId.length) {
+        id = potentialId;
+      }
+    }
+  });
+  return id;
+}
+/**
+ * Handles combination IDs from sites that use ../<idIdentification>/<combination_id>/..-format
+ *
+ * Examples:
+ * https://www.vg.no/sport/alpint/i/Xwe06W/jesper-saltvik-pedersen-tok-norges-foerste-gull => vg.no/Xwe06W
+ * http://www.aftonbladet.se/sportbladet/hockey/a/xREzoR/rankning-25-basta-varvningarna-i-shl => aftonbladet.se/xREzoR
+ * https://www.dagbladet.no/video/bmJszChBR5M => dagbladet.no/bmJszChBR5M
+ */
+
+
+function isCombinationId(pathPart, path, idIdentification, idLength) {
+  if ((0, _includes["default"])(path, idIdentification)) {
+    var position = path.indexOf(idIdentification);
+    var sliceSize = position + idIdentification.length;
+    var slicedId = path.slice(sliceSize, sliceSize + idLength);
+
+    if ((0, _includes["default"])(slicedId, '-') || (0, _includes["default"])(slicedId, '_')) {
+      return false;
+    }
+
+    if (slicedId === pathPart) {
+      return true;
+    } // In some cases, the ID is only 5 chars
+
+
+    if (slicedId.slice(0, 5) === pathPart) {
+      return true;
+    }
+  }
+
+  return false;
+}
+/**
+ * Check if the candidate is positioned in the path where it's likely to find an ID.
+ */
+
+
+function isInIdPosition(pathPart, path) {
+  var numericId = _regexp.IS_NUMERIC_ID.exec(pathPart);
+
+  var id = pathPart;
+
+  if (numericId) {
+    var _numericId2 = _slicedToArray(numericId, 1);
+
+    id = _numericId2[0];
+  }
+
+  var startIndex = path.indexOf(id);
+  var endIndex = startIndex + id.length;
+  var charBefore = path.charAt(startIndex - 1);
+  var charAfter = path.charAt(endIndex); // Surrounded by dashes, most likely the part of a title:
+  // /music/2014/may/12/fan-led-aphex-twin-kickstarter-campaign-raises-67424-caustic-window
+
+  if (charBefore === '-' && charAfter === '-') {
+    return false;
+  }
+
+  return true;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/get-query-id.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/get-query-id.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = getQueryId;
+
+var _regexp = __webpack_require__(/*! ./regexp */ "./node_modules/@aller/external-id/lib/helpers/regexp.js");
+
+var _includes = _interopRequireDefault(__webpack_require__(/*! ./includes */ "./node_modules/@aller/external-id/lib/helpers/includes.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/**
+ * Parses the query params to find the external article ID.
+ */
+function getQueryId(host, query) {
+  // Look for candidates
+  var candidates = Object.keys(query).filter(findCandidates);
+  var id; // Only one candidate, clean it.
+
+  if (candidates.length === 1) {
+    id = cleanId(query[candidates[0]]);
+  } // Id found in query params, create ID from it.
+
+
+  if (id) {
+    return "".concat(host, "/").concat(id);
+  } // No ID found in query params
+
+
+  return false;
+}
+/**
+ * Check if every candidate looks like something that could be an ID.
+ */
+
+
+function findCandidates(key) {
+  // We know this isn't a proper id
+  if ((0, _includes["default"])(key, 'srwid') || (0, _includes["default"])(key, 'FylkeId') || (0, _includes["default"])(key, 'WT.mc_id')) {
+    return false;
+  } // If the key is something with ID, it probably is one.
+
+
+  if (key === 'id' || (0, _includes["default"])(key, '_id') || (0, _includes["default"])(key, 'ID') || (0, _includes["default"])(key, 'Id')) {
+    return true;
+  } // If the key is something with artikkel, it probably is a ID.
+
+
+  if ((0, _includes["default"])(key, 'artikkel')) {
+    return true;
+  }
+
+  if (key === 'p' || key === 'playVideo') {
+    return true;
+  }
+
+  return false;
+}
+/**
+ * Tries to clean up the IDs.
+ */
+
+
+function cleanId(id) {
+  // Match the correct part of an ID candidate to clean it.
+  var numericId = _regexp.IS_NUMERIC_ID.exec(id);
+
+  var videoId = _regexp.IS_VIDEO_ID.exec(id); // Plain numeric IDs are OK
+
+
+  if (numericId && numericId.length !== 0) {
+    return numericId[0];
+  } // Video IDs are OK
+
+
+  if (videoId && videoId.length !== 0) {
+    return videoId[0];
+  } // Cleans IDs from paths with broken queries: ?p=4216?xtor=RSS-2
+
+
+  if ((0, _includes["default"])(id, '?')) {
+    return id.split('?').filter(function (part) {
+      return !isNaN(part);
+    }) // eslint-disable-line no-restricted-globals
+    .reduce(function (a, b) {
+      return a.length > b.length;
+    });
+  } // The ID is already fine.
+
+
+  return id;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/includes.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/includes.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = includes;
+
+function includes(str, value) {
+  return str.indexOf(value) > -1;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/is-valid-url.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/is-valid-url.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = isValidUrl;
+
+var _tlds = _interopRequireDefault(__webpack_require__(/*! tlds */ "./node_modules/tlds/index.js"));
+
+var _includes = _interopRequireDefault(__webpack_require__(/*! ./includes */ "./node_modules/@aller/external-id/lib/helpers/includes.js"));
+
+var _startsWith = _interopRequireDefault(__webpack_require__(/*! ./starts-with */ "./node_modules/@aller/external-id/lib/helpers/starts-with.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/**
+ * Ensures that the URL is valid (to us) for creating an ID.
+ */
+function isValidUrl() {
+  var urlData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  // Not an object
+  if (!isObject(urlData)) {
+    return false;
+  } // Empty object
+
+
+  if (Object.keys(urlData).length === 0) {
+    return false;
+  }
+
+  var hash = urlData.hash,
+      hostname = urlData.hostname,
+      path = urlData.path,
+      pathname = urlData.pathname; // Not a valid host
+
+  if (!isValidHost(hostname)) {
+    return false;
+  } // Some URLs starts this way:
+  // https://www.godt.no/#!/artikkel/24359727/bocuse-d-or-europa-2018-norges-christian-andre-pettersen-tok-gull
+
+
+  if (hash && (0, _startsWith["default"])(hash, '#!/artikkel')) {
+    return true;
+  } // Some URLs starts this way:
+  // http://events.vglive.no/#event=2908
+
+
+  if (hash && (0, _startsWith["default"])(hash, '#event=')) {
+    return true;
+  } // Not path present, we want articles not front pages
+
+
+  if (path === '/' || pathname === '//') {
+    return false;
+  } // Valid URL
+
+
+  return true;
+}
+/**
+ * Inspects the hostname to validate the URL.
+ */
+
+
+function isValidHost(host) {
+  if (!host) {
+    return false;
+  } // Starts with .
+
+
+  if (host.charAt(0) === '.') {
+    return false;
+  } // Host is missing dot
+
+
+  if (!(0, _includes["default"])(host, '.')) {
+    return false;
+  }
+
+  var splittedHost = host.split('.');
+  var tld = splittedHost[splittedHost.length - 1]; // Not a valid TLD
+
+  if (!(0, _includes["default"])(_tlds["default"], tld)) {
+    return false;
+  } // Host is fine
+
+
+  return true;
+}
+/**
+ * Check if an object is a real object ({}) and not an array, function, new Number etc.
+ */
+
+
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/regexp.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/regexp.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.IS_SHORT_HASH_ID = exports.HASH_SPLIT = exports.IS_VIDEO_ID = exports.IS_YEAR = exports.IS_HASH_ID = exports.IS_NUMERIC_TRAILING_CHAR_ID = exports.IS_NUMERIC_LEADING_CHAR_ID = exports.IS_ROUND_NUMBER = exports.IS_NUMERIC_ID = exports.CLEAN_CHARS = exports.TRIM_EXTENSION = void 0;
+var TRIM_EXTENSION = /\.[a-z]*$|\.php3$/;
+exports.TRIM_EXTENSION = TRIM_EXTENSION;
+var CLEAN_CHARS = /[_\-/]/g;
+exports.CLEAN_CHARS = CLEAN_CHARS;
+var IS_NUMERIC_ID = /([0-9]+(.)?([0-9]{4,}))/;
+exports.IS_NUMERIC_ID = IS_NUMERIC_ID;
+var IS_ROUND_NUMBER = /^(?:[0-9]{1}[0]+)$/;
+exports.IS_ROUND_NUMBER = IS_ROUND_NUMBER;
+var IS_NUMERIC_TRAILING_CHAR_ID = /[0-9.]{5,}[a-z]{1}/;
+exports.IS_NUMERIC_TRAILING_CHAR_ID = IS_NUMERIC_TRAILING_CHAR_ID;
+var IS_NUMERIC_LEADING_CHAR_ID = /[a-z]{1}[0-9.]{5,}/;
+exports.IS_NUMERIC_LEADING_CHAR_ID = IS_NUMERIC_LEADING_CHAR_ID;
+var IS_HASH_ID = /[a-f0-9]{20,}/;
+exports.IS_HASH_ID = IS_HASH_ID;
+var IS_YEAR = /^(?:20\d{2})+$/;
+exports.IS_YEAR = IS_YEAR;
+var IS_VIDEO_ID = /([A-Za-z0-9_]){8,}/;
+exports.IS_VIDEO_ID = IS_VIDEO_ID;
+var HASH_SPLIT = /(\/|#event=){1}/;
+exports.HASH_SPLIT = HASH_SPLIT;
+var IS_SHORT_HASH_ID = /([0-9]{4})/;
+exports.IS_SHORT_HASH_ID = IS_SHORT_HASH_ID;
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/helpers/starts-with.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/helpers/starts-with.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = startsWith;
+
+function startsWith(str, search) {
+  return str.substr(0, search.length) === search;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@aller/external-id/lib/index.js":
+/*!******************************************************!*\
+  !*** ./node_modules/@aller/external-id/lib/index.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = getExternalId;
+
+var _url = _interopRequireDefault(__webpack_require__(/*! url */ "./node_modules/url/url.js"));
+
+var _getFallbackId = _interopRequireDefault(__webpack_require__(/*! ./helpers/get-fallback-id */ "./node_modules/@aller/external-id/lib/helpers/get-fallback-id.js"));
+
+var _getHost = _interopRequireDefault(__webpack_require__(/*! ./helpers/get-host */ "./node_modules/@aller/external-id/lib/helpers/get-host.js"));
+
+var _getPathId = _interopRequireDefault(__webpack_require__(/*! ./helpers/get-path-id */ "./node_modules/@aller/external-id/lib/helpers/get-path-id.js"));
+
+var _isValidUrl = _interopRequireDefault(__webpack_require__(/*! ./helpers/is-valid-url */ "./node_modules/@aller/external-id/lib/helpers/is-valid-url.js"));
+
+var _getQueryId = _interopRequireDefault(__webpack_require__(/*! ./helpers/get-query-id */ "./node_modules/@aller/external-id/lib/helpers/get-query-id.js"));
+
+var _getHashId = _interopRequireDefault(__webpack_require__(/*! ./helpers/get-hash-id */ "./node_modules/@aller/external-id/lib/helpers/get-hash-id.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+/**
+ * Takes an URL and returns an ID.
+ */
+function getExternalId() {
+  var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+  if (url === '') {
+    throw new Error('No URL provided');
+  }
+
+  var parsedUrl = _url["default"].parse(url, true);
+
+  if (!(0, _isValidUrl["default"])(parsedUrl)) {
+    throw new Error('Not a valid URL format for generating ID');
+  }
+
+  var hostname = parsedUrl.hostname,
+      query = parsedUrl.query,
+      pathname = parsedUrl.pathname,
+      hash = parsedUrl.hash,
+      protocol = parsedUrl.protocol;
+  var host = (0, _getHost["default"])(hostname);
+  var id; // Has query params, check for ID
+
+  if (Object.keys(query).length !== 0) {
+    id = (0, _getQueryId["default"])(host, query);
+  } // Do another validity check without query params if we dont find queryId
+
+
+  if (!id && !(0, _isValidUrl["default"])({
+    hash: hash,
+    hostname: hostname,
+    path: pathname,
+    pathname: pathname
+  })) {
+    throw new Error('Not a valid URL format for generating ID');
+  } // Has hash, check for ID
+
+
+  if (!id && hash) {
+    id = (0, _getHashId["default"])(host, hash);
+  } // Check for ID in path
+
+
+  if (!id) {
+    id = (0, _getPathId["default"])(host, pathname);
+  } // Return the ID if we found one.
+
+
+  if (id) {
+    return id;
+  } // Remove query params and hash if present.
+
+
+  var cleanUrl = "".concat(protocol, "//").concat(hostname).concat(pathname); // Use fallback ID when no ID is present in URL
+
+  return (0, _getFallbackId["default"])(host, cleanUrl);
+}
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js":
 /*!***********************************************************************!*\
   !*** ./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js ***!
@@ -320,6 +5275,250 @@ module.exports = _createClass;
 
 /***/ }),
 
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/assertThisInitialized.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/assertThisInitialized.js ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _assertThisInitialized; });
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/classCallCheck.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/classCallCheck.js ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _classCallCheck; });
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/createClass.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/createClass.js ***!
+  \************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _createClass; });
+/* harmony import */ var _core_js_object_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core-js/object/define-property */ "./node_modules/@babel/runtime-corejs2/core-js/object/define-property.js");
+/* harmony import */ var _core_js_object_define_property__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_object_define_property__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor) descriptor.writable = true;
+
+    _core_js_object_define_property__WEBPACK_IMPORTED_MODULE_0___default()(target, descriptor.key, descriptor);
+  }
+}
+
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+  if (staticProps) _defineProperties(Constructor, staticProps);
+  return Constructor;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/extends.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/extends.js ***!
+  \********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _extends; });
+/* harmony import */ var _core_js_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core-js/object/assign */ "./node_modules/@babel/runtime-corejs2/core-js/object/assign.js");
+/* harmony import */ var _core_js_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_object_assign__WEBPACK_IMPORTED_MODULE_0__);
+
+function _extends() {
+  _extends = _core_js_object_assign__WEBPACK_IMPORTED_MODULE_0___default.a || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/getPrototypeOf.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/getPrototypeOf.js ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _getPrototypeOf; });
+/* harmony import */ var _core_js_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core-js/object/get-prototype-of */ "./node_modules/@babel/runtime-corejs2/core-js/object/get-prototype-of.js");
+/* harmony import */ var _core_js_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core-js/object/set-prototype-of */ "./node_modules/@babel/runtime-corejs2/core-js/object/set-prototype-of.js");
+/* harmony import */ var _core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_1__);
+
+
+function _getPrototypeOf(o) {
+  _getPrototypeOf = _core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_1___default.a ? _core_js_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_0___default.a : function _getPrototypeOf(o) {
+    return o.__proto__ || _core_js_object_get_prototype_of__WEBPACK_IMPORTED_MODULE_0___default()(o);
+  };
+  return _getPrototypeOf(o);
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/inherits.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/inherits.js ***!
+  \*********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _inherits; });
+/* harmony import */ var _core_js_object_create__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core-js/object/create */ "./node_modules/@babel/runtime-corejs2/core-js/object/create.js");
+/* harmony import */ var _core_js_object_create__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_object_create__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _setPrototypeOf__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./setPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/esm/setPrototypeOf.js");
+
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function");
+  }
+
+  subClass.prototype = _core_js_object_create__WEBPACK_IMPORTED_MODULE_0___default()(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object(_setPrototypeOf__WEBPACK_IMPORTED_MODULE_1__["default"])(subClass, superClass);
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/possibleConstructorReturn.js":
+/*!**************************************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/possibleConstructorReturn.js ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _possibleConstructorReturn; });
+/* harmony import */ var _helpers_esm_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../helpers/esm/typeof */ "./node_modules/@babel/runtime-corejs2/helpers/esm/typeof.js");
+/* harmony import */ var _assertThisInitialized__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./assertThisInitialized */ "./node_modules/@babel/runtime-corejs2/helpers/esm/assertThisInitialized.js");
+
+
+function _possibleConstructorReturn(self, call) {
+  if (call && (Object(_helpers_esm_typeof__WEBPACK_IMPORTED_MODULE_0__["default"])(call) === "object" || typeof call === "function")) {
+    return call;
+  }
+
+  return Object(_assertThisInitialized__WEBPACK_IMPORTED_MODULE_1__["default"])(self);
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/setPrototypeOf.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/setPrototypeOf.js ***!
+  \***************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _setPrototypeOf; });
+/* harmony import */ var _core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core-js/object/set-prototype-of */ "./node_modules/@babel/runtime-corejs2/core-js/object/set-prototype-of.js");
+/* harmony import */ var _core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_0__);
+
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = _core_js_object_set_prototype_of__WEBPACK_IMPORTED_MODULE_0___default.a || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime-corejs2/helpers/esm/typeof.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime-corejs2/helpers/esm/typeof.js ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _typeof; });
+/* harmony import */ var _core_js_symbol_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../core-js/symbol/iterator */ "./node_modules/@babel/runtime-corejs2/core-js/symbol/iterator.js");
+/* harmony import */ var _core_js_symbol_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_symbol_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _core_js_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../core-js/symbol */ "./node_modules/@babel/runtime-corejs2/core-js/symbol.js");
+/* harmony import */ var _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_core_js_symbol__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function _typeof2(obj) { if (typeof _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a === "function" && typeof _core_js_symbol_iterator__WEBPACK_IMPORTED_MODULE_0___default.a === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a === "function" && obj.constructor === _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a && obj !== _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
+
+function _typeof(obj) {
+  if (typeof _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a === "function" && _typeof2(_core_js_symbol_iterator__WEBPACK_IMPORTED_MODULE_0___default.a) === "symbol") {
+    _typeof = function _typeof(obj) {
+      return _typeof2(obj);
+    };
+  } else {
+    _typeof = function _typeof(obj) {
+      return obj && typeof _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a === "function" && obj.constructor === _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a && obj !== _core_js_symbol__WEBPACK_IMPORTED_MODULE_1___default.a.prototype ? "symbol" : _typeof2(obj);
+    };
+  }
+
+  return _typeof(obj);
+}
+
+/***/ }),
+
 /***/ "./node_modules/@babel/runtime-corejs2/helpers/extends.js":
 /*!****************************************************************!*\
   !*** ./node_modules/@babel/runtime-corejs2/helpers/extends.js ***!
@@ -619,6 +5818,66 @@ module.exports = _typeof;
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(/*! regenerator-runtime */ "./node_modules/regenerator-runtime/runtime.js");
+
+
+/***/ }),
+
+/***/ "./node_modules/@soldotno/aller-in-view/dist/@soldotno/aller-in-view.min.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/@soldotno/aller-in-view/dist/@soldotno/aller-in-view.min.js ***!
+  \**********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*!
+ * @soldotno/aller-in-view 3.0.2 - Get notified when a DOM element enters or exits the viewport.
+ * Copyright (c) 2017 Sindre Svendby <sinsvend@gmail.com> - https://github.com/dbmedialab/in-view
+ * License: MIT
+ */
+!function(t,e){ true?module.exports=e():undefined}(this,function(){return function(t){function e(i){if(n[i])return n[i].exports;var r=n[i]={exports:{},id:i,loaded:!1};return t[i].call(r.exports,r,r.exports,e),r.loaded=!0,r.exports}var n={};return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}var r=n(2),o=i(r);t.exports=o.default},function(t,e){function n(t){var e=typeof t;return null!=t&&("object"==e||"function"==e)}t.exports=n},function(t,e,n){"use strict";function i(t){return t&&t.__esModule?t:{default:t}}Object.defineProperty(e,"__esModule",{value:!0});var r=n(3),o=i(r),u=n(4),f=n(9),s=i(f);e.default=function(){if("undefined"!=typeof window){var t=100,e=["scroll","resize","load"],n=null,i={history:[]},r={offset:{},threshold:0,test:u.inViewport},f=!1,c=function(){var r=(0,s.default)(function(){i.history.forEach(function(t){i[t].check()})},t);e.forEach(function(t){return addEventListener(t,r,n)}),window.MutationObserver&&addEventListener("DOMContentLoaded",function(){new MutationObserver(r).observe(document.body,{attributes:!0,childList:!0,subtree:!0})})},l=function(t){var e=arguments.length>1&&void 0!==arguments[1]?arguments[1]:{};f||(c(),f=!0);var n={offset:e.offset||r.offset,threshold:e.threshold||r.threshold,test:e.test||r.test};if("string"==typeof t){var u=[].slice.call(document.querySelectorAll(t));return i.history.indexOf(t)>-1?(i[t].elements=u,i[t].options=n):(i[t]=(0,o.default)(u,n),i.history.push(t)),i[t]}};return l.runExitOnElementsCurrentlyInView=function(){i.history.forEach(function(t){i[t].runExitOnElementsCurrentlyInView()})},l.offset=function(t){if(void 0===t)return r.offset;var e=function(t){return"number"==typeof t};return["top","right","bottom","left"].forEach(e(t)?function(e){return r.offset[e]=t}:function(n){return e(t[n])?r.offset[n]=t[n]:null}),r.offset},l.threshold=function(t){return"number"==typeof t&&t>=0&&t<=1?r.threshold=t:r.threshold},l.test=function(t){return"function"==typeof t?r.test=t:r.test},l.is=function(t){return r.test(t,r)},l.addEventOptions=function(t){return f?(console&&console.warn("in-view.js - can not call the function addEventOptions, after in-view is initialized"),!1):void(n=t)},l.interval=function(e){return f?(console&&console.warn("in-view.js - can not call the function interval, after in-view is initialized"),!1):void(t=e)},l.offset(0),l}}},function(t,e){"use strict";function n(t,e){if(!(t instanceof e))throw new TypeError("Cannot call a class as a function")}Object.defineProperty(e,"__esModule",{value:!0});var i=function(){function t(t,e){for(var n=0;n<e.length;n++){var i=e[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(t,i.key,i)}}return function(e,n,i){return n&&t(e.prototype,n),i&&t(e,i),e}}(),r=function(){function t(e,i){n(this,t),this.options=i,this.elements=e,this.current=[],this.handlers={enter:[],exit:[]},this.singles={enter:[],exit:[]}}return i(t,[{key:"check",value:function(){var t=this;return this.elements.forEach(function(e){var n=t.options.test(e,t.options),i=t.current.indexOf(e),r=i>-1,o=n&&!r,u=!n&&r;o&&(t.current.push(e),t.emit("enter",e)),u&&(t.current.splice(i,1),t.emit("exit",e))}),this}},{key:"runExitOnElementsCurrentlyInView",value:function(){var t=this;this.current.forEach(function(e){t.emit("exit",e)})}},{key:"on",value:function(t,e){return this.handlers[t].push(e),this}},{key:"once",value:function(t,e){return this.singles[t].unshift(e),this}},{key:"off",value:function(t,e){return this.handlers[t]=this.handlers[t].filter(function(t){return t!==e}),this}},{key:"emit",value:function(t,e){for(;this.singles[t].length;)this.singles[t].pop()(e);for(var n=this.handlers[t].length;--n>-1;)this.handlers[t][n](e);return this}}]),t}();e.default=function(t,e){return new r(t,e)}},function(t,e){"use strict";function n(t,e){var n=t.getBoundingClientRect(),i=n.top,r=n.right,o=n.bottom,u=n.left,f=n.width,s=n.height,c={t:o,r:window.innerWidth-u,b:window.innerHeight-i,l:r},l={x:e.threshold*f,y:e.threshold*s},a=c.t>e.offset.top+l.y&&c.b>e.offset.bottom+l.y||c.t<-e.offset.top&&c.b<-e.offset.bottom,d=c.r>e.offset.right+l.x&&c.l>e.offset.left+l.x||c.r<-e.offset.right&&c.l<-e.offset.left;return a&&d}Object.defineProperty(e,"__esModule",{value:!0}),e.inViewport=n},function(t,e){(function(e){var n="object"==typeof e&&e&&e.Object===Object&&e;t.exports=n}).call(e,function(){return this}())},function(t,e,n){var i=n(5),r="object"==typeof self&&self&&self.Object===Object&&self,o=i||r||Function("return this")();t.exports=o},function(t,e,n){function i(t,e,n){function i(e){var n=m,i=b;return m=b=void 0,j=e,g=t.apply(i,n)}function l(t){return j=t,E=setTimeout(h,e),M?i(t):g}function a(t){var n=t-O,i=t-j,r=e-n;return _?c(r,w-i):r}function d(t){var n=t-O,i=t-j;return void 0===O||n>=e||n<0||_&&i>=w}function h(){var t=o();return d(t)?v(t):void(E=setTimeout(h,a(t)))}function v(t){return E=void 0,k&&m?i(t):(m=b=void 0,g)}function p(){void 0!==E&&clearTimeout(E),j=0,m=O=b=E=void 0}function y(){return void 0===E?g:v(o())}function x(){var t=o(),n=d(t);if(m=arguments,b=this,O=t,n){if(void 0===E)return l(O);if(_)return E=setTimeout(h,e),i(O)}return void 0===E&&(E=setTimeout(h,e)),g}var m,b,w,g,E,O,j=0,M=!1,_=!1,k=!0;if("function"!=typeof t)throw new TypeError(f);return e=u(e)||0,r(n)&&(M=!!n.leading,_="maxWait"in n,w=_?s(u(n.maxWait)||0,e):w,k="trailing"in n?!!n.trailing:k),x.cancel=p,x.flush=y,x}var r=n(1),o=n(8),u=n(10),f="Expected a function",s=Math.max,c=Math.min;t.exports=i},function(t,e,n){var i=n(6),r=function(){return i.Date.now()};t.exports=r},function(t,e,n){function i(t,e,n){var i=!0,f=!0;if("function"!=typeof t)throw new TypeError(u);return o(n)&&(i="leading"in n?!!n.leading:i,f="trailing"in n?!!n.trailing:f),r(t,e,{leading:i,maxWait:e,trailing:f})}var r=n(7),o=n(1),u="Expected a function";t.exports=i},function(t,e){function n(t){return t}t.exports=n}])});
+
+/***/ }),
+
+/***/ "./node_modules/charenc/charenc.js":
+/*!*****************************************!*\
+  !*** ./node_modules/charenc/charenc.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var charenc = {
+  // UTF-8 encoding
+  utf8: {
+    // Convert a string to a byte array
+    stringToBytes: function(str) {
+      return charenc.bin.stringToBytes(unescape(encodeURIComponent(str)));
+    },
+
+    // Convert a byte array to a string
+    bytesToString: function(bytes) {
+      return decodeURIComponent(escape(charenc.bin.bytesToString(bytes)));
+    }
+  },
+
+  // Binary encoding
+  bin: {
+    // Convert a string to a byte array
+    stringToBytes: function(str) {
+      for (var bytes = [], i = 0; i < str.length; i++)
+        bytes.push(str.charCodeAt(i) & 0xFF);
+      return bytes;
+    },
+
+    // Convert a byte array to a string
+    bytesToString: function(bytes) {
+      for (var str = [], i = 0; i < bytes.length; i++)
+        str.push(String.fromCharCode(bytes[i]));
+      return str.join('');
+    }
+  }
+};
+
+module.exports = charenc;
 
 
 /***/ }),
@@ -3664,6 +8923,316 @@ for (var i = 0; i < DOMIterables.length; i++) {
 
 /***/ }),
 
+/***/ "./node_modules/crypt/crypt.js":
+/*!*************************************!*\
+  !*** ./node_modules/crypt/crypt.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+(function() {
+  var base64map
+      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+
+  crypt = {
+    // Bit-wise rotation left
+    rotl: function(n, b) {
+      return (n << b) | (n >>> (32 - b));
+    },
+
+    // Bit-wise rotation right
+    rotr: function(n, b) {
+      return (n << (32 - b)) | (n >>> b);
+    },
+
+    // Swap big-endian to little-endian and vice versa
+    endian: function(n) {
+      // If number given, swap endian
+      if (n.constructor == Number) {
+        return crypt.rotl(n, 8) & 0x00FF00FF | crypt.rotl(n, 24) & 0xFF00FF00;
+      }
+
+      // Else, assume array and swap all items
+      for (var i = 0; i < n.length; i++)
+        n[i] = crypt.endian(n[i]);
+      return n;
+    },
+
+    // Generate an array of any length of random bytes
+    randomBytes: function(n) {
+      for (var bytes = []; n > 0; n--)
+        bytes.push(Math.floor(Math.random() * 256));
+      return bytes;
+    },
+
+    // Convert a byte array to big-endian 32-bit words
+    bytesToWords: function(bytes) {
+      for (var words = [], i = 0, b = 0; i < bytes.length; i++, b += 8)
+        words[b >>> 5] |= bytes[i] << (24 - b % 32);
+      return words;
+    },
+
+    // Convert big-endian 32-bit words to a byte array
+    wordsToBytes: function(words) {
+      for (var bytes = [], b = 0; b < words.length * 32; b += 8)
+        bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+      return bytes;
+    },
+
+    // Convert a byte array to a hex string
+    bytesToHex: function(bytes) {
+      for (var hex = [], i = 0; i < bytes.length; i++) {
+        hex.push((bytes[i] >>> 4).toString(16));
+        hex.push((bytes[i] & 0xF).toString(16));
+      }
+      return hex.join('');
+    },
+
+    // Convert a hex string to a byte array
+    hexToBytes: function(hex) {
+      for (var bytes = [], c = 0; c < hex.length; c += 2)
+        bytes.push(parseInt(hex.substr(c, 2), 16));
+      return bytes;
+    },
+
+    // Convert a byte array to a base-64 string
+    bytesToBase64: function(bytes) {
+      for (var base64 = [], i = 0; i < bytes.length; i += 3) {
+        var triplet = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+        for (var j = 0; j < 4; j++)
+          if (i * 8 + j * 6 <= bytes.length * 8)
+            base64.push(base64map.charAt((triplet >>> 6 * (3 - j)) & 0x3F));
+          else
+            base64.push('=');
+      }
+      return base64.join('');
+    },
+
+    // Convert a base-64 string to a byte array
+    base64ToBytes: function(base64) {
+      // Remove non-base-64 characters
+      base64 = base64.replace(/[^A-Z0-9+\/]/ig, '');
+
+      for (var bytes = [], i = 0, imod4 = 0; i < base64.length;
+          imod4 = ++i % 4) {
+        if (imod4 == 0) continue;
+        bytes.push(((base64map.indexOf(base64.charAt(i - 1))
+            & (Math.pow(2, -2 * imod4 + 8) - 1)) << (imod4 * 2))
+            | (base64map.indexOf(base64.charAt(i)) >>> (6 - imod4 * 2)));
+      }
+      return bytes;
+    }
+  };
+
+  module.exports = crypt;
+})();
+
+
+/***/ }),
+
+/***/ "./node_modules/is-buffer/index.js":
+/*!*****************************************!*\
+  !*** ./node_modules/is-buffer/index.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+// The _isBuffer check is for Safari 5-7 support, because it's missing
+// Object.prototype.constructor. Remove this eventually
+module.exports = function (obj) {
+  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
+}
+
+function isBuffer (obj) {
+  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+
+// For Node v0.10 support. Remove this eventually.
+function isSlowBuffer (obj) {
+  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/md5/md5.js":
+/*!*********************************!*\
+  !*** ./node_modules/md5/md5.js ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function(){
+  var crypt = __webpack_require__(/*! crypt */ "./node_modules/crypt/crypt.js"),
+      utf8 = __webpack_require__(/*! charenc */ "./node_modules/charenc/charenc.js").utf8,
+      isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js"),
+      bin = __webpack_require__(/*! charenc */ "./node_modules/charenc/charenc.js").bin,
+
+  // The core
+  md5 = function (message, options) {
+    // Convert to byte array
+    if (message.constructor == String)
+      if (options && options.encoding === 'binary')
+        message = bin.stringToBytes(message);
+      else
+        message = utf8.stringToBytes(message);
+    else if (isBuffer(message))
+      message = Array.prototype.slice.call(message, 0);
+    else if (!Array.isArray(message))
+      message = message.toString();
+    // else, assume byte array already
+
+    var m = crypt.bytesToWords(message),
+        l = message.length * 8,
+        a =  1732584193,
+        b = -271733879,
+        c = -1732584194,
+        d =  271733878;
+
+    // Swap endian
+    for (var i = 0; i < m.length; i++) {
+      m[i] = ((m[i] <<  8) | (m[i] >>> 24)) & 0x00FF00FF |
+             ((m[i] << 24) | (m[i] >>>  8)) & 0xFF00FF00;
+    }
+
+    // Padding
+    m[l >>> 5] |= 0x80 << (l % 32);
+    m[(((l + 64) >>> 9) << 4) + 14] = l;
+
+    // Method shortcuts
+    var FF = md5._ff,
+        GG = md5._gg,
+        HH = md5._hh,
+        II = md5._ii;
+
+    for (var i = 0; i < m.length; i += 16) {
+
+      var aa = a,
+          bb = b,
+          cc = c,
+          dd = d;
+
+      a = FF(a, b, c, d, m[i+ 0],  7, -680876936);
+      d = FF(d, a, b, c, m[i+ 1], 12, -389564586);
+      c = FF(c, d, a, b, m[i+ 2], 17,  606105819);
+      b = FF(b, c, d, a, m[i+ 3], 22, -1044525330);
+      a = FF(a, b, c, d, m[i+ 4],  7, -176418897);
+      d = FF(d, a, b, c, m[i+ 5], 12,  1200080426);
+      c = FF(c, d, a, b, m[i+ 6], 17, -1473231341);
+      b = FF(b, c, d, a, m[i+ 7], 22, -45705983);
+      a = FF(a, b, c, d, m[i+ 8],  7,  1770035416);
+      d = FF(d, a, b, c, m[i+ 9], 12, -1958414417);
+      c = FF(c, d, a, b, m[i+10], 17, -42063);
+      b = FF(b, c, d, a, m[i+11], 22, -1990404162);
+      a = FF(a, b, c, d, m[i+12],  7,  1804603682);
+      d = FF(d, a, b, c, m[i+13], 12, -40341101);
+      c = FF(c, d, a, b, m[i+14], 17, -1502002290);
+      b = FF(b, c, d, a, m[i+15], 22,  1236535329);
+
+      a = GG(a, b, c, d, m[i+ 1],  5, -165796510);
+      d = GG(d, a, b, c, m[i+ 6],  9, -1069501632);
+      c = GG(c, d, a, b, m[i+11], 14,  643717713);
+      b = GG(b, c, d, a, m[i+ 0], 20, -373897302);
+      a = GG(a, b, c, d, m[i+ 5],  5, -701558691);
+      d = GG(d, a, b, c, m[i+10],  9,  38016083);
+      c = GG(c, d, a, b, m[i+15], 14, -660478335);
+      b = GG(b, c, d, a, m[i+ 4], 20, -405537848);
+      a = GG(a, b, c, d, m[i+ 9],  5,  568446438);
+      d = GG(d, a, b, c, m[i+14],  9, -1019803690);
+      c = GG(c, d, a, b, m[i+ 3], 14, -187363961);
+      b = GG(b, c, d, a, m[i+ 8], 20,  1163531501);
+      a = GG(a, b, c, d, m[i+13],  5, -1444681467);
+      d = GG(d, a, b, c, m[i+ 2],  9, -51403784);
+      c = GG(c, d, a, b, m[i+ 7], 14,  1735328473);
+      b = GG(b, c, d, a, m[i+12], 20, -1926607734);
+
+      a = HH(a, b, c, d, m[i+ 5],  4, -378558);
+      d = HH(d, a, b, c, m[i+ 8], 11, -2022574463);
+      c = HH(c, d, a, b, m[i+11], 16,  1839030562);
+      b = HH(b, c, d, a, m[i+14], 23, -35309556);
+      a = HH(a, b, c, d, m[i+ 1],  4, -1530992060);
+      d = HH(d, a, b, c, m[i+ 4], 11,  1272893353);
+      c = HH(c, d, a, b, m[i+ 7], 16, -155497632);
+      b = HH(b, c, d, a, m[i+10], 23, -1094730640);
+      a = HH(a, b, c, d, m[i+13],  4,  681279174);
+      d = HH(d, a, b, c, m[i+ 0], 11, -358537222);
+      c = HH(c, d, a, b, m[i+ 3], 16, -722521979);
+      b = HH(b, c, d, a, m[i+ 6], 23,  76029189);
+      a = HH(a, b, c, d, m[i+ 9],  4, -640364487);
+      d = HH(d, a, b, c, m[i+12], 11, -421815835);
+      c = HH(c, d, a, b, m[i+15], 16,  530742520);
+      b = HH(b, c, d, a, m[i+ 2], 23, -995338651);
+
+      a = II(a, b, c, d, m[i+ 0],  6, -198630844);
+      d = II(d, a, b, c, m[i+ 7], 10,  1126891415);
+      c = II(c, d, a, b, m[i+14], 15, -1416354905);
+      b = II(b, c, d, a, m[i+ 5], 21, -57434055);
+      a = II(a, b, c, d, m[i+12],  6,  1700485571);
+      d = II(d, a, b, c, m[i+ 3], 10, -1894986606);
+      c = II(c, d, a, b, m[i+10], 15, -1051523);
+      b = II(b, c, d, a, m[i+ 1], 21, -2054922799);
+      a = II(a, b, c, d, m[i+ 8],  6,  1873313359);
+      d = II(d, a, b, c, m[i+15], 10, -30611744);
+      c = II(c, d, a, b, m[i+ 6], 15, -1560198380);
+      b = II(b, c, d, a, m[i+13], 21,  1309151649);
+      a = II(a, b, c, d, m[i+ 4],  6, -145523070);
+      d = II(d, a, b, c, m[i+11], 10, -1120210379);
+      c = II(c, d, a, b, m[i+ 2], 15,  718787259);
+      b = II(b, c, d, a, m[i+ 9], 21, -343485551);
+
+      a = (a + aa) >>> 0;
+      b = (b + bb) >>> 0;
+      c = (c + cc) >>> 0;
+      d = (d + dd) >>> 0;
+    }
+
+    return crypt.endian([a, b, c, d]);
+  };
+
+  // Auxiliary functions
+  md5._ff  = function (a, b, c, d, x, s, t) {
+    var n = a + (b & c | ~b & d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._gg  = function (a, b, c, d, x, s, t) {
+    var n = a + (b & d | c & ~d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._hh  = function (a, b, c, d, x, s, t) {
+    var n = a + (b ^ c ^ d) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+  md5._ii  = function (a, b, c, d, x, s, t) {
+    var n = a + (c ^ (b | ~d)) + (x >>> 0) + t;
+    return ((n << s) | (n >>> (32 - s))) + b;
+  };
+
+  // Package private blocksize
+  md5._blocksize = 16;
+  md5._digestsize = 16;
+
+  module.exports = function (message, options) {
+    if (message === undefined || message === null)
+      throw new Error('Illegal argument ' + message);
+
+    var digestbytes = crypt.wordsToBytes(md5(message, options));
+    return options && options.asBytes ? digestbytes :
+        options && options.asString ? bin.bytesToString(digestbytes) :
+        crypt.bytesToHex(digestbytes);
+  };
+
+})();
+
+
+/***/ }),
+
 /***/ "./node_modules/next-server/dist/lib/mitt.js":
 /*!***************************************************!*\
   !*** ./node_modules/next-server/dist/lib/mitt.js ***!
@@ -4867,20 +10436,32 @@ exports.SUPPORTS_PERFORMANCE_USER_TIMING = exports.SUPPORTS_PERFORMANCE && typeo
 
 /***/ }),
 
-/***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=next%2Fdist%2Fpages%2F_app!./":
-/*!*******************************************************************************************************************************************!*\
-  !*** ./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=next%2Fdist%2Fpages%2F_app ***!
-  \*******************************************************************************************************************************************/
+/***/ "./node_modules/next/app.js":
+/*!**********************************!*\
+  !*** ./node_modules/next/app.js ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! ./dist/pages/_app */ "./node_modules/next/dist/pages/_app.js")
+
+
+/***/ }),
+
+/***/ "./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=private-next-pages%2F_app.js!./":
+/*!*********************************************************************************************************************************************!*\
+  !*** ./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=private-next-pages%2F_app.js ***!
+  \*********************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 
     (window.__NEXT_P=window.__NEXT_P||[]).push(["/_app", function() {
-      var page = __webpack_require__(/*! next/dist/pages/_app */ "./node_modules/next/dist/pages/_app.js")
+      var page = __webpack_require__(/*! private-next-pages/_app.js */ "./pages/_app.js")
       if(true) {
-        module.hot.accept(/*! next/dist/pages/_app */ "./node_modules/next/dist/pages/_app.js", function() {
+        module.hot.accept(/*! private-next-pages/_app.js */ "./pages/_app.js", function() {
           if(!next.router.components["/_app"]) return
-          var updatedPage = __webpack_require__(/*! next/dist/pages/_app */ "./node_modules/next/dist/pages/_app.js")
+          var updatedPage = __webpack_require__(/*! private-next-pages/_app.js */ "./pages/_app.js")
           next.router.update("/_app", updatedPage.default || updatedPage)
         })
       }
@@ -7003,6 +12584,825 @@ module.exports = (__webpack_require__(/*! dll-reference dll_129a35c7ec57967eb265
 
 /***/ }),
 
+/***/ "./node_modules/redux-devtools-extension/logOnly.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/redux-devtools-extension/logOnly.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var assign = __webpack_require__(/*! ./utils/assign */ "./node_modules/redux-devtools-extension/utils/assign.js");
+var compose = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js").compose;
+
+function enhancer() {
+  var config = arguments[0] || {};
+  config.features = { pause: true, export: true, test: true };
+  config.type = 'redux';
+  if (config.autoPause === undefined) config.autoPause = true;
+  if (config.latency === undefined) config.latency = 500;
+
+  return function(createStore) {
+    return function(reducer, preloadedState, enhancer) {
+      var store = createStore(reducer, preloadedState, enhancer);
+      var origDispatch = store.dispatch;
+
+      var devTools = window.__REDUX_DEVTOOLS_EXTENSION__.connect(config);
+      devTools.init(store.getState());
+
+      var dispatch = function(action) {
+        var r = origDispatch(action);
+        devTools.send(action, store.getState());
+        return r;
+      };
+
+      if (Object.assign) return Object.assign(store, { dispatch: dispatch });
+      return assign(store, 'dispatch', dispatch);
+    }
+  }
+}
+
+function composeWithEnhancer(config) {
+  return function () {
+    return compose(compose.apply(null, arguments), enhancer(config));
+  }
+}
+
+exports.__esModule = true;
+exports.composeWithDevTools = function() {
+  if (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__) {
+    if (arguments.length === 0) return enhancer();
+    if (typeof arguments[0] === 'object') return composeWithEnhancer(arguments[0]);
+    return composeWithEnhancer().apply(null, arguments);
+  }
+
+  if (arguments.length === 0) return undefined;
+  if (typeof arguments[0] === 'object') return compose;
+  return compose.apply(null, arguments);
+};
+
+exports.devToolsEnhancer = (
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__ ?
+    enhancer :
+    function() { return function(noop) { return noop; } }
+);
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-devtools-extension/logOnlyInProduction.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/redux-devtools-extension/logOnlyInProduction.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var compose = __webpack_require__(/*! redux */ "./node_modules/redux/es/redux.js").compose;
+var logOnly = __webpack_require__(/*! ./logOnly */ "./node_modules/redux-devtools-extension/logOnly.js");
+
+exports.__esModule = true;
+exports.composeWithDevTools = (
+   false ? undefined :
+    typeof window !== 'undefined' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ :
+      function() {
+        if (arguments.length === 0) return undefined;
+        if (typeof arguments[0] === 'object') return compose;
+        return compose.apply(null, arguments);
+      }
+);
+
+exports.devToolsEnhancer = (
+   false ? undefined :
+    typeof window !== 'undefined' &&
+    window.__REDUX_DEVTOOLS_EXTENSION__ ?
+      window.__REDUX_DEVTOOLS_EXTENSION__ :
+      function() { return function(noop) { return noop; } }
+);
+
+
+/***/ }),
+
+/***/ "./node_modules/redux-devtools-extension/utils/assign.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/redux-devtools-extension/utils/assign.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var objectKeys = Object.keys || function (obj) {
+    var keys = [];
+    for (var key in obj) {
+      if ({}.hasOwnProperty.call(obj, key)) keys.push(key);
+    }
+    return keys;
+  };
+
+function assign(obj, newKey, newValue) {
+  var keys = objectKeys(obj);
+  var copy = {};
+
+  for (var i = 0, l = keys.length; i < l; i++) {
+    var key = keys[i];
+    copy[key] = obj[key];
+  }
+
+  copy[newKey] = newValue;
+  return copy;
+}
+
+module.exports = assign;
+
+
+/***/ }),
+
+/***/ "./node_modules/redux/es/redux.js":
+/*!****************************************!*\
+  !*** ./node_modules/redux/es/redux.js ***!
+  \****************************************/
+/*! exports provided: __DO_NOT_USE__ActionTypes, applyMiddleware, bindActionCreators, combineReducers, compose, createStore */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__DO_NOT_USE__ActionTypes", function() { return ActionTypes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return applyMiddleware; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return bindActionCreators; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return combineReducers; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return compose; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return createStore; });
+/* harmony import */ var symbol_observable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! symbol-observable */ "./node_modules/symbol-observable/es/index.js");
+
+
+/**
+ * These are private action types reserved by Redux.
+ * For any unknown actions, you must return the current state.
+ * If the current state is undefined, you must return the initial state.
+ * Do not reference these action types directly in your code.
+ */
+var randomString = function randomString() {
+  return Math.random().toString(36).substring(7).split('').join('.');
+};
+
+var ActionTypes = {
+  INIT: "@@redux/INIT" + randomString(),
+  REPLACE: "@@redux/REPLACE" + randomString(),
+  PROBE_UNKNOWN_ACTION: function PROBE_UNKNOWN_ACTION() {
+    return "@@redux/PROBE_UNKNOWN_ACTION" + randomString();
+  }
+};
+
+/**
+ * @param {any} obj The object to inspect.
+ * @returns {boolean} True if the argument appears to be a plain object.
+ */
+function isPlainObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+  var proto = obj;
+
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+
+  return Object.getPrototypeOf(obj) === proto;
+}
+
+/**
+ * Creates a Redux store that holds the state tree.
+ * The only way to change the data in the store is to call `dispatch()` on it.
+ *
+ * There should only be a single store in your app. To specify how different
+ * parts of the state tree respond to actions, you may combine several reducers
+ * into a single reducer function by using `combineReducers`.
+ *
+ * @param {Function} reducer A function that returns the next state tree, given
+ * the current state tree and the action to handle.
+ *
+ * @param {any} [preloadedState] The initial state. You may optionally specify it
+ * to hydrate the state from the server in universal apps, or to restore a
+ * previously serialized user session.
+ * If you use `combineReducers` to produce the root reducer function, this must be
+ * an object with the same shape as `combineReducers` keys.
+ *
+ * @param {Function} [enhancer] The store enhancer. You may optionally specify it
+ * to enhance the store with third-party capabilities such as middleware,
+ * time travel, persistence, etc. The only store enhancer that ships with Redux
+ * is `applyMiddleware()`.
+ *
+ * @returns {Store} A Redux store that lets you read the state, dispatch actions
+ * and subscribe to changes.
+ */
+
+function createStore(reducer, preloadedState, enhancer) {
+  var _ref2;
+
+  if (typeof preloadedState === 'function' && typeof enhancer === 'function' || typeof enhancer === 'function' && typeof arguments[3] === 'function') {
+    throw new Error('It looks like you are passing several store enhancers to ' + 'createStore(). This is not supported. Instead, compose them ' + 'together to a single function.');
+  }
+
+  if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
+    enhancer = preloadedState;
+    preloadedState = undefined;
+  }
+
+  if (typeof enhancer !== 'undefined') {
+    if (typeof enhancer !== 'function') {
+      throw new Error('Expected the enhancer to be a function.');
+    }
+
+    return enhancer(createStore)(reducer, preloadedState);
+  }
+
+  if (typeof reducer !== 'function') {
+    throw new Error('Expected the reducer to be a function.');
+  }
+
+  var currentReducer = reducer;
+  var currentState = preloadedState;
+  var currentListeners = [];
+  var nextListeners = currentListeners;
+  var isDispatching = false;
+  /**
+   * This makes a shallow copy of currentListeners so we can use
+   * nextListeners as a temporary list while dispatching.
+   *
+   * This prevents any bugs around consumers calling
+   * subscribe/unsubscribe in the middle of a dispatch.
+   */
+
+  function ensureCanMutateNextListeners() {
+    if (nextListeners === currentListeners) {
+      nextListeners = currentListeners.slice();
+    }
+  }
+  /**
+   * Reads the state tree managed by the store.
+   *
+   * @returns {any} The current state tree of your application.
+   */
+
+
+  function getState() {
+    if (isDispatching) {
+      throw new Error('You may not call store.getState() while the reducer is executing. ' + 'The reducer has already received the state as an argument. ' + 'Pass it down from the top reducer instead of reading it from the store.');
+    }
+
+    return currentState;
+  }
+  /**
+   * Adds a change listener. It will be called any time an action is dispatched,
+   * and some part of the state tree may potentially have changed. You may then
+   * call `getState()` to read the current state tree inside the callback.
+   *
+   * You may call `dispatch()` from a change listener, with the following
+   * caveats:
+   *
+   * 1. The subscriptions are snapshotted just before every `dispatch()` call.
+   * If you subscribe or unsubscribe while the listeners are being invoked, this
+   * will not have any effect on the `dispatch()` that is currently in progress.
+   * However, the next `dispatch()` call, whether nested or not, will use a more
+   * recent snapshot of the subscription list.
+   *
+   * 2. The listener should not expect to see all state changes, as the state
+   * might have been updated multiple times during a nested `dispatch()` before
+   * the listener is called. It is, however, guaranteed that all subscribers
+   * registered before the `dispatch()` started will be called with the latest
+   * state by the time it exits.
+   *
+   * @param {Function} listener A callback to be invoked on every dispatch.
+   * @returns {Function} A function to remove this change listener.
+   */
+
+
+  function subscribe(listener) {
+    if (typeof listener !== 'function') {
+      throw new Error('Expected the listener to be a function.');
+    }
+
+    if (isDispatching) {
+      throw new Error('You may not call store.subscribe() while the reducer is executing. ' + 'If you would like to be notified after the store has been updated, subscribe from a ' + 'component and invoke store.getState() in the callback to access the latest state. ' + 'See https://redux.js.org/api-reference/store#subscribe(listener) for more details.');
+    }
+
+    var isSubscribed = true;
+    ensureCanMutateNextListeners();
+    nextListeners.push(listener);
+    return function unsubscribe() {
+      if (!isSubscribed) {
+        return;
+      }
+
+      if (isDispatching) {
+        throw new Error('You may not unsubscribe from a store listener while the reducer is executing. ' + 'See https://redux.js.org/api-reference/store#subscribe(listener) for more details.');
+      }
+
+      isSubscribed = false;
+      ensureCanMutateNextListeners();
+      var index = nextListeners.indexOf(listener);
+      nextListeners.splice(index, 1);
+    };
+  }
+  /**
+   * Dispatches an action. It is the only way to trigger a state change.
+   *
+   * The `reducer` function, used to create the store, will be called with the
+   * current state tree and the given `action`. Its return value will
+   * be considered the **next** state of the tree, and the change listeners
+   * will be notified.
+   *
+   * The base implementation only supports plain object actions. If you want to
+   * dispatch a Promise, an Observable, a thunk, or something else, you need to
+   * wrap your store creating function into the corresponding middleware. For
+   * example, see the documentation for the `redux-thunk` package. Even the
+   * middleware will eventually dispatch plain object actions using this method.
+   *
+   * @param {Object} action A plain object representing “what changed”. It is
+   * a good idea to keep actions serializable so you can record and replay user
+   * sessions, or use the time travelling `redux-devtools`. An action must have
+   * a `type` property which may not be `undefined`. It is a good idea to use
+   * string constants for action types.
+   *
+   * @returns {Object} For convenience, the same action object you dispatched.
+   *
+   * Note that, if you use a custom middleware, it may wrap `dispatch()` to
+   * return something else (for example, a Promise you can await).
+   */
+
+
+  function dispatch(action) {
+    if (!isPlainObject(action)) {
+      throw new Error('Actions must be plain objects. ' + 'Use custom middleware for async actions.');
+    }
+
+    if (typeof action.type === 'undefined') {
+      throw new Error('Actions may not have an undefined "type" property. ' + 'Have you misspelled a constant?');
+    }
+
+    if (isDispatching) {
+      throw new Error('Reducers may not dispatch actions.');
+    }
+
+    try {
+      isDispatching = true;
+      currentState = currentReducer(currentState, action);
+    } finally {
+      isDispatching = false;
+    }
+
+    var listeners = currentListeners = nextListeners;
+
+    for (var i = 0; i < listeners.length; i++) {
+      var listener = listeners[i];
+      listener();
+    }
+
+    return action;
+  }
+  /**
+   * Replaces the reducer currently used by the store to calculate the state.
+   *
+   * You might need this if your app implements code splitting and you want to
+   * load some of the reducers dynamically. You might also need this if you
+   * implement a hot reloading mechanism for Redux.
+   *
+   * @param {Function} nextReducer The reducer for the store to use instead.
+   * @returns {void}
+   */
+
+
+  function replaceReducer(nextReducer) {
+    if (typeof nextReducer !== 'function') {
+      throw new Error('Expected the nextReducer to be a function.');
+    }
+
+    currentReducer = nextReducer; // This action has a similiar effect to ActionTypes.INIT.
+    // Any reducers that existed in both the new and old rootReducer
+    // will receive the previous state. This effectively populates
+    // the new state tree with any relevant data from the old one.
+
+    dispatch({
+      type: ActionTypes.REPLACE
+    });
+  }
+  /**
+   * Interoperability point for observable/reactive libraries.
+   * @returns {observable} A minimal observable of state changes.
+   * For more information, see the observable proposal:
+   * https://github.com/tc39/proposal-observable
+   */
+
+
+  function observable() {
+    var _ref;
+
+    var outerSubscribe = subscribe;
+    return _ref = {
+      /**
+       * The minimal observable subscription method.
+       * @param {Object} observer Any object that can be used as an observer.
+       * The observer object should have a `next` method.
+       * @returns {subscription} An object with an `unsubscribe` method that can
+       * be used to unsubscribe the observable from the store, and prevent further
+       * emission of values from the observable.
+       */
+      subscribe: function subscribe(observer) {
+        if (typeof observer !== 'object' || observer === null) {
+          throw new TypeError('Expected the observer to be an object.');
+        }
+
+        function observeState() {
+          if (observer.next) {
+            observer.next(getState());
+          }
+        }
+
+        observeState();
+        var unsubscribe = outerSubscribe(observeState);
+        return {
+          unsubscribe: unsubscribe
+        };
+      }
+    }, _ref[symbol_observable__WEBPACK_IMPORTED_MODULE_0__["default"]] = function () {
+      return this;
+    }, _ref;
+  } // When a store is created, an "INIT" action is dispatched so that every
+  // reducer returns their initial state. This effectively populates
+  // the initial state tree.
+
+
+  dispatch({
+    type: ActionTypes.INIT
+  });
+  return _ref2 = {
+    dispatch: dispatch,
+    subscribe: subscribe,
+    getState: getState,
+    replaceReducer: replaceReducer
+  }, _ref2[symbol_observable__WEBPACK_IMPORTED_MODULE_0__["default"]] = observable, _ref2;
+}
+
+/**
+ * Prints a warning in the console if it exists.
+ *
+ * @param {String} message The warning message.
+ * @returns {void}
+ */
+function warning(message) {
+  /* eslint-disable no-console */
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message);
+  }
+  /* eslint-enable no-console */
+
+
+  try {
+    // This error was thrown as a convenience so that if you enable
+    // "break on all exceptions" in your console,
+    // it would pause the execution at this line.
+    throw new Error(message);
+  } catch (e) {} // eslint-disable-line no-empty
+
+}
+
+function getUndefinedStateErrorMessage(key, action) {
+  var actionType = action && action.type;
+  var actionDescription = actionType && "action \"" + String(actionType) + "\"" || 'an action';
+  return "Given " + actionDescription + ", reducer \"" + key + "\" returned undefined. " + "To ignore an action, you must explicitly return the previous state. " + "If you want this reducer to hold no value, you can return null instead of undefined.";
+}
+
+function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+  var reducerKeys = Object.keys(reducers);
+  var argumentName = action && action.type === ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
+
+  if (reducerKeys.length === 0) {
+    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
+  }
+
+  if (!isPlainObject(inputState)) {
+    return "The " + argumentName + " has unexpected type of \"" + {}.toString.call(inputState).match(/\s([a-z|A-Z]+)/)[1] + "\". Expected argument to be an object with the following " + ("keys: \"" + reducerKeys.join('", "') + "\"");
+  }
+
+  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
+    return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
+  });
+  unexpectedKeys.forEach(function (key) {
+    unexpectedKeyCache[key] = true;
+  });
+  if (action && action.type === ActionTypes.REPLACE) return;
+
+  if (unexpectedKeys.length > 0) {
+    return "Unexpected " + (unexpectedKeys.length > 1 ? 'keys' : 'key') + " " + ("\"" + unexpectedKeys.join('", "') + "\" found in " + argumentName + ". ") + "Expected to find one of the known reducer keys instead: " + ("\"" + reducerKeys.join('", "') + "\". Unexpected keys will be ignored.");
+  }
+}
+
+function assertReducerShape(reducers) {
+  Object.keys(reducers).forEach(function (key) {
+    var reducer = reducers[key];
+    var initialState = reducer(undefined, {
+      type: ActionTypes.INIT
+    });
+
+    if (typeof initialState === 'undefined') {
+      throw new Error("Reducer \"" + key + "\" returned undefined during initialization. " + "If the state passed to the reducer is undefined, you must " + "explicitly return the initial state. The initial state may " + "not be undefined. If you don't want to set a value for this reducer, " + "you can use null instead of undefined.");
+    }
+
+    if (typeof reducer(undefined, {
+      type: ActionTypes.PROBE_UNKNOWN_ACTION()
+    }) === 'undefined') {
+      throw new Error("Reducer \"" + key + "\" returned undefined when probed with a random type. " + ("Don't try to handle " + ActionTypes.INIT + " or other actions in \"redux/*\" ") + "namespace. They are considered private. Instead, you must return the " + "current state for any unknown actions, unless it is undefined, " + "in which case you must return the initial state, regardless of the " + "action type. The initial state may not be undefined, but can be null.");
+    }
+  });
+}
+/**
+ * Turns an object whose values are different reducer functions, into a single
+ * reducer function. It will call every child reducer, and gather their results
+ * into a single state object, whose keys correspond to the keys of the passed
+ * reducer functions.
+ *
+ * @param {Object} reducers An object whose values correspond to different
+ * reducer functions that need to be combined into one. One handy way to obtain
+ * it is to use ES6 `import * as reducers` syntax. The reducers may never return
+ * undefined for any action. Instead, they should return their initial state
+ * if the state passed to them was undefined, and the current state for any
+ * unrecognized action.
+ *
+ * @returns {Function} A reducer function that invokes every reducer inside the
+ * passed object, and builds a state object with the same shape.
+ */
+
+
+function combineReducers(reducers) {
+  var reducerKeys = Object.keys(reducers);
+  var finalReducers = {};
+
+  for (var i = 0; i < reducerKeys.length; i++) {
+    var key = reducerKeys[i];
+
+    if (true) {
+      if (typeof reducers[key] === 'undefined') {
+        warning("No reducer provided for key \"" + key + "\"");
+      }
+    }
+
+    if (typeof reducers[key] === 'function') {
+      finalReducers[key] = reducers[key];
+    }
+  }
+
+  var finalReducerKeys = Object.keys(finalReducers); // This is used to make sure we don't warn about the same
+  // keys multiple times.
+
+  var unexpectedKeyCache;
+
+  if (true) {
+    unexpectedKeyCache = {};
+  }
+
+  var shapeAssertionError;
+
+  try {
+    assertReducerShape(finalReducers);
+  } catch (e) {
+    shapeAssertionError = e;
+  }
+
+  return function combination(state, action) {
+    if (state === void 0) {
+      state = {};
+    }
+
+    if (shapeAssertionError) {
+      throw shapeAssertionError;
+    }
+
+    if (true) {
+      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+
+      if (warningMessage) {
+        warning(warningMessage);
+      }
+    }
+
+    var hasChanged = false;
+    var nextState = {};
+
+    for (var _i = 0; _i < finalReducerKeys.length; _i++) {
+      var _key = finalReducerKeys[_i];
+      var reducer = finalReducers[_key];
+      var previousStateForKey = state[_key];
+      var nextStateForKey = reducer(previousStateForKey, action);
+
+      if (typeof nextStateForKey === 'undefined') {
+        var errorMessage = getUndefinedStateErrorMessage(_key, action);
+        throw new Error(errorMessage);
+      }
+
+      nextState[_key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+
+    return hasChanged ? nextState : state;
+  };
+}
+
+function bindActionCreator(actionCreator, dispatch) {
+  return function () {
+    return dispatch(actionCreator.apply(this, arguments));
+  };
+}
+/**
+ * Turns an object whose values are action creators, into an object with the
+ * same keys, but with every function wrapped into a `dispatch` call so they
+ * may be invoked directly. This is just a convenience method, as you can call
+ * `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+ *
+ * For convenience, you can also pass an action creator as the first argument,
+ * and get a dispatch wrapped function in return.
+ *
+ * @param {Function|Object} actionCreators An object whose values are action
+ * creator functions. One handy way to obtain it is to use ES6 `import * as`
+ * syntax. You may also pass a single function.
+ *
+ * @param {Function} dispatch The `dispatch` function available on your Redux
+ * store.
+ *
+ * @returns {Function|Object} The object mimicking the original object, but with
+ * every action creator wrapped into the `dispatch` call. If you passed a
+ * function as `actionCreators`, the return value will also be a single
+ * function.
+ */
+
+
+function bindActionCreators(actionCreators, dispatch) {
+  if (typeof actionCreators === 'function') {
+    return bindActionCreator(actionCreators, dispatch);
+  }
+
+  if (typeof actionCreators !== 'object' || actionCreators === null) {
+    throw new Error("bindActionCreators expected an object or a function, instead received " + (actionCreators === null ? 'null' : typeof actionCreators) + ". " + "Did you write \"import ActionCreators from\" instead of \"import * as ActionCreators from\"?");
+  }
+
+  var boundActionCreators = {};
+
+  for (var key in actionCreators) {
+    var actionCreator = actionCreators[key];
+
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+
+  return boundActionCreators;
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    keys.push.apply(keys, Object.getOwnPropertySymbols(object));
+  }
+
+  if (enumerableOnly) keys = keys.filter(function (sym) {
+    return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+  });
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(source, true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(source).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+/**
+ * Composes single-argument functions from right to left. The rightmost
+ * function can take multiple arguments as it provides the signature for
+ * the resulting composite function.
+ *
+ * @param {...Function} funcs The functions to compose.
+ * @returns {Function} A function obtained by composing the argument functions
+ * from right to left. For example, compose(f, g, h) is identical to doing
+ * (...args) => f(g(h(...args))).
+ */
+function compose() {
+  for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
+    funcs[_key] = arguments[_key];
+  }
+
+  if (funcs.length === 0) {
+    return function (arg) {
+      return arg;
+    };
+  }
+
+  if (funcs.length === 1) {
+    return funcs[0];
+  }
+
+  return funcs.reduce(function (a, b) {
+    return function () {
+      return a(b.apply(void 0, arguments));
+    };
+  });
+}
+
+/**
+ * Creates a store enhancer that applies middleware to the dispatch method
+ * of the Redux store. This is handy for a variety of tasks, such as expressing
+ * asynchronous actions in a concise manner, or logging every action payload.
+ *
+ * See `redux-thunk` package as an example of the Redux middleware.
+ *
+ * Because middleware is potentially asynchronous, this should be the first
+ * store enhancer in the composition chain.
+ *
+ * Note that each middleware will be given the `dispatch` and `getState` functions
+ * as named arguments.
+ *
+ * @param {...Function} middlewares The middleware chain to be applied.
+ * @returns {Function} A store enhancer applying the middleware.
+ */
+
+function applyMiddleware() {
+  for (var _len = arguments.length, middlewares = new Array(_len), _key = 0; _key < _len; _key++) {
+    middlewares[_key] = arguments[_key];
+  }
+
+  return function (createStore) {
+    return function () {
+      var store = createStore.apply(void 0, arguments);
+
+      var _dispatch = function dispatch() {
+        throw new Error('Dispatching while constructing your middleware is not allowed. ' + 'Other middleware would not be applied to this dispatch.');
+      };
+
+      var middlewareAPI = {
+        getState: store.getState,
+        dispatch: function dispatch() {
+          return _dispatch.apply(void 0, arguments);
+        }
+      };
+      var chain = middlewares.map(function (middleware) {
+        return middleware(middlewareAPI);
+      });
+      _dispatch = compose.apply(void 0, chain)(store.dispatch);
+      return _objectSpread2({}, store, {
+        dispatch: _dispatch
+      });
+    };
+  };
+}
+
+/*
+ * This is a dummy function to check if the function name has been altered by minification.
+ * If the function has been minified and NODE_ENV !== 'production', warn the user.
+ */
+
+function isCrushed() {}
+
+if ( true && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  warning('You are currently using minified code outside of NODE_ENV === "production". ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) ' + 'to ensure you have the correct code for your production build.');
+}
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/regenerator-runtime/runtime.js":
 /*!*****************************************************!*\
   !*** ./node_modules/regenerator-runtime/runtime.js ***!
@@ -7736,6 +14136,1625 @@ try {
   // problems, please detail your unique predicament in a GitHub issue.
   Function("r", "regeneratorRuntime = r")(runtime);
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/symbol-observable/es/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/symbol-observable/es/index.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(global, module) {/* harmony import */ var _ponyfill_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ponyfill.js */ "./node_modules/symbol-observable/es/ponyfill.js");
+/* global window */
+
+
+var root;
+
+if (typeof self !== 'undefined') {
+  root = self;
+} else if (typeof window !== 'undefined') {
+  root = window;
+} else if (typeof global !== 'undefined') {
+  root = global;
+} else if (true) {
+  root = module;
+} else {}
+
+var result = Object(_ponyfill_js__WEBPACK_IMPORTED_MODULE_0__["default"])(root);
+/* harmony default export */ __webpack_exports__["default"] = (result);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../../webpack/buildin/harmony-module.js */ "./node_modules/webpack/buildin/harmony-module.js")(module)))
+
+/***/ }),
+
+/***/ "./node_modules/symbol-observable/es/ponyfill.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/symbol-observable/es/ponyfill.js ***!
+  \*******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return symbolObservablePonyfill; });
+function symbolObservablePonyfill(root) {
+	var result;
+	var Symbol = root.Symbol;
+
+	if (typeof Symbol === 'function') {
+		if (Symbol.observable) {
+			result = Symbol.observable;
+		} else {
+			result = Symbol('observable');
+			Symbol.observable = result;
+		}
+	} else {
+		result = '@@observable';
+	}
+
+	return result;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/tlds/index.js":
+/*!************************************!*\
+  !*** ./node_modules/tlds/index.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = [
+  "aaa",
+  "aarp",
+  "abarth",
+  "abb",
+  "abbott",
+  "abbvie",
+  "abc",
+  "able",
+  "abogado",
+  "abudhabi",
+  "ac",
+  "academy",
+  "accenture",
+  "accountant",
+  "accountants",
+  "aco",
+  "active",
+  "actor",
+  "ad",
+  "adac",
+  "ads",
+  "adult",
+  "ae",
+  "aeg",
+  "aero",
+  "aetna",
+  "af",
+  "afamilycompany",
+  "afl",
+  "africa",
+  "ag",
+  "agakhan",
+  "agency",
+  "ai",
+  "aig",
+  "aigo",
+  "airbus",
+  "airforce",
+  "airtel",
+  "akdn",
+  "al",
+  "alfaromeo",
+  "alibaba",
+  "alipay",
+  "allfinanz",
+  "allstate",
+  "ally",
+  "alsace",
+  "alstom",
+  "am",
+  "americanexpress",
+  "americanfamily",
+  "amex",
+  "amfam",
+  "amica",
+  "amsterdam",
+  "analytics",
+  "android",
+  "anquan",
+  "anz",
+  "ao",
+  "aol",
+  "apartments",
+  "app",
+  "apple",
+  "aq",
+  "aquarelle",
+  "ar",
+  "arab",
+  "aramco",
+  "archi",
+  "army",
+  "arpa",
+  "art",
+  "arte",
+  "as",
+  "asda",
+  "asia",
+  "associates",
+  "at",
+  "athleta",
+  "attorney",
+  "au",
+  "auction",
+  "audi",
+  "audible",
+  "audio",
+  "auspost",
+  "author",
+  "auto",
+  "autos",
+  "avianca",
+  "aw",
+  "aws",
+  "ax",
+  "axa",
+  "az",
+  "azure",
+  "ba",
+  "baby",
+  "baidu",
+  "banamex",
+  "bananarepublic",
+  "band",
+  "bank",
+  "bar",
+  "barcelona",
+  "barclaycard",
+  "barclays",
+  "barefoot",
+  "bargains",
+  "baseball",
+  "basketball",
+  "bauhaus",
+  "bayern",
+  "bb",
+  "bbc",
+  "bbt",
+  "bbva",
+  "bcg",
+  "bcn",
+  "bd",
+  "be",
+  "beats",
+  "beauty",
+  "beer",
+  "bentley",
+  "berlin",
+  "best",
+  "bestbuy",
+  "bet",
+  "bf",
+  "bg",
+  "bh",
+  "bharti",
+  "bi",
+  "bible",
+  "bid",
+  "bike",
+  "bing",
+  "bingo",
+  "bio",
+  "biz",
+  "bj",
+  "black",
+  "blackfriday",
+  "blanco",
+  "blockbuster",
+  "blog",
+  "bloomberg",
+  "blue",
+  "bm",
+  "bms",
+  "bmw",
+  "bn",
+  "bnl",
+  "bnpparibas",
+  "bo",
+  "boats",
+  "boehringer",
+  "bofa",
+  "bom",
+  "bond",
+  "boo",
+  "book",
+  "booking",
+  "bosch",
+  "bostik",
+  "boston",
+  "bot",
+  "boutique",
+  "box",
+  "br",
+  "bradesco",
+  "bridgestone",
+  "broadway",
+  "broker",
+  "brother",
+  "brussels",
+  "bs",
+  "bt",
+  "budapest",
+  "bugatti",
+  "build",
+  "builders",
+  "business",
+  "buy",
+  "buzz",
+  "bv",
+  "bw",
+  "by",
+  "bz",
+  "bzh",
+  "ca",
+  "cab",
+  "cafe",
+  "cal",
+  "call",
+  "calvinklein",
+  "cam",
+  "camera",
+  "camp",
+  "cancerresearch",
+  "canon",
+  "capetown",
+  "capital",
+  "capitalone",
+  "car",
+  "caravan",
+  "cards",
+  "care",
+  "career",
+  "careers",
+  "cars",
+  "cartier",
+  "casa",
+  "case",
+  "caseih",
+  "cash",
+  "casino",
+  "cat",
+  "catering",
+  "catholic",
+  "cba",
+  "cbn",
+  "cbre",
+  "cbs",
+  "cc",
+  "cd",
+  "ceb",
+  "center",
+  "ceo",
+  "cern",
+  "cf",
+  "cfa",
+  "cfd",
+  "cg",
+  "ch",
+  "chanel",
+  "channel",
+  "chase",
+  "chat",
+  "cheap",
+  "chintai",
+  "christmas",
+  "chrome",
+  "chrysler",
+  "church",
+  "ci",
+  "cipriani",
+  "circle",
+  "cisco",
+  "citadel",
+  "citi",
+  "citic",
+  "city",
+  "cityeats",
+  "ck",
+  "cl",
+  "claims",
+  "cleaning",
+  "click",
+  "clinic",
+  "clinique",
+  "clothing",
+  "cloud",
+  "club",
+  "clubmed",
+  "cm",
+  "cn",
+  "co",
+  "coach",
+  "codes",
+  "coffee",
+  "college",
+  "cologne",
+  "com",
+  "comcast",
+  "commbank",
+  "community",
+  "company",
+  "compare",
+  "computer",
+  "comsec",
+  "condos",
+  "construction",
+  "consulting",
+  "contact",
+  "contractors",
+  "cooking",
+  "cookingchannel",
+  "cool",
+  "coop",
+  "corsica",
+  "country",
+  "coupon",
+  "coupons",
+  "courses",
+  "cr",
+  "credit",
+  "creditcard",
+  "creditunion",
+  "cricket",
+  "crown",
+  "crs",
+  "cruise",
+  "cruises",
+  "csc",
+  "cu",
+  "cuisinella",
+  "cv",
+  "cw",
+  "cx",
+  "cy",
+  "cymru",
+  "cyou",
+  "cz",
+  "dabur",
+  "dad",
+  "dance",
+  "data",
+  "date",
+  "dating",
+  "datsun",
+  "day",
+  "dclk",
+  "dds",
+  "de",
+  "deal",
+  "dealer",
+  "deals",
+  "degree",
+  "delivery",
+  "dell",
+  "deloitte",
+  "delta",
+  "democrat",
+  "dental",
+  "dentist",
+  "desi",
+  "design",
+  "dev",
+  "dhl",
+  "diamonds",
+  "diet",
+  "digital",
+  "direct",
+  "directory",
+  "discount",
+  "discover",
+  "dish",
+  "diy",
+  "dj",
+  "dk",
+  "dm",
+  "dnp",
+  "do",
+  "docs",
+  "doctor",
+  "dodge",
+  "dog",
+  "doha",
+  "domains",
+  "dot",
+  "download",
+  "drive",
+  "dtv",
+  "dubai",
+  "duck",
+  "dunlop",
+  "duns",
+  "dupont",
+  "durban",
+  "dvag",
+  "dvr",
+  "dz",
+  "earth",
+  "eat",
+  "ec",
+  "eco",
+  "edeka",
+  "edu",
+  "education",
+  "ee",
+  "eg",
+  "email",
+  "emerck",
+  "energy",
+  "engineer",
+  "engineering",
+  "enterprises",
+  "epost",
+  "epson",
+  "equipment",
+  "er",
+  "ericsson",
+  "erni",
+  "es",
+  "esq",
+  "estate",
+  "esurance",
+  "et",
+  "etisalat",
+  "eu",
+  "eurovision",
+  "eus",
+  "events",
+  "everbank",
+  "exchange",
+  "expert",
+  "exposed",
+  "express",
+  "extraspace",
+  "fage",
+  "fail",
+  "fairwinds",
+  "faith",
+  "family",
+  "fan",
+  "fans",
+  "farm",
+  "farmers",
+  "fashion",
+  "fast",
+  "fedex",
+  "feedback",
+  "ferrari",
+  "ferrero",
+  "fi",
+  "fiat",
+  "fidelity",
+  "fido",
+  "film",
+  "final",
+  "finance",
+  "financial",
+  "fire",
+  "firestone",
+  "firmdale",
+  "fish",
+  "fishing",
+  "fit",
+  "fitness",
+  "fj",
+  "fk",
+  "flickr",
+  "flights",
+  "flir",
+  "florist",
+  "flowers",
+  "fly",
+  "fm",
+  "fo",
+  "foo",
+  "food",
+  "foodnetwork",
+  "football",
+  "ford",
+  "forex",
+  "forsale",
+  "forum",
+  "foundation",
+  "fox",
+  "fr",
+  "free",
+  "fresenius",
+  "frl",
+  "frogans",
+  "frontdoor",
+  "frontier",
+  "ftr",
+  "fujitsu",
+  "fujixerox",
+  "fun",
+  "fund",
+  "furniture",
+  "futbol",
+  "fyi",
+  "ga",
+  "gal",
+  "gallery",
+  "gallo",
+  "gallup",
+  "game",
+  "games",
+  "gap",
+  "garden",
+  "gb",
+  "gbiz",
+  "gd",
+  "gdn",
+  "ge",
+  "gea",
+  "gent",
+  "genting",
+  "george",
+  "gf",
+  "gg",
+  "ggee",
+  "gh",
+  "gi",
+  "gift",
+  "gifts",
+  "gives",
+  "giving",
+  "gl",
+  "glade",
+  "glass",
+  "gle",
+  "global",
+  "globo",
+  "gm",
+  "gmail",
+  "gmbh",
+  "gmo",
+  "gmx",
+  "gn",
+  "godaddy",
+  "gold",
+  "goldpoint",
+  "golf",
+  "goo",
+  "goodhands",
+  "goodyear",
+  "goog",
+  "google",
+  "gop",
+  "got",
+  "gov",
+  "gp",
+  "gq",
+  "gr",
+  "grainger",
+  "graphics",
+  "gratis",
+  "green",
+  "gripe",
+  "grocery",
+  "group",
+  "gs",
+  "gt",
+  "gu",
+  "guardian",
+  "gucci",
+  "guge",
+  "guide",
+  "guitars",
+  "guru",
+  "gw",
+  "gy",
+  "hair",
+  "hamburg",
+  "hangout",
+  "haus",
+  "hbo",
+  "hdfc",
+  "hdfcbank",
+  "health",
+  "healthcare",
+  "help",
+  "helsinki",
+  "here",
+  "hermes",
+  "hgtv",
+  "hiphop",
+  "hisamitsu",
+  "hitachi",
+  "hiv",
+  "hk",
+  "hkt",
+  "hm",
+  "hn",
+  "hockey",
+  "holdings",
+  "holiday",
+  "homedepot",
+  "homegoods",
+  "homes",
+  "homesense",
+  "honda",
+  "honeywell",
+  "horse",
+  "hospital",
+  "host",
+  "hosting",
+  "hot",
+  "hoteles",
+  "hotels",
+  "hotmail",
+  "house",
+  "how",
+  "hr",
+  "hsbc",
+  "ht",
+  "hu",
+  "hughes",
+  "hyatt",
+  "hyundai",
+  "ibm",
+  "icbc",
+  "ice",
+  "icu",
+  "id",
+  "ie",
+  "ieee",
+  "ifm",
+  "ikano",
+  "il",
+  "im",
+  "imamat",
+  "imdb",
+  "immo",
+  "immobilien",
+  "in",
+  "industries",
+  "infiniti",
+  "info",
+  "ing",
+  "ink",
+  "institute",
+  "insurance",
+  "insure",
+  "int",
+  "intel",
+  "international",
+  "intuit",
+  "investments",
+  "io",
+  "ipiranga",
+  "iq",
+  "ir",
+  "irish",
+  "is",
+  "iselect",
+  "ismaili",
+  "ist",
+  "istanbul",
+  "it",
+  "itau",
+  "itv",
+  "iveco",
+  "iwc",
+  "jaguar",
+  "java",
+  "jcb",
+  "jcp",
+  "je",
+  "jeep",
+  "jetzt",
+  "jewelry",
+  "jio",
+  "jlc",
+  "jll",
+  "jm",
+  "jmp",
+  "jnj",
+  "jo",
+  "jobs",
+  "joburg",
+  "jot",
+  "joy",
+  "jp",
+  "jpmorgan",
+  "jprs",
+  "juegos",
+  "juniper",
+  "kaufen",
+  "kddi",
+  "ke",
+  "kerryhotels",
+  "kerrylogistics",
+  "kerryproperties",
+  "kfh",
+  "kg",
+  "kh",
+  "ki",
+  "kia",
+  "kim",
+  "kinder",
+  "kindle",
+  "kitchen",
+  "kiwi",
+  "km",
+  "kn",
+  "koeln",
+  "komatsu",
+  "kosher",
+  "kp",
+  "kpmg",
+  "kpn",
+  "kr",
+  "krd",
+  "kred",
+  "kuokgroup",
+  "kw",
+  "ky",
+  "kyoto",
+  "kz",
+  "la",
+  "lacaixa",
+  "ladbrokes",
+  "lamborghini",
+  "lamer",
+  "lancaster",
+  "lancia",
+  "lancome",
+  "land",
+  "landrover",
+  "lanxess",
+  "lasalle",
+  "lat",
+  "latino",
+  "latrobe",
+  "law",
+  "lawyer",
+  "lb",
+  "lc",
+  "lds",
+  "lease",
+  "leclerc",
+  "lefrak",
+  "legal",
+  "lego",
+  "lexus",
+  "lgbt",
+  "li",
+  "liaison",
+  "lidl",
+  "life",
+  "lifeinsurance",
+  "lifestyle",
+  "lighting",
+  "like",
+  "lilly",
+  "limited",
+  "limo",
+  "lincoln",
+  "linde",
+  "link",
+  "lipsy",
+  "live",
+  "living",
+  "lixil",
+  "lk",
+  "llc",
+  "loan",
+  "loans",
+  "locker",
+  "locus",
+  "loft",
+  "lol",
+  "london",
+  "lotte",
+  "lotto",
+  "love",
+  "lpl",
+  "lplfinancial",
+  "lr",
+  "ls",
+  "lt",
+  "ltd",
+  "ltda",
+  "lu",
+  "lundbeck",
+  "lupin",
+  "luxe",
+  "luxury",
+  "lv",
+  "ly",
+  "ma",
+  "macys",
+  "madrid",
+  "maif",
+  "maison",
+  "makeup",
+  "man",
+  "management",
+  "mango",
+  "map",
+  "market",
+  "marketing",
+  "markets",
+  "marriott",
+  "marshalls",
+  "maserati",
+  "mattel",
+  "mba",
+  "mc",
+  "mckinsey",
+  "md",
+  "me",
+  "med",
+  "media",
+  "meet",
+  "melbourne",
+  "meme",
+  "memorial",
+  "men",
+  "menu",
+  "meo",
+  "merckmsd",
+  "metlife",
+  "mg",
+  "mh",
+  "miami",
+  "microsoft",
+  "mil",
+  "mini",
+  "mint",
+  "mit",
+  "mitsubishi",
+  "mk",
+  "ml",
+  "mlb",
+  "mls",
+  "mm",
+  "mma",
+  "mn",
+  "mo",
+  "mobi",
+  "mobile",
+  "mobily",
+  "moda",
+  "moe",
+  "moi",
+  "mom",
+  "monash",
+  "money",
+  "monster",
+  "mopar",
+  "mormon",
+  "mortgage",
+  "moscow",
+  "moto",
+  "motorcycles",
+  "mov",
+  "movie",
+  "movistar",
+  "mp",
+  "mq",
+  "mr",
+  "ms",
+  "msd",
+  "mt",
+  "mtn",
+  "mtr",
+  "mu",
+  "museum",
+  "mutual",
+  "mv",
+  "mw",
+  "mx",
+  "my",
+  "mz",
+  "na",
+  "nab",
+  "nadex",
+  "nagoya",
+  "name",
+  "nationwide",
+  "natura",
+  "navy",
+  "nba",
+  "nc",
+  "ne",
+  "nec",
+  "net",
+  "netbank",
+  "netflix",
+  "network",
+  "neustar",
+  "new",
+  "newholland",
+  "news",
+  "next",
+  "nextdirect",
+  "nexus",
+  "nf",
+  "nfl",
+  "ng",
+  "ngo",
+  "nhk",
+  "ni",
+  "nico",
+  "nike",
+  "nikon",
+  "ninja",
+  "nissan",
+  "nissay",
+  "nl",
+  "no",
+  "nokia",
+  "northwesternmutual",
+  "norton",
+  "now",
+  "nowruz",
+  "nowtv",
+  "np",
+  "nr",
+  "nra",
+  "nrw",
+  "ntt",
+  "nu",
+  "nyc",
+  "nz",
+  "obi",
+  "observer",
+  "off",
+  "office",
+  "okinawa",
+  "olayan",
+  "olayangroup",
+  "oldnavy",
+  "ollo",
+  "om",
+  "omega",
+  "one",
+  "ong",
+  "onl",
+  "online",
+  "onyourside",
+  "ooo",
+  "open",
+  "oracle",
+  "orange",
+  "org",
+  "organic",
+  "origins",
+  "osaka",
+  "otsuka",
+  "ott",
+  "ovh",
+  "pa",
+  "page",
+  "panasonic",
+  "panerai",
+  "paris",
+  "pars",
+  "partners",
+  "parts",
+  "party",
+  "passagens",
+  "pay",
+  "pccw",
+  "pe",
+  "pet",
+  "pf",
+  "pfizer",
+  "pg",
+  "ph",
+  "pharmacy",
+  "phd",
+  "philips",
+  "phone",
+  "photo",
+  "photography",
+  "photos",
+  "physio",
+  "piaget",
+  "pics",
+  "pictet",
+  "pictures",
+  "pid",
+  "pin",
+  "ping",
+  "pink",
+  "pioneer",
+  "pizza",
+  "pk",
+  "pl",
+  "place",
+  "play",
+  "playstation",
+  "plumbing",
+  "plus",
+  "pm",
+  "pn",
+  "pnc",
+  "pohl",
+  "poker",
+  "politie",
+  "porn",
+  "post",
+  "pr",
+  "pramerica",
+  "praxi",
+  "press",
+  "prime",
+  "pro",
+  "prod",
+  "productions",
+  "prof",
+  "progressive",
+  "promo",
+  "properties",
+  "property",
+  "protection",
+  "pru",
+  "prudential",
+  "ps",
+  "pt",
+  "pub",
+  "pw",
+  "pwc",
+  "py",
+  "qa",
+  "qpon",
+  "quebec",
+  "quest",
+  "qvc",
+  "racing",
+  "radio",
+  "raid",
+  "re",
+  "read",
+  "realestate",
+  "realtor",
+  "realty",
+  "recipes",
+  "red",
+  "redstone",
+  "redumbrella",
+  "rehab",
+  "reise",
+  "reisen",
+  "reit",
+  "reliance",
+  "ren",
+  "rent",
+  "rentals",
+  "repair",
+  "report",
+  "republican",
+  "rest",
+  "restaurant",
+  "review",
+  "reviews",
+  "rexroth",
+  "rich",
+  "richardli",
+  "ricoh",
+  "rightathome",
+  "ril",
+  "rio",
+  "rip",
+  "rmit",
+  "ro",
+  "rocher",
+  "rocks",
+  "rodeo",
+  "rogers",
+  "room",
+  "rs",
+  "rsvp",
+  "ru",
+  "rugby",
+  "ruhr",
+  "run",
+  "rw",
+  "rwe",
+  "ryukyu",
+  "sa",
+  "saarland",
+  "safe",
+  "safety",
+  "sakura",
+  "sale",
+  "salon",
+  "samsclub",
+  "samsung",
+  "sandvik",
+  "sandvikcoromant",
+  "sanofi",
+  "sap",
+  "sapo",
+  "sarl",
+  "sas",
+  "save",
+  "saxo",
+  "sb",
+  "sbi",
+  "sbs",
+  "sc",
+  "sca",
+  "scb",
+  "schaeffler",
+  "schmidt",
+  "scholarships",
+  "school",
+  "schule",
+  "schwarz",
+  "science",
+  "scjohnson",
+  "scor",
+  "scot",
+  "sd",
+  "se",
+  "search",
+  "seat",
+  "secure",
+  "security",
+  "seek",
+  "select",
+  "sener",
+  "services",
+  "ses",
+  "seven",
+  "sew",
+  "sex",
+  "sexy",
+  "sfr",
+  "sg",
+  "sh",
+  "shangrila",
+  "sharp",
+  "shaw",
+  "shell",
+  "shia",
+  "shiksha",
+  "shoes",
+  "shop",
+  "shopping",
+  "shouji",
+  "show",
+  "showtime",
+  "shriram",
+  "si",
+  "silk",
+  "sina",
+  "singles",
+  "site",
+  "sj",
+  "sk",
+  "ski",
+  "skin",
+  "sky",
+  "skype",
+  "sl",
+  "sling",
+  "sm",
+  "smart",
+  "smile",
+  "sn",
+  "sncf",
+  "so",
+  "soccer",
+  "social",
+  "softbank",
+  "software",
+  "sohu",
+  "solar",
+  "solutions",
+  "song",
+  "sony",
+  "soy",
+  "space",
+  "spiegel",
+  "sport",
+  "spot",
+  "spreadbetting",
+  "sr",
+  "srl",
+  "srt",
+  "st",
+  "stada",
+  "staples",
+  "star",
+  "starhub",
+  "statebank",
+  "statefarm",
+  "statoil",
+  "stc",
+  "stcgroup",
+  "stockholm",
+  "storage",
+  "store",
+  "stream",
+  "studio",
+  "study",
+  "style",
+  "su",
+  "sucks",
+  "supplies",
+  "supply",
+  "support",
+  "surf",
+  "surgery",
+  "suzuki",
+  "sv",
+  "swatch",
+  "swiftcover",
+  "swiss",
+  "sx",
+  "sy",
+  "sydney",
+  "symantec",
+  "systems",
+  "sz",
+  "tab",
+  "taipei",
+  "talk",
+  "taobao",
+  "target",
+  "tatamotors",
+  "tatar",
+  "tattoo",
+  "tax",
+  "taxi",
+  "tc",
+  "tci",
+  "td",
+  "tdk",
+  "team",
+  "tech",
+  "technology",
+  "tel",
+  "telecity",
+  "telefonica",
+  "temasek",
+  "tennis",
+  "teva",
+  "tf",
+  "tg",
+  "th",
+  "thd",
+  "theater",
+  "theatre",
+  "tiaa",
+  "tickets",
+  "tienda",
+  "tiffany",
+  "tips",
+  "tires",
+  "tirol",
+  "tj",
+  "tjmaxx",
+  "tjx",
+  "tk",
+  "tkmaxx",
+  "tl",
+  "tm",
+  "tmall",
+  "tn",
+  "to",
+  "today",
+  "tokyo",
+  "tools",
+  "top",
+  "toray",
+  "toshiba",
+  "total",
+  "tours",
+  "town",
+  "toyota",
+  "toys",
+  "tr",
+  "trade",
+  "trading",
+  "training",
+  "travel",
+  "travelchannel",
+  "travelers",
+  "travelersinsurance",
+  "trust",
+  "trv",
+  "tt",
+  "tube",
+  "tui",
+  "tunes",
+  "tushu",
+  "tv",
+  "tvs",
+  "tw",
+  "tz",
+  "ua",
+  "ubank",
+  "ubs",
+  "uconnect",
+  "ug",
+  "uk",
+  "unicom",
+  "university",
+  "uno",
+  "uol",
+  "ups",
+  "us",
+  "uy",
+  "uz",
+  "va",
+  "vacations",
+  "vana",
+  "vanguard",
+  "vc",
+  "ve",
+  "vegas",
+  "ventures",
+  "verisign",
+  "versicherung",
+  "vet",
+  "vg",
+  "vi",
+  "viajes",
+  "video",
+  "vig",
+  "viking",
+  "villas",
+  "vin",
+  "vip",
+  "virgin",
+  "visa",
+  "vision",
+  "vista",
+  "vistaprint",
+  "viva",
+  "vivo",
+  "vlaanderen",
+  "vn",
+  "vodka",
+  "volkswagen",
+  "volvo",
+  "vote",
+  "voting",
+  "voto",
+  "voyage",
+  "vu",
+  "vuelos",
+  "wales",
+  "walmart",
+  "walter",
+  "wang",
+  "wanggou",
+  "warman",
+  "watch",
+  "watches",
+  "weather",
+  "weatherchannel",
+  "webcam",
+  "weber",
+  "website",
+  "wed",
+  "wedding",
+  "weibo",
+  "weir",
+  "wf",
+  "whoswho",
+  "wien",
+  "wiki",
+  "williamhill",
+  "win",
+  "windows",
+  "wine",
+  "winners",
+  "wme",
+  "wolterskluwer",
+  "woodside",
+  "work",
+  "works",
+  "world",
+  "wow",
+  "ws",
+  "wtc",
+  "wtf",
+  "xbox",
+  "xerox",
+  "xfinity",
+  "xihuan",
+  "xin",
+  "कॉम", // xn--11b4c3d
+  "セール", // xn--1ck2e1b
+  "佛山", // xn--1qqw23a
+  "ಭಾರತ", // xn--2scrj9c
+  "慈善", // xn--30rr7y
+  "集团", // xn--3bst00m
+  "在线", // xn--3ds443g
+  "한국", // xn--3e0b707e
+  "ଭାରତ", // xn--3hcrj9c
+  "大众汽车", // xn--3oq18vl8pn36a
+  "点看", // xn--3pxu8k
+  "คอม", // xn--42c2d9a
+  "ভাৰত", // xn--45br5cyl
+  "ভারত", // xn--45brj9c
+  "八卦", // xn--45q11c
+  "موقع", // xn--4gbrim
+  "বাংলা", // xn--54b7fta0cc
+  "公益", // xn--55qw42g
+  "公司", // xn--55qx5d
+  "香格里拉", // xn--5su34j936bgsg
+  "网站", // xn--5tzm5g
+  "移动", // xn--6frz82g
+  "我爱你", // xn--6qq986b3xl
+  "москва", // xn--80adxhks
+  "қаз", // xn--80ao21a
+  "католик", // xn--80aqecdr1a
+  "онлайн", // xn--80asehdb
+  "сайт", // xn--80aswg
+  "联通", // xn--8y0a063a
+  "срб", // xn--90a3ac
+  "бг", // xn--90ae
+  "бел", // xn--90ais
+  "קום", // xn--9dbq2a
+  "时尚", // xn--9et52u
+  "微博", // xn--9krt00a
+  "淡马锡", // xn--b4w605ferd
+  "ファッション", // xn--bck1b9a5dre4c
+  "орг", // xn--c1avg
+  "नेट", // xn--c2br7g
+  "ストア", // xn--cck2b3b
+  "삼성", // xn--cg4bki
+  "சிங்கப்பூர்", // xn--clchc0ea0b2g2a9gcd
+  "商标", // xn--czr694b
+  "商店", // xn--czrs0t
+  "商城", // xn--czru2d
+  "дети", // xn--d1acj3b
+  "мкд", // xn--d1alf
+  "ею", // xn--e1a4c
+  "ポイント", // xn--eckvdtc9d
+  "新闻", // xn--efvy88h
+  "工行", // xn--estv75g
+  "家電", // xn--fct429k
+  "كوم", // xn--fhbei
+  "中文网", // xn--fiq228c5hs
+  "中信", // xn--fiq64b
+  "中国", // xn--fiqs8s
+  "中國", // xn--fiqz9s
+  "娱乐", // xn--fjq720a
+  "谷歌", // xn--flw351e
+  "భారత్", // xn--fpcrj9c3d
+  "ලංකා", // xn--fzc2c9e2c
+  "電訊盈科", // xn--fzys8d69uvgm
+  "购物", // xn--g2xx48c
+  "クラウド", // xn--gckr3f0f
+  "ભારત", // xn--gecrj9c
+  "通販", // xn--gk3at1e
+  "भारतम्", // xn--h2breg3eve
+  "भारत", // xn--h2brj9c
+  "भारोत", // xn--h2brj9c8c
+  "网店", // xn--hxt814e
+  "संगठन", // xn--i1b6b1a6a2e
+  "餐厅", // xn--imr513n
+  "网络", // xn--io0a7i
+  "ком", // xn--j1aef
+  "укр", // xn--j1amh
+  "香港", // xn--j6w193g
+  "诺基亚", // xn--jlq61u9w7b
+  "食品", // xn--jvr189m
+  "飞利浦", // xn--kcrx77d1x4a
+  "台湾", // xn--kprw13d
+  "台灣", // xn--kpry57d
+  "手表", // xn--kpu716f
+  "手机", // xn--kput3i
+  "мон", // xn--l1acc
+  "الجزائر", // xn--lgbbat1ad8j
+  "عمان", // xn--mgb9awbf
+  "ارامكو", // xn--mgba3a3ejt
+  "ایران", // xn--mgba3a4f16a
+  "العليان", // xn--mgba7c0bbn0a
+  "اتصالات", // xn--mgbaakc7dvf
+  "امارات", // xn--mgbaam7a8h
+  "بازار", // xn--mgbab2bd
+  "پاکستان", // xn--mgbai9azgqp6j
+  "الاردن", // xn--mgbayh7gpa
+  "موبايلي", // xn--mgbb9fbpob
+  "بارت", // xn--mgbbh1a
+  "بھارت", // xn--mgbbh1a71e
+  "المغرب", // xn--mgbc0a9azcg
+  "ابوظبي", // xn--mgbca7dzdo
+  "السعودية", // xn--mgberp4a5d4ar
+  "ڀارت", // xn--mgbgu82a
+  "كاثوليك", // xn--mgbi4ecexp
+  "سودان", // xn--mgbpl2fh
+  "همراه", // xn--mgbt3dhd
+  "عراق", // xn--mgbtx2b
+  "مليسيا", // xn--mgbx4cd0ab
+  "澳門", // xn--mix891f
+  "닷컴", // xn--mk1bu44c
+  "政府", // xn--mxtq1m
+  "شبكة", // xn--ngbc5azd
+  "بيتك", // xn--ngbe9e0a
+  "عرب", // xn--ngbrx
+  "გე", // xn--node
+  "机构", // xn--nqv7f
+  "组织机构", // xn--nqv7fs00ema
+  "健康", // xn--nyqy26a
+  "ไทย", // xn--o3cw4h
+  "سورية", // xn--ogbpf8fl
+  "招聘", // xn--otu796d
+  "рус", // xn--p1acf
+  "рф", // xn--p1ai
+  "珠宝", // xn--pbt977c
+  "تونس", // xn--pgbs0dh
+  "大拿", // xn--pssy2u
+  "みんな", // xn--q9jyb4c
+  "グーグル", // xn--qcka1pmc
+  "ελ", // xn--qxam
+  "世界", // xn--rhqv96g
+  "書籍", // xn--rovu88b
+  "ഭാരതം", // xn--rvc1e0am3e
+  "ਭਾਰਤ", // xn--s9brj9c
+  "网址", // xn--ses554g
+  "닷넷", // xn--t60b56a
+  "コム", // xn--tckwe
+  "天主教", // xn--tiq49xqyj
+  "游戏", // xn--unup4y
+  "vermögensberater", // xn--vermgensberater-ctb
+  "vermögensberatung", // xn--vermgensberatung-pwb
+  "企业", // xn--vhquv
+  "信息", // xn--vuq861b
+  "嘉里大酒店", // xn--w4r85el8fhu5dnra
+  "嘉里", // xn--w4rs40l
+  "مصر", // xn--wgbh1c
+  "قطر", // xn--wgbl6a
+  "广东", // xn--xhq521b
+  "இலங்கை", // xn--xkc2al3hye2a
+  "இந்தியா", // xn--xkc2dl3a5ee0h
+  "հայ", // xn--y9a3aq
+  "新加坡", // xn--yfro4i67o
+  "فلسطين", // xn--ygbi2ammx
+  "政务", // xn--zfr164b
+  "xperia",
+  "xxx",
+  "xyz",
+  "yachts",
+  "yahoo",
+  "yamaxun",
+  "yandex",
+  "ye",
+  "yodobashi",
+  "yoga",
+  "yokohama",
+  "you",
+  "youtube",
+  "yt",
+  "yun",
+  "za",
+  "zappos",
+  "zara",
+  "zero",
+  "zip",
+  "zippo",
+  "zm",
+  "zone",
+  "zuerich",
+  "zw"
+];
 
 
 /***/ }),
@@ -8543,6 +16562,41 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./node_modules/webpack/buildin/harmony-module.js":
+/*!*******************************************!*\
+  !*** (webpack)/buildin/harmony-module.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function(originalModule) {
+	if (!originalModule.webpackPolyfill) {
+		var module = Object.create(originalModule);
+		// module.parent = undefined by default
+		if (!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		Object.defineProperty(module, "exports", {
+			enumerable: true
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/webpack/buildin/module.js":
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
@@ -8576,6 +16630,94 @@ module.exports = function(module) {
 
 /***/ }),
 
+/***/ "./pages/_app.js":
+/*!***********************!*\
+  !*** ./pages/_app.js ***!
+  \***********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MyApp; });
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/extends */ "./node_modules/@babel/runtime-corejs2/helpers/esm/extends.js");
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/classCallCheck */ "./node_modules/@babel/runtime-corejs2/helpers/esm/classCallCheck.js");
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/createClass */ "./node_modules/@babel/runtime-corejs2/helpers/esm/createClass.js");
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/possibleConstructorReturn */ "./node_modules/@babel/runtime-corejs2/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/getPrototypeOf */ "./node_modules/@babel/runtime-corejs2/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_corejs2_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime-corejs2/helpers/esm/inherits */ "./node_modules/@babel/runtime-corejs2/helpers/esm/inherits.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var next_app__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! next/app */ "./node_modules/next/app.js");
+/* harmony import */ var next_app__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(next_app__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _aller_blink_labrador__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @aller/blink-labrador */ "./node_modules/@aller/blink-labrador/lib/main.js");
+/* harmony import */ var _aller_blink_labrador__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_aller_blink_labrador__WEBPACK_IMPORTED_MODULE_8__);
+
+
+
+
+
+
+var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/pages/_app.js";
+var __jsx = react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement;
+
+
+
+
+var MyApp =
+/*#__PURE__*/
+function (_App) {
+  Object(_babel_runtime_corejs2_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_5__["default"])(MyApp, _App);
+
+  function MyApp() {
+    Object(_babel_runtime_corejs2_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_1__["default"])(this, MyApp);
+
+    return Object(_babel_runtime_corejs2_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_3__["default"])(this, Object(_babel_runtime_corejs2_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_4__["default"])(MyApp).apply(this, arguments));
+  }
+
+  Object(_babel_runtime_corejs2_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_2__["default"])(MyApp, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var tracker = new _aller_blink_labrador__WEBPACK_IMPORTED_MODULE_8___default.a();
+      tracker.trackPageload();
+      tracker.trackAdInscreen0(".adunit");
+      tracker.trackAdInscreen(".adunit");
+      tracker.trackActiveTime();
+      tracker.trackLinkClicks();
+      tracker.trackArticleImpressions("article.preview,.article-list>li");
+      tracker.trackAdDFP(); // Expose blink functions to other modules
+
+      window.trackAdLoad = tracker.trackAdLoad;
+      window.trackCustom = tracker.trackCustom;
+      window.pageInit = tracker.pageInit;
+
+      window.trackPageload = function () {
+        tracker.trackPageload();
+      };
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this$props = this.props,
+          Component = _this$props.Component,
+          pageProps = _this$props.pageProps;
+      return __jsx(Component, Object(_babel_runtime_corejs2_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__["default"])({}, pageProps, {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 25
+        },
+        __self: this
+      }));
+    }
+  }]);
+
+  return MyApp;
+}(next_app__WEBPACK_IMPORTED_MODULE_7___default.a);
+
+
+
+/***/ }),
+
 /***/ "dll-reference dll_129a35c7ec57967eb265":
 /*!*******************************************!*\
   !*** external "dll_129a35c7ec57967eb265" ***!
@@ -8587,5 +16729,5 @@ module.exports = dll_129a35c7ec57967eb265;
 
 /***/ })
 
-},[["./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=next%2Fdist%2Fpages%2F_app!./","static/runtime/webpack.js"]]]);
+},[["./node_modules/next/dist/build/webpack/loaders/next-client-pages-loader.js?page=%2F_app&absolutePagePath=private-next-pages%2F_app.js!./","static/runtime/webpack.js"]]]);
 //# sourceMappingURL=_app.js.map
