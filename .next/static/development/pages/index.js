@@ -35,7 +35,7 @@ var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Com
 var __jsx = react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement;
 
 function _templateObject() {
-  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_6__["default"])(["\nmax-width: 1024px;\ndisplay: flex;\nflex-wrap: wrap;\nalign-self: center;\n"]);
+  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_6__["default"])(["\n\n@media (min-width: 720px) {\n  margin: 0 auto;\nmax-width: 1024px;\ndisplay: grid;\ngrid-template-columns: 1.5fr repeat(2, 1fr);\ngrid-template-rows: 1fr repeat(4, 1fr);\ngrid-column-gap: 10px;\ngrid-row-gap: 10px;\n\nli:first-child{\n  grid-column: 1 / 4;\n}\n\nli:nth-child(5){\n  grid-column: 1 / 3;\n}\n      }\n\n\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -77,7 +77,7 @@ function (_React$Component) {
           key: article.id,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 26
+            lineNumber: 42
           },
           __self: this
         }, __jsx(_Card__WEBPACK_IMPORTED_MODULE_8__["default"], {
@@ -86,7 +86,7 @@ function (_React$Component) {
           id: article.id,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 28
+            lineNumber: 44
           },
           __self: this
         }));
@@ -94,7 +94,7 @@ function (_React$Component) {
       return __jsx(CenterWrapper, {
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 38
+          lineNumber: 54
         },
         __self: this
       }, artikler);
@@ -129,7 +129,7 @@ var _jsxFileName = "/Users/mariusgrondahl/Documents/GitHub/NewbrandPrototype/Com
 var __jsx = react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement;
 
 function _templateObject() {
-  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__["default"])(["\ndisplay: flex;\nflex-direction: column;\njustify-content: flex-end;\nbackground-size: cover;\nbackground-position: center center;\nbackground-image: url(/static/img/", ");\npadding: 0;\nmargin: 0rem .5rem 1.3rem .5rem;\nheight: 25vh;\nwidth: 30%;\ncolor: #fff;  \nborder-bottom-left-radius: 5px;\nborder-bottom-right-radius: 5px; \n\na{\n  text-decoration: none;\n}\n\n  .imgTitle{\n    position: relative;\n    color: #fff;\n    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);\n    width: auto;\n    bottom: 0;\n    font-weight: bold;\n    padding: 2rem 0 .7rem 0rem;\n    font-size: 1.4rem;\n    text-align: center;\n    font-weight: bold;\n    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);\n \n  }\n  \n  ul {\n    width: 100%;\n    list-style: none;\n    display: flex;\n    flex-direction: row;\n    justify-content: space-between;\n    margin: 0 ;\n    padding: 0;\n }\n\n  ul li{\n    margin: 1rem;\n  }\n\n  .cardFooter{\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    padding: .5rem;\n    background: rgba(0,0,0,0.8);\n    color: #fff;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n\n    li{\n      font-size: 1.2rem;\n      font-weight: bold;\n\n      .price{\n        font-weight: 400;\n        background: #3CA069;\n        padding: .2rem .7rem;\n        border-radius: 3px;\n      }\n\n      .light{\n        font-weight: 200;\n      }\n    }\n  }\n"]);
+  var data = Object(_babel_runtime_corejs2_helpers_esm_taggedTemplateLiteral__WEBPACK_IMPORTED_MODULE_0__["default"])(["\ndisplay: flex;\nflex-direction: column;\njustify-content: flex-end;\nbackground-size: cover;\nbackground-position: center center;\nbackground-image: url(/static/img/", ");\npadding: 0;\nmargin: 0rem .5rem 1.3rem .5rem;\nheight: 25vh;\nwidth: 100%;\ncolor: #fff;  \nborder-bottom-left-radius: 5px;\nborder-bottom-right-radius: 5px; \n\n\na{\n  text-decoration: none;\n}\n\n  .imgTitle{\n    position: relative;\n    color: #fff;\n    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);\n    width: auto;\n    bottom: 0;\n    font-weight: bold;\n    padding: 2rem 0 .7rem 0rem;\n    font-size: 1.4rem;\n    text-align: center;\n    font-weight: bold;\n    text-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);\n \n  }\n  \n  ul {\n    width: 100%;\n    list-style: none;\n    display: flex;\n    flex-direction: row;\n    justify-content: space-between;\n    margin: 0 ;\n    padding: 0;\n }\n\n  ul li{\n    margin: 1rem;\n  }\n\n  .cardFooter{\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    padding: .5rem;\n    background: rgba(0,0,0,0.8);\n    color: #fff;\n    border-bottom-left-radius: 5px;\n    border-bottom-right-radius: 5px;\n\n    li{\n      font-size: 1.2rem;\n      font-weight: bold;\n\n      .price{\n        font-weight: 400;\n        background: #3CA069;\n        padding: .2rem .7rem;\n        border-radius: 3px;\n      }\n\n      .light{\n        font-weight: 200;\n      }\n    }\n  }\n"]);
 
   _templateObject = function _templateObject() {
     return data;
@@ -154,41 +154,41 @@ function Card(props) {
     },
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 84
+      lineNumber: 85
     },
     __self: this
   }, __jsx("a", {
     title: "CarDetail",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 85
+      lineNumber: 86
     },
     __self: this
   }, __jsx(ArticleCard, {
     bildeURL: props.bildeURL,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 86
+      lineNumber: 87
     },
     __self: this
   }, __jsx("div", {
     className: "imgTitle",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 88
+      lineNumber: 89
     },
     __self: this
   }, __jsx("span", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 89
+      lineNumber: 90
     },
     __self: this
   }, props.title, " ")), __jsx("div", {
     className: "cardFooter",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 92
+      lineNumber: 93
     },
     __self: this
   }))));

@@ -119,10 +119,26 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 const CenterWrapper = _emotion_styled__WEBPACK_IMPORTED_MODULE_4___default.a.div`
+
+@media (min-width: 720px) {
+  margin: 0 auto;
 max-width: 1024px;
-display: flex;
-flex-wrap: wrap;
-align-self: center;
+display: grid;
+grid-template-columns: 1.5fr repeat(2, 1fr);
+grid-template-rows: 1fr repeat(4, 1fr);
+grid-column-gap: 10px;
+grid-row-gap: 10px;
+
+li:first-child{
+  grid-column: 1 / 4;
+}
+
+li:nth-child(5){
+  grid-column: 1 / 3;
+}
+      }
+
+
 `;
 
 class Articles extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
@@ -139,7 +155,7 @@ class Articles extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
       key: article.id,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 26
+        lineNumber: 42
       },
       __self: this
     }, __jsx(_Card__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -148,14 +164,14 @@ class Articles extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
       id: article.id,
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 28
+        lineNumber: 44
       },
       __self: this
     })));
     return __jsx(CenterWrapper, {
       __source: {
         fileName: _jsxFileName,
-        lineNumber: 38
+        lineNumber: 54
       },
       __self: this
     }, artikler);
@@ -198,10 +214,11 @@ background-image: url(/static/img/${props => props.bildeURL});
 padding: 0;
 margin: 0rem .5rem 1.3rem .5rem;
 height: 25vh;
-width: 30%;
+width: 100%;
 color: #fff;  
 border-bottom-left-radius: 5px;
 border-bottom-right-radius: 5px; 
+
 
 a{
   text-decoration: none;
@@ -273,41 +290,41 @@ function Card(props) {
     },
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 84
+      lineNumber: 85
     },
     __self: this
   }, __jsx("a", {
     title: "CarDetail",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 85
+      lineNumber: 86
     },
     __self: this
   }, __jsx(ArticleCard, {
     bildeURL: props.bildeURL,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 86
+      lineNumber: 87
     },
     __self: this
   }, __jsx("div", {
     className: "imgTitle",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 88
+      lineNumber: 89
     },
     __self: this
   }, __jsx("span", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 89
+      lineNumber: 90
     },
     __self: this
   }, props.title, " ")), __jsx("div", {
     className: "cardFooter",
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 92
+      lineNumber: 93
     },
     __self: this
   }))));

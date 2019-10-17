@@ -5,10 +5,26 @@ import articles from '../artikler.json';
 import styled from '@emotion/styled';
 
 const CenterWrapper = styled.div`
+
+@media (min-width: 720px) {
+  margin: 0 auto;
 max-width: 1024px;
-display: flex;
-flex-wrap: wrap;
-align-self: center;
+display: grid;
+grid-template-columns: 1.5fr repeat(2, 1fr);
+grid-template-rows: 1fr repeat(4, 1fr);
+grid-column-gap: 10px;
+grid-row-gap: 10px;
+
+li:first-child{
+  grid-column: 1 / 4;
+}
+
+li:nth-child(5){
+  grid-column: 1 / 3;
+}
+      }
+
+
 `
 
 class Articles extends React.Component {

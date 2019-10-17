@@ -12,10 +12,11 @@ background-image: url(/static/img/${props => props.bildeURL});
 padding: 0;
 margin: 0rem .5rem 1.3rem .5rem;
 height: 25vh;
-width: 30%;
+width: 100%;
 color: #fff;  
 border-bottom-left-radius: 5px;
 border-bottom-right-radius: 5px; 
+
 
 a{
   text-decoration: none;
